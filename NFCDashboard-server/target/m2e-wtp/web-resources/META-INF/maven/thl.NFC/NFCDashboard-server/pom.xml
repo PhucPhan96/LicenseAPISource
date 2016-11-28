@@ -150,8 +150,7 @@
 	       <groupId>org.codehaus.jackson</groupId>
 	       <artifactId>jackson-mapper-asl</artifactId>
 	       <version>1.9.13</version>
-	   </dependency>  
-     
+	   </dependency>
   </dependencies>
   <build>
     <finalName>NFCDashboard-server</finalName>

@@ -7,6 +7,9 @@
  	 <bean id="loginDAO" class="nfc.serviceImpl.LoginService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
+	 <bean id="userDAO" class="nfc.serviceImpl.UserService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
 	 <!-- <bean id="orderDAO" class="nfc.serviceImpl.OrderService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
