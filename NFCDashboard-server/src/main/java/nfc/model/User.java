@@ -4,12 +4,13 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="fg_users")
 public class User {
-	private int user_id;
+	private String user_id;
 	private String user_name;
 	private String luser_name;
 	private String user_alias;
@@ -36,11 +37,12 @@ public class User {
 	private String email;
 	private int app_id;
 	private Date password_expired_date;
+	@Id
 	@Column(name="user_id")
-	public int getUser_id() {
+	public String getUser_id() {
 		return user_id;
 	}
-	public void setUser_id(int user_id) {
+	public void setUser_id(String user_id) {
 		this.user_id = user_id;
 	}
 	@Column(name="user_name")

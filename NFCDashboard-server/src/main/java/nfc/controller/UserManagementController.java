@@ -1,5 +1,8 @@
 package nfc.controller;
 
+import java.util.List;
+
+import nfc.model.User;
 import nfc.service.IUserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserManagementController {
 	@Autowired
 	private IUserService userDAO;
+	
 	@RequestMapping("/user")
-	public String GetUser(){
-		
-		return "Welcome to RestTemplate Example.";
+	public List<User> getUser(){
+		List<User> users = userDAO.getListUser();
+		System.out.println("Size " + users.size());
+		return users;
 	}
 }

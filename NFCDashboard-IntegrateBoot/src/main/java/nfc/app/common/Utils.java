@@ -2,6 +2,7 @@ package nfc.app.common;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -42,5 +43,36 @@ public class Utils {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	public static String ConvertObjectToInsertSQL(Object obj, String tablle)
+	{
+		String sql = "";
+		Field[] fields = obj.getClass().getDeclaredFields();
+		String lstField="";
+		String lstValue="";
+		for (int i = 0; i < fields.length; i++) {
+			try{
+				if (!Collection.class.isAssignableFrom(fields[i].getType())) {
+					fields[i].setAccessible(true);
+					String name = fields[i].getName();
+					String value = fields[i].get(obj)!=null?fields[i].get(obj).toString():null;
+					if(i!=0){
+		        	   lstField=lstField+",";
+		        	   lstValue=lstValue+",";
+					}
+					if(fields[i].get(obj) instanceof String){
+		        	   lstValue=lstValue+"'"+value+"'";
+					}
+					else{
+		        	   lstValue=lstValue+value;
+	            	}
+					lstField=lstField+name;
+				}
+			} catch (IllegalAccessException ex) {
+				System.out.println("Error " + ex.getMessage());
+			}
+		}
+		sql="insert into " + tablle + "(" + lstField + ")values(" + lstValue + ");";
+		return sql;
 	}
 }

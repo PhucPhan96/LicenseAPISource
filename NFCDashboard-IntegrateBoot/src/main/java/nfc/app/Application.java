@@ -118,9 +118,6 @@ public class Application {
 
     @RequestMapping("/order/{name}")
     public void send(@PathVariable String name) {
-    	//sendToStore().send(MessageBuilder.withPayload(name).build());
-    	//System.out.println("Name " + serverWebSocketContainer().getSessions());
-    	//loop().send(MessageBuilder.withPayload(name).build());
     	requestGateway.echo(name);
 	    
         //requestChannel().send(MessageBuilder.withPayload(name).build());
@@ -128,10 +125,8 @@ public class Application {
     @RequestMapping( value = "/receiveGateway/{data}", method = RequestMethod.GET )
     public String testGateway(@PathVariable String data )
     {
-    	System.out.println( "Starting process the message [reciveing] " + data );
+    	System.out.println("receive roi ne");
     	sendToStore().send(MessageBuilder.withPayload(data + "aaaa").build());
-        System.out.println( "Data " + data );
-
-        return "{HelloMessage: \"Hello\"}";
+    	return "AAAA";
     }
 }

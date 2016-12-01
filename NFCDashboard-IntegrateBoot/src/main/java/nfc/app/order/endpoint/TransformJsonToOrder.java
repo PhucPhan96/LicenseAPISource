@@ -27,7 +27,7 @@ public class TransformJsonToOrder {
 				OrderDetail orderDetail = (OrderDetail) Utils.convertJsonObjectToClass(jsonOrderDetail, "nfc.app.order.OrderDetail", new String[]{});
 				lstOrderDetail.add(orderDetail);
 			}
-			order.setOrderDetails(arrOrderDetail);	
+			order.setOrderDetails(lstOrderDetail);	
 		}
 		return order;
 	}

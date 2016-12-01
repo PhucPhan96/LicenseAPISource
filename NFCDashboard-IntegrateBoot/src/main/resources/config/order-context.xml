@@ -30,6 +30,7 @@
     
     <gateway id="requestGateway" 
 	             service-interface="nfc.app.order.RequestGateway"/>
+	             
 	<channel id="requestChannel"/>
     <transformer id="transJsontoOrder" input-channel="requestChannel" method="tranJsonToOrder" ref="transformOrder" output-channel="orders"/>
 	<beans:bean id="transformOrder" class="nfc.app.order.endpoint.TransformJsonToOrder"/>
@@ -50,4 +51,8 @@
 	    <int-http:uri-variable name="data" expression="payload"/>
 	</int-http:outbound-gateway>
     <poller default="true" fixed-delay="1"/>
+    
+    
+    
+   <!--  <int-jdbc:inbound-channel-adapter channel="orders"></int-jdbc:inbound-channel-adapter> -->
 </beans:beans>
