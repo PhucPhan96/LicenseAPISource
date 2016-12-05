@@ -27,6 +27,11 @@ public class SupplierManagementController {
 	public String getSupplier(){
 		List<Supplier> supplier = supplierDAO.getListSupplier();
 		return Utils.convertObjectToJsonString(supplier);
-		//return supplier;
+	}
+	@RequestMapping(value="supplier/{id}", method=RequestMethod.GET)
+	public String getSupplier(@PathVariable("id") String supplId){
+		String supplierStr =  Utils.convertObjectToJsonString(supplierDAO.getSupplier(supplId));
+		System.out.println("SupplierStr " + supplierStr);
+		return supplierStr;
 	}
 }

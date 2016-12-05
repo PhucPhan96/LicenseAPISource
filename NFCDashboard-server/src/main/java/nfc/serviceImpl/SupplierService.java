@@ -39,4 +39,13 @@ public class SupplierService implements ISupplierService {
 		trans.commit();
 		return list;
 	}
+	public Supplier getSupplier(String supplId){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(Supplier.class);
+		criteria.add(Restrictions.eq("suppl_id", Integer.parseInt(supplId)));
+		Supplier supplier = (Supplier) criteria.uniqueResult();
+		trans.commit();
+		return supplier;
+	}
 }
