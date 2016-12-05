@@ -44,7 +44,7 @@ public class Utils {
 			return null;
 		}
 	}
-	public static String ConvertObjectToInsertSQL(Object obj, String tablle)
+	public static String ConvertObjectToInsertSQL(Object obj, String table)
 	{
 		String sql = "";
 		Field[] fields = obj.getClass().getDeclaredFields();
@@ -72,7 +72,7 @@ public class Utils {
 				System.out.println("Error " + ex.getMessage());
 			}
 		}
-		sql="insert into " + tablle + "(" + lstField + ")values(" + lstValue + ");";
+		sql="insert into " + table + "(" + lstField + ")values(" + lstValue + ");";
 		return sql;
 	}
 }

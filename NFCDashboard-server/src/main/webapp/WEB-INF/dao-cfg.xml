@@ -10,6 +10,14 @@
 	 <bean id="userDAO" class="nfc.serviceImpl.UserService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
+	 <bean id="roleDAO" class="nfc.serviceImpl.RoleService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
+	 <bean id="commonDAO" class="nfc.serviceImpl.common.CommonService">
+	 </bean>
+	 <bean id="groupDAO" class="nfc.serviceImpl.GroupService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
 	 <!-- <bean id="orderDAO" class="nfc.serviceImpl.OrderService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>

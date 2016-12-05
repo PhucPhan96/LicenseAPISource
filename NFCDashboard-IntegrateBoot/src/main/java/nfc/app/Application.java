@@ -115,7 +115,6 @@ public class Application {
                     .handle(webSocketOutboundAdapter());
         };
     }
-
     @RequestMapping("/order/{name}")
     public void send(@PathVariable String name) {
     	requestGateway.echo(name);
