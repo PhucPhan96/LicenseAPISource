@@ -1,28 +1,19 @@
 package nfc.serviceImpl;
 
 import java.io.Serializable;
-import java.math.BigInteger;
-import java.nio.channels.SeekableByteChannel;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.transaction.Transactional;
-
 import nfc.model.Code;
 import nfc.model.Role;
-import nfc.model.User;
 import nfc.service.IRoleService;
-import nfc.service.IUserService;
 import nfc.service.common.ICommonService;
-import nfc.serviceImpl.common.Utils;
 
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -96,12 +87,8 @@ public class RoleService implements IRoleService {
 		Transaction trans = session.beginTransaction();
 		try
 		{
-			Map<String, String> map = new HashMap<String, String>();
-			map.put("group_code", "0003");
-			map.put("sub_code", roleId+"");
-			Code code = (Code) commonDAO.createObject("nfc.model.Code", map);
-			session.delete(code);
 			session.delete(role);
+			commonDAO.deleteCode(session, "0003", roleId+"");
 			trans.commit();
 			return true;
 		}

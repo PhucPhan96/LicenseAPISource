@@ -1,0 +1,6 @@
+0:0:0:0:0:0:0:1 - - [06/Dec/2016:09:31:30 +0700] "GET /NFCDashboard-server/groups HTTP/1.1" 200 87 http-bio-1234-exec-1 350
+0:0:0:0:0:0:0:1 - - [06/Dec/2016:10:16:22 +0700] "GET /NFCDashboard-server/groups HTTP/1.1" 200 87 http-bio-1234-exec-3 136
+0:0:0:0:0:0:0:1 - - [06/Dec/2016:10:19:48 +0700] "GET /NFCDashboard-server/roles HTTP/1.1" 200 790 http-bio-1234-exec-1 39
+0:0:0:0:0:0:0:1 - - [06/Dec/2016:10:20:38 +0700] "GET /NFCDashboard-server/roles HTTP/1.1" 200 790 http-bio-1234-exec-1 25
+0:0:0:0:0:0:0:1 - - [06/Dec/2016:10:23:35 +0700] "GET /NFCDashboard-server/roles HTTP/1.1" 200 790 http-bio-1234-exec-5 33
+0:0:0:0:0:0:0:1 - - [06/Dec/2016:10:24:29 +0700] "GET /NFCDashboard-server/roles HTTP/1.1" 200 790 http-bio-1234-exec-5 25

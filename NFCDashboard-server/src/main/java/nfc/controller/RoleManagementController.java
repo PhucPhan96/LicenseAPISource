@@ -2,22 +2,16 @@ package nfc.controller;
 import java.util.List;
 
 import nfc.model.Role;
-import nfc.model.User;
 import nfc.service.IRoleService;
 import nfc.serviceImpl.common.Utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.google.gson.Gson;
 @RestController
 public class RoleManagementController {
 	@Autowired
@@ -38,18 +32,18 @@ public class RoleManagementController {
 	@RequestMapping(value="role/add", method=RequestMethod.POST)
 	public @ResponseBody String insertRole(@RequestBody Role role){
 		role.setApp_id(Utils.appId);
-		String data = roleDAO.insertRole(role)+"";
+		String data = roleDAO.insertRole(role) + "";
 		return "{\"result\":\"" + data + "\"}";
 	}
 	@RequestMapping(value="role/edit", method=RequestMethod.PUT)
 	public @ResponseBody String editRole(@RequestBody Role role){
-		String data = roleDAO.updateRole(role)+"";
+		String data = roleDAO.updateRole(role) + "";
 		return "{\"result\":\"" + data + "\"}";
 	}
 	@RequestMapping(value="role/delete/{id}", method=RequestMethod.DELETE)
 	public @ResponseBody String deleteRole(@PathVariable("id") String roleId){
 		System.out.println("Vao delete " + roleId);
-		String data = roleDAO.deleteRole(roleId)+"";
+		String data = roleDAO.deleteRole(roleId) + "";
 		return "{\"result\":\"" + data + "\"}";
 	}
 }

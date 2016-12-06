@@ -1,11 +1,10 @@
 package nfc.serviceImpl.common;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.Map;
-import java.util.Set;
 
-import nfc.model.Code;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import nfc.service.common.ICommonService;
 
 public class CommonService implements ICommonService {
@@ -27,5 +26,11 @@ public class CommonService implements ICommonService {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	public void deleteCode(Session session, String group_code, String sub_code)
+	{
+		String deleteQuery = "delete from fg_codes where group_code = \""+group_code+"\" AND sub_code = \""+sub_code+"\"";
+		Query query = session.createSQLQuery(deleteQuery);
+	    query.executeUpdate();
 	}
 }
