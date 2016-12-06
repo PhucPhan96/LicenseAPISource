@@ -1,6 +1,7 @@
 package nfc.controller;
 
 import nfc.model.Category;
+import nfc.model.Role;
 import nfc.model.User;
 import nfc.service.ICategoryService;
 import nfc.serviceImpl.common.Utils;
@@ -27,5 +28,16 @@ public class CategoryManagementController {
 		List<Category> category = categoryDAO.getListCategory();
 		return Utils.convertObjectToJsonString(category);
 	} 
+	@RequestMapping(value="category/add", method=RequestMethod.POST)
+	public @ResponseBody String insertCategory(@RequestBody Category cate){
+		cate.setApp_id(Utils.appId);
+		String data = categoryDAO.insertCategory(cate)+"";
+		return "{\"result\":\"" + data + "\"}";
+	}
+	@RequestMapping(value="category/edit", method=RequestMethod.PUT)
+	public @ResponseBody String editCategory(@RequestBody Category cate){
+		String data = categoryDAO.updateCategory(cate)+"";
+		return "{\"result\":\"" + data + "\"}";
+	}
 
 }

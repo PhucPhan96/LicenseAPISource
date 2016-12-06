@@ -41,5 +41,21 @@ public class CategoryService implements ICategoryService{
 		trans.commit();
 		return list;		
 	}
+	public boolean insertCategory(Category cate)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		try
+		{
+			session.save(cate);
+			trans.commit();
+			return true;			
+		}
+		catch(Exception ex)
+		{
+			trans.rollback();
+			return false;
+		}
+	}
 
 }
