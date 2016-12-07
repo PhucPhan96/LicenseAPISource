@@ -1,7 +1,5 @@
 package nfc.service;
-
 import java.util.List;
-
 import nfc.model.Role;
 
 public interface IRoleService {

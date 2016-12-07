@@ -1,2 +1,0 @@
-0:0:0:0:0:0:0:1 - - [29/Nov/2016:11:38:08 +0700] "GET /NFCDashboard-server/user HTTP/1.1" 406 1067 http-bio-1234-exec-1 371
-0:0:0:0:0:0:0:1 - - [29/Nov/2016:11:38:08 +0700] "GET /favicon.ico HTTP/1.1" 404 - http-bio-1234-exec-3 0

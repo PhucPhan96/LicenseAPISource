@@ -11,6 +11,7 @@ public class Utils {
 		Gson gson = new Gson();
 		String jsonInString = gson.toJson(obj);
 		return jsonInString;
+		//return "";
 	}
 	public static String ConvertObjectToInsertSQL(Object obj, String table)
 	{
