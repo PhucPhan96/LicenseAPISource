@@ -16,17 +16,16 @@ public class SupplierWork {
 	private String sat_end_hm;
 	private String sun_start_hm;
 	private String sun_end_hm;
-	private byte is_online;
+	private int is_online;
 	private double rank5;
 	private int order_count;
 	private int favorite_count;
-	private byte call_order;
-	private byte direct_pay;
-	private byte visit_pay;
+	private int call_order;
+	private int direct_pay;
+	private int visit_pay;
 	private double min_order_amt;
 	private int owner_suppl_id;
 	private int manage_suppl_id;
-	
 	@Id
 	@Column(name="suppl_id")
 	public int getSuppl_id() {
@@ -85,10 +84,10 @@ public class SupplierWork {
 		this.sun_end_hm = sun_end_hm;
 	}
 	@Column(name="is_online")
-	public byte getIs_online() {
+	public int getIs_online() {
 		return is_online;
 	}
-	public void setIs_online(byte is_online) {
+	public void setIs_online(int is_online) {
 		this.is_online = is_online;
 	}
 	@Column(name="rank5")
@@ -113,24 +112,24 @@ public class SupplierWork {
 		this.favorite_count = favorite_count;
 	}
 	@Column(name="call_order")
-	public byte getCall_order() {
+	public int getCall_order() {
 		return call_order;
 	}
-	public void setCall_order(byte call_order) {
+	public void setCall_order(int call_order) {
 		this.call_order = call_order;
 	}
 	@Column(name="direct_pay")
-	public byte getDirect_pay() {
+	public int getDirect_pay() {
 		return direct_pay;
 	}
-	public void setDirect_pay(byte direct_pay) {
+	public void setDirect_pay(int direct_pay) {
 		this.direct_pay = direct_pay;
 	}
 	@Column(name="visit_pay")
-	public byte getVisit_pay() {
+	public int getVisit_pay() {
 		return visit_pay;
 	}
-	public void setVisit_pay(byte visit_pay) {
+	public void setVisit_pay(int visit_pay) {
 		this.visit_pay = visit_pay;
 	}
 	@Column(name="min_order_amt")
@@ -153,5 +152,5 @@ public class SupplierWork {
 	}
 	public void setManage_suppl_id(int manage_suppl_id) {
 		this.manage_suppl_id = manage_suppl_id;
-	}
+	}	
 }

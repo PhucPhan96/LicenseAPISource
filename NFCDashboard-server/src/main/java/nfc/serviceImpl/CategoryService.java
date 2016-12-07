@@ -57,5 +57,9 @@ public class CategoryService implements ICategoryService{
 			return false;
 		}
 	}
+	public boolean updateCategory(Category cate) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 }

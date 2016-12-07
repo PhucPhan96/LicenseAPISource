@@ -46,8 +46,6 @@ public class SupplierWorkService implements ISupplierWorkService {
 		try
 		{
 			int subcode = 0;
-			supplierwork.setSuppl_id(1);
-			supplierwork.setIs_active(1);
 			Serializable ser = session.save(supplierwork);
 	        if (ser != null) {
 	        	subcode = (Integer) ser;

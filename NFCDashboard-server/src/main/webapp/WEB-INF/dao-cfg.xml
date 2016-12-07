@@ -27,6 +27,9 @@
 	 <bean id="supplierworkDAO" class="nfc.serviceImpl.SupplierWorkService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
+	 <bean id="productDAO" class="nfc.serviceImpl.ProductService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
 	 <!-- <bean id="orderDAO" class="nfc.serviceImpl.OrderService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
