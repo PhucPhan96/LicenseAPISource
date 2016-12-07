@@ -18,6 +18,9 @@
 	 <bean id="groupDAO" class="nfc.serviceImpl.GroupService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
+	 <bean id="categoryDAO" class="nfc.serviceImpl.CategoryService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
 	 <bean id="supplierDAO" class="nfc.serviceImpl.SupplierService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
