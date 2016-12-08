@@ -6,6 +6,9 @@ import nfc.model.User;
 import nfc.service.ICategoryService;
 import nfc.serviceImpl.common.Utils;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +34,8 @@ public class CategoryManagementController {
 	@RequestMapping(value="category/add", method=RequestMethod.POST)
 	public @ResponseBody String insertCategory(@RequestBody Category cate){
 		cate.setApp_id(Utils.appId);
+		Date date = new Date();
+		cate.setCreated_date(date);
 		String data = categoryDAO.insertCategory(cate)+"";
 		return "{\"result\":\"" + data + "\"}";
 	}
@@ -39,5 +44,16 @@ public class CategoryManagementController {
 		String data = categoryDAO.updateCategory(cate)+"";
 		return "{\"result\":\"" + data + "\"}";
 	}
+	@RequestMapping(value="category/delete/{id}", method=RequestMethod.DELETE)
+	public @ResponseBody String deleteCategory(@PathVariable("id") String cateID){
+		String data = categoryDAO.deleteCategory(cateID)+"";
+		return "{\"result\":\"" + data + "\"}";
+	}
+	@RequestMapping(value="category/getCate/{id}", method=RequestMethod.GET)
+	public String getCategory(@PathVariable("id") String cateID){
+		Category category = categoryDAO.getCategory(cateID);
+		return Utils.convertObjectToJsonString(category);
+	} 
+
 
 }

@@ -8,4 +8,6 @@ public interface ICategoryService {
 	List<Category> getListCategory();
 	boolean insertCategory(Category cate);
 	boolean updateCategory(Category cate);
+	boolean deleteCategory(String cateID);
+	Category getCategory(String cateID);
 }
