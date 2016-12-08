@@ -2,6 +2,7 @@ package nfc.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -13,6 +14,7 @@ public class Group {
 	private String group_name;
 	@Id
 	@Column(name="group_id")
+	@GeneratedValue
 	public int getGroup_id() {
 		return group_id;
 	}

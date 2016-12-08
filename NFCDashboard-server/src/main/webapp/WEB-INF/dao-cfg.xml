@@ -24,10 +24,10 @@
 	 <bean id="supplierDAO" class="nfc.serviceImpl.SupplierService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
-	 <bean id="supplierworkDAO" class="nfc.serviceImpl.SupplierWorkService">
+	 <bean id="productDAO" class="nfc.serviceImpl.ProductService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
-	 <bean id="productDAO" class="nfc.serviceImpl.ProductService">
+	 <bean id="fileDAO" class="nfc.serviceImpl.FileService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
 	 <!-- <bean id="orderDAO" class="nfc.serviceImpl.OrderService">

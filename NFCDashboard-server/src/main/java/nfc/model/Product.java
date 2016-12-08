@@ -1,9 +1,23 @@
 package nfc.model;
 
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
 
 @Entity
 @Table(name="fg_products")
@@ -15,10 +29,31 @@ public class Product {
 	private String prod_desc;
 	private int suppl_id;
 	private String qty_per_unit;
-	private double unit_price;
+	private BigDecimal unit_price;
 	private String prod_origins;
 	private int min_order_qty;
+	private Category category;
+	/*@ManyToOne
+	@JoinColumn(name="cate_id")*/
+	@OneToOne
+	@JoinTable(name="fg_product_categories",joinColumns={@JoinColumn(name = "prod_id")},inverseJoinColumns={@JoinColumn(name = "cate_id")})
+	public Category getCategory() {
+		return category;
+	}
 	
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
+	private Set<AttachFile> attachFiles = new HashSet<AttachFile>();
+	@OneToMany
+	@JoinTable(name="fg_prod_imgs",joinColumns={@JoinColumn(name = "prod_id")},inverseJoinColumns={@JoinColumn(name = "img_id")})
+	public Set<AttachFile> getAttachFiles() {
+		return attachFiles;
+	}
+	public void setAttachFiles(Set<AttachFile> attachFiles) {
+		this.attachFiles = attachFiles;
+	}
 	@Id
 	@Column(name="prod_id")
 	public int getProd_id() {
@@ -70,10 +105,10 @@ public class Product {
 		this.qty_per_unit = qty_per_unit;
 	}
 	@Column(name="unit_price")
-	public double getUnit_price() {
+	public BigDecimal getUnit_price() {
 		return unit_price;
 	}
-	public void setUnit_price(double unit_price) {
+	public void setUnit_price(BigDecimal unit_price) {
 		this.unit_price = unit_price;
 	}
 	@Column(name="prod_origins")

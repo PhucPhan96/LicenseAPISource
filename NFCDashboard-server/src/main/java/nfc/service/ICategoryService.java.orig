@@ -1,0 +1,17 @@
+package nfc.service;
+
+import java.util.List;
+
+import nfc.model.Category;
+
+public interface ICategoryService {
+	List<Category> getListCategory();
+<<<<<<< HEAD
+	List<Category> getListCategoryFilterType(String type);
+=======
+	boolean insertCategory(Category cate);
+	boolean updateCategory(Category cate);
+	boolean deleteCategory(String cateID);
+	Category getCategory(String cateID);
+>>>>>>> fe940d2f5960c9493a3183c2302e96800b6d5180
+}
