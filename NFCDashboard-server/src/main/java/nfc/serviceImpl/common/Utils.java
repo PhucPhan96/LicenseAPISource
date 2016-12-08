@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 
 public class Utils {
 	public static String appId="e6271952-d4b9-4ed3-b83b-63a56d47a713";
+	public static String uploadUrl="/uploads/images/";
 	public static String convertObjectToJsonString(Object obj){
 		Gson gson = new Gson();
 		String jsonInString = gson.toJson(obj);
