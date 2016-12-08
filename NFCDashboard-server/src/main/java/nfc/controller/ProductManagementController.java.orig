@@ -2,11 +2,14 @@ package nfc.controller;
 
 import java.util.List;
 
+<<<<<<< HEAD
 import nfc.model.Group;
 import nfc.model.Product;
 import nfc.service.IProductService;
 import nfc.serviceImpl.common.Utils;
 
+=======
+>>>>>>> fe940d2f5960c9493a3183c2302e96800b6d5180
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,16 +18,20 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+<<<<<<< HEAD
+=======
 import nfc.model.Product;
 import nfc.model.Role;
 import nfc.service.IProductService;
 import nfc.serviceImpl.common.Utils;
+>>>>>>> fe940d2f5960c9493a3183c2302e96800b6d5180
 @RestController
 public class ProductManagementController {
 	@Autowired
 	private IProductService productDAO;
 	@RequestMapping(value="products",method=RequestMethod.GET)
 	public String getProducts(){
+<<<<<<< HEAD
 		int supplId=1;
 		List<Product> products = productDAO.getListProduct(supplId);
 		System.out.println(products);
@@ -43,10 +50,21 @@ public class ProductManagementController {
 		String data = productDAO.insertProduct(product) + "";
 		return "{\"result\":\"" + data + "\"}";
 	}
+=======
+		List<Product> products = productDAO.getListProduct();
+		return Utils.convertObjectToJsonString(products);
+	}
+	@RequestMapping(value="products/add", method=RequestMethod.POST)
+	public @ResponseBody String insertProduct(@RequestBody Product product){
+		//product.setApp_id(Utils.appId);
+		String data = productDAO.insertProduct(product)+"";
+		return "{\"result\":\"" + data + "\"}";
+	}
 	@RequestMapping(value="products/{id}", method=RequestMethod.GET)
 	public String getProduct(@PathVariable("id") String prodId){
 		String prodStr =  Utils.convertObjectToJsonString(productDAO.getProduct(prodId));
 		System.out.println("ProdStr " + prodStr);
 		return prodStr;
 	}
+>>>>>>> fe940d2f5960c9493a3183c2302e96800b6d5180
 }

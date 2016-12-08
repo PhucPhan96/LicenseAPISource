@@ -41,6 +41,16 @@ public class CategoryService implements ICategoryService{
 		trans.commit();
 		return list;		
 	}
+<<<<<<< HEAD
+	public List<Category> getListCategoryFilterType(String type) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(Category.class);
+		criteria.add(Restrictions.eq("cate_type", type));
+		List<Category> list = (List<Category>)criteria.list();
+		trans.commit();
+		return list;
+=======
 	public boolean insertCategory(Category cate)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
@@ -100,15 +110,7 @@ public class CategoryService implements ICategoryService{
 			return false;
 		}
 		
-	}
-	public List<Category> getListCategoryFilterType(String type) {
-		Session session = this.sessionFactory.getCurrentSession();
-		Transaction trans = session.beginTransaction();
-		Criteria criteria = session.createCriteria(Category.class);
-		criteria.add(Restrictions.eq("cate_type", type));
-		List<Category> list = (List<Category>)criteria.list();
-		trans.commit();
-		return list;
+>>>>>>> fe940d2f5960c9493a3183c2302e96800b6d5180
 	}
 
 }

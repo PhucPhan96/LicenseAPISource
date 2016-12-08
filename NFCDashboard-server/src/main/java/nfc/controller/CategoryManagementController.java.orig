@@ -1,7 +1,11 @@
 package nfc.controller;
 
 import nfc.model.Category;
+<<<<<<< HEAD
+=======
 import nfc.model.Role;
+import nfc.model.User;
+>>>>>>> fe940d2f5960c9493a3183c2302e96800b6d5180
 import nfc.service.ICategoryService;
 import nfc.serviceImpl.common.Utils;
 
@@ -12,7 +16,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -27,6 +30,13 @@ public class CategoryManagementController {
 		List<Category> category = categoryDAO.getListCategory();
 		return Utils.convertObjectToJsonString(category);
 	} 
+<<<<<<< HEAD
+	@RequestMapping(value="category/{type}", method=RequestMethod.GET)
+	public @ResponseBody String getListCategoryFilterType(@PathVariable("type") String type){
+		List<Category> category = categoryDAO.getListCategoryFilterType(type);
+		return Utils.convertObjectToJsonString(category);
+	}
+=======
 	@RequestMapping(value="category/add", method=RequestMethod.POST)
 	public @ResponseBody String insertCategory(@RequestBody Category cate){
 		cate.setApp_id(Utils.appId);
@@ -51,5 +61,6 @@ public class CategoryManagementController {
 		return Utils.convertObjectToJsonString(category);
 	} 
 
+>>>>>>> fe940d2f5960c9493a3183c2302e96800b6d5180
 
 }
