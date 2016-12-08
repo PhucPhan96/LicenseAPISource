@@ -35,4 +35,10 @@ public class ProductManagementController {
 		System.out.println("ProdStr " + prodStr);
 		return prodStr;
 	}
+	@RequestMapping(value="product/{id}", method=RequestMethod.GET)
+	public String getProducts(@PathVariable("id") String productId){
+		String productStr =  Utils.convertObjectToJsonString(productDAO.getProducts(productId));
+		System.out.println("RoleStr " + productStr);
+		return productStr;
+	}
 }
