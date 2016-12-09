@@ -11,6 +11,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -100,9 +101,24 @@ public class ProductService implements IProductService{
 			return false;
 		}
 	}
-	public Product getProduct(String prodId) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Product> getProduct(String prodId){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(Product.class);
+		criteria.add(Restrictions.eq("suppl_id", Integer.parseInt(prodId)));
+		//Product product = (Product) criteria.uniqueResult();
+		List<Product> product = (List<Product>) criteria.list();
+		trans.commit();
+		return product;
+	}
+	public Product getProducts(String productId){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(Product.class);
+		criteria.add(Restrictions.eq("prod_id", Integer.parseInt(productId)));
+		Product product = (Product) criteria.uniqueResult();
+		trans.commit();
+		return product;
 	}
 	
 	

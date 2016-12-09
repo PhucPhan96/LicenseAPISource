@@ -36,7 +36,8 @@ public class Product {
 	/*@ManyToOne
 	@JoinColumn(name="cate_id")*/
 	@OneToOne
-	@JoinTable(name="fg_product_categories",joinColumns={@JoinColumn(name = "prod_id")},inverseJoinColumns={@JoinColumn(name = "cate_id")})
+	@JoinTable(name="fg_product_categories",
+	joinColumns={@JoinColumn(name = "prod_id")},inverseJoinColumns={@JoinColumn(name = "cate_id")})
 	public Category getCategory() {
 		return category;
 	}
@@ -46,7 +47,7 @@ public class Product {
 	}
 
 	private Set<AttachFile> attachFiles = new HashSet<AttachFile>();
-	@OneToMany
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name="fg_prod_imgs",joinColumns={@JoinColumn(name = "prod_id")},inverseJoinColumns={@JoinColumn(name = "img_id")})
 	public Set<AttachFile> getAttachFiles() {
 		return attachFiles;
