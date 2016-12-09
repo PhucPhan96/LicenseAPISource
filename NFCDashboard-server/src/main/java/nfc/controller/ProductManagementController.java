@@ -30,12 +30,6 @@ public class ProductManagementController {
 		System.out.println(products);
 		return Utils.convertObjectToJsonString(products);
 	}
-	@RequestMapping(value="product/{id}", method=RequestMethod.GET)
-	public String getRole(@PathVariable("id") String productId){
-		String roleStr =  Utils.convertObjectToJsonString(productDAO.getProduct(Integer.parseInt(productId)));
-		System.out.println("RoleStr " + roleStr);
-		return roleStr;
-	}
 	@RequestMapping(value="product/add", method=RequestMethod.POST)
 	public @ResponseBody String insertGroup(@RequestBody Product product){
 		product.setApp_id(Utils.appId);
@@ -52,7 +46,7 @@ public class ProductManagementController {
 	@RequestMapping(value="product/{id}", method=RequestMethod.GET)
 	public String getProducts(@PathVariable("id") String productId){
 		String productStr =  Utils.convertObjectToJsonString(productDAO.getProducts(productId));
-		System.out.println("RoleStr " + productStr);
+		System.out.println("ProductStr " + productStr);
 		return productStr;
 	}
 }
