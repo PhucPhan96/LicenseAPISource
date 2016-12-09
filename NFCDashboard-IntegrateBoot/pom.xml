@@ -81,7 +81,7 @@
 		<artifactId>spring-plugin-core</artifactId>
 	</dependency> -->
   </dependencies>
-  <build>
+  <!-- <build>
     <finalName>NFCDashboard-IntegrateBoot</finalName>
     <plugins>
         <plugin>
@@ -89,5 +89,5 @@
             <artifactId>spring-boot-maven-plugin</artifactId>
         </plugin>
     </plugins>
-  </build>
+  </build> -->
 </project>
