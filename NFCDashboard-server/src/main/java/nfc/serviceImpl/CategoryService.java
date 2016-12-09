@@ -1,5 +1,6 @@
 package nfc.serviceImpl;
 
+import java.io.Console;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.nio.channels.SeekableByteChannel;
@@ -18,7 +19,9 @@ import nfc.service.IUserService;
 import nfc.service.common.ICommonService;
 import nfc.serviceImpl.common.Utils;
 
+import nfc.model.AttachFile;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -36,8 +39,9 @@ public class CategoryService implements ICategoryService{
 	public List<Category> getListCategory() {
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
-		Criteria criteria = session.createCriteria(Category.class);
+		Criteria criteria = session.createCriteria(Category.class);		
 		List<Category> list = (List<Category>)criteria.list();
+		
 		trans.commit();
 		return list;		
 	}

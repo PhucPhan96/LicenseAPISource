@@ -16,6 +16,7 @@ public class AttachFile {
 	private String app_id;
 	private String file_name;
 	private String file_ext;
+	private String file_path;
 	private String file_org_name;
 	private int file_size;
 	private Date created_date;
@@ -48,6 +49,13 @@ public class AttachFile {
 	}
 	public void setFile_ext(String file_ext) {
 		this.file_ext = file_ext;
+	}
+	@Column(name="file_path")
+	public String getFile_path() {
+		return file_path;
+	}
+	public void setFile_path(String file_path) {
+		this.file_path = file_path;
 	}
 	@Column(name="file_org_name")
 	public String getFile_org_name() {
