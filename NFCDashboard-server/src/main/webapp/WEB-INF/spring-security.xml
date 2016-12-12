@@ -5,36 +5,41 @@
            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
            http://www.springframework.org/schema/security
            http://www.springframework.org/schema/security/spring-security.xsd">
-
-	
-	<http auto-config="true" use-expressions="true">
-	    <intercept-url pattern="/login**" access="permitAll" />
+	<http auto-config="true" use-expressions="true"><!-- entry-point-ref="entryPoint" -->
+	    <intercept-url pattern="/authenticate**" access="permitAll" />
 	    <intercept-url pattern="/resources/**" access="permitAll" />
-	    <intercept-url pattern="/**" access="hasRole('1')" />
-	    <intercept-url pattern="/admin**" access="hasRole('2')" />
-
+	    <intercept-url pattern="/**" access="hasRole('22')" />
+	   <!--  <form-login/> -->
+	    <!-- <http-basic/> -->
+	
 	    <!-- Login Form -->
-	    <form-login 
-	        login-page="/login"
+	    <!-- <form-login 
+	    	login-page="/login"
 	        default-target-url="/"
-	        authentication-failure-url="/login?error=1" 
+	        authentication-failure-url="/login?error=1"
 	        username-parameter="username"
-	        password-parameter="password" />
-         
+	        password-parameter="password" /> -->
+        <!-- <form-login authentication-success-handler-ref="authSuccess" authentication-failure-handler-ref="authFailure"/> -->
 	    <!-- Logout -->
 	    <logout logout-success-url="/logout"/>
-		<!-- <intercept-url pattern="/user**" access="ROLE_USER" />
-		<intercept-url pattern="/users/**" access="hasRole('ROLE_ADMIN')" />
-		<intercept-url pattern="/account**" access="hasRole('ROLE_USER')" />
-		<form-login/>
-		<logout /> -->
+		
 		<remember-me key="myAppKey" services-ref="rememberMeServices"/>
 	</http>
-	<authentication-manager>
+	<!-- <global-method-security access-decision-manager-ref="accessDecisionManager" secured-annotations="enabled" jsr250-annotations="enabled"/>
+        
+    <http use-expressions="true"   >
+        <intercept-url pattern="/faces/admin/**" access="PERM_SPORT_1" />  
+        <form-login login-processing-url="/j_spring_security_check" login-page="/faces/login.xhtml" default-target-url="/" authentication-failure-url="/faces/login.xhtml" />
+        <logout logout-url="/j_spring_security_logout" logout-success-url="/"/>
+    </http> -->
+	<authentication-manager alias="authenticationManager">
 		<authentication-provider user-service-ref="loginService">
-			<!-- <password-encoder hash="md5"/> -->
+			<!-- <password-encoder hash="bcrypt"/> -->
 		</authentication-provider>
 	</authentication-manager>
+	<beans:bean id="authSuccess" class="nfc.serviceImpl.Security.AuthSuccess"></beans:bean>
+	<beans:bean id="authFailure" class="nfc.serviceImpl.Security.AuthFailure"></beans:bean>
+	<beans:bean id="entryPoint" class="nfc.serviceImpl.Security.EntryPointUnauthorizedHandler"></beans:bean>
 	<beans:bean id="rememberMeServices"
 	      class="org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices">
 	    <beans:constructor-arg value="myAppKey"/>
@@ -48,35 +53,5 @@
 	<beans:bean id="tokenRepository"
 	      class="org.springframework.security.web.authentication.rememberme.InMemoryTokenRepositoryImpl">
 	</beans:bean>
-</beans:beans>
-
-
-<!-- 
-<beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    xmlns:security="http://www.springframework.org/schema/security"
-    xsi:schemaLocation="
-    http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans.xsd
-    http://www.springframework.org/schema/security
-    http://www.springframework.org/schema/security/spring-security-4.1.xsd">
 	
-    <security:http auto-config="true" use-expressions="true">
-    	<security:intercept-url pattern="/**" access="ROLE_USER" />
-	    <security:intercept-url pattern="/login**" access="permitAll" />
-	    <security:intercept-url pattern="/resources/**" access="permitAll" />
-	    <security:intercept-url pattern="/**" access="hasRole('USER')" />
-	    <security:intercept-url pattern="/admin**" access="hasRole('ADMIN')" />
-	    <security:form-login 
-	        login-page="/login"
-	        default-target-url="/"
-	        authentication-failure-url="/login?error=1" 
-	        username-parameter="username"
-	        password-parameter="password" />
-	    <security:logout logout-success-url="/logout" />
-   	</security:http>
-    <security:authentication-manager>
-	    <security:authentication-provider user-service-ref="loginService">
-	    </security:authentication-provider>
-	 </security:authentication-manager>
-</beans> -->
+</beans:beans>

@@ -17,7 +17,7 @@
        <servlet-name>spring-mvc</servlet-name>
        <url-pattern>/</url-pattern>
    </servlet-mapping>
- 
+ 	
  	
    <!-- Other XML Configuration -->
    <!-- Load by Spring ContextLoaderListener -->
@@ -32,22 +32,11 @@
         </param-value>    
    </context-param>
  
- 
    <!-- Spring ContextLoaderListener -->
    <listener>
        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
    </listener>
-   <!-- Enable Spring Security -->
-	<!-- <filter>
-	  <filter-name>springSecurityFilterChain</filter-name>
-	  <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-	</filter>
-	<filter-mapping>
-	  <filter-name> springSecurityFilterChain </filter-name>
-	  <url-pattern>/*</url-pattern>
-	</filter-mapping> -->
-	
-	<!-- filter crossorigin -->
+   <!-- filter crossorigin -->
 	<filter>
 	  <filter-name>cors</filter-name>
 	  <filter-class>nfc.serviceImpl.filters.CORSFilter</filter-class>
@@ -57,6 +46,13 @@
 	  <filter-name>cors</filter-name>
 	  <url-pattern>/*</url-pattern>
 	</filter-mapping>
-	
-
+   <!-- Enable Spring Security -->
+	<filter>
+	  <filter-name>springSecurityFilterChain</filter-name>
+	  <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+	  <filter-name>springSecurityFilterChain</filter-name>
+	  <url-pattern>/*</url-pattern>
+	</filter-mapping>
 </web-app>

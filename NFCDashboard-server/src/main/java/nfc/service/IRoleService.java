@@ -8,4 +8,5 @@ public interface IRoleService {
 	Role getRole(String roleId);
 	boolean updateRole(Role role);
 	boolean deleteRole(String roleId);
+	List<Role> getListRoleByUserId(String userId);
 }

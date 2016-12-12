@@ -10,6 +10,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -32,10 +33,10 @@ public class Product {
 	private BigDecimal unit_price;
 	private String prod_origins;
 	private int min_order_qty;
-	private Category category;
-	/*@ManyToOne
-	@JoinColumn(name="cate_id")*/
-	@OneToOne
+	/*private Category category;
+	@ManyToOne
+	@JoinColumn(name="cate_id")
+	@OneToMany
 	@JoinTable(name="fg_product_categories",
 	joinColumns={@JoinColumn(name = "prod_id")},inverseJoinColumns={@JoinColumn(name = "cate_id")})
 	public Category getCategory() {
@@ -44,7 +45,7 @@ public class Product {
 	
 	public void setCategory(Category category) {
 		this.category = category;
-	}
+	}*/
 
 	private Set<AttachFile> attachFiles = new HashSet<AttachFile>();
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -57,6 +58,7 @@ public class Product {
 	}
 	@Id
 	@Column(name="prod_id")
+	@GeneratedValue
 	public int getProd_id() {
 		return prod_id;
 	}

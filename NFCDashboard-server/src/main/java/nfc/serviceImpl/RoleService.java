@@ -1,13 +1,16 @@
 package nfc.serviceImpl;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import nfc.model.Code;
 import nfc.model.Role;
+import nfc.model.UserRole;
 import nfc.service.IRoleService;
+import nfc.service.IUserService;
 import nfc.service.common.ICommonService;
 
 import org.hibernate.Criteria;
@@ -20,6 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class RoleService implements IRoleService {
 	@Autowired
 	private ICommonService commonDAO;
+	@Autowired
+	private IUserService userDAO;
 	private SessionFactory sessionFactory;
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
@@ -97,5 +102,17 @@ public class RoleService implements IRoleService {
 			trans.rollback();
 			return false;
 		} 
+	}
+	@Override
+	public List<Role> getListRoleByUserId(String userId) {
+		List<Role> roles = new ArrayList<Role>();
+		List<UserRole> lstUserRole = userDAO.getListUserRole(userId);
+		for(UserRole userRole : lstUserRole)
+		{
+			Role role = getRole(userRole.getRole_id()+"");
+			roles.add(role);
+		}
+		// TODO Auto-generated method stub
+		return roles;
 	}
 }

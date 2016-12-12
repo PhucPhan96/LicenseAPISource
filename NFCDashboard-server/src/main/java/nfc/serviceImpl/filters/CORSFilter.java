@@ -17,9 +17,9 @@ public class CORSFilter extends OncePerRequestFilter{
 			throws ServletException, IOException {
 		response.addHeader("Access-Control-Allow-Origin", "*");
 		if (request.getHeader("Access-Control-Request-Method") != null && "OPTIONS".equals(request.getMethod())) {
+			System.out.println("Vao nay ne crosite");
 			response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            response.addHeader("Access-Control-Allow-Headers", "Content-Type");
-			//response.addHeader("Access-Control-Max-Age", "1");
+            response.addHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 		}
 		filterChain.doFilter(request, response);
 		

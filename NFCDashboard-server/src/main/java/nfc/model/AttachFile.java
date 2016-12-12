@@ -19,6 +19,7 @@ public class AttachFile {
 	private String file_path;
 	private String file_org_name;
 	private int file_size;
+	private String file_path;
 	private Date created_date;
 	@Id
 	@GeneratedValue
@@ -28,6 +29,13 @@ public class AttachFile {
 	}
 	public void setFile_id(int file_id) {
 		this.file_id = file_id;
+	}
+	@Column(name="file_path")
+	public String getFile_path() {
+		return file_path;
+	}
+	public void setFile_path(String file_path) {
+		this.file_path = file_path;
 	}
 	@Column(name="app_id")
 	public String getApp_id() {

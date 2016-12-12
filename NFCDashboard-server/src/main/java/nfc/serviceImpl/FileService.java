@@ -1,9 +1,5 @@
 package nfc.serviceImpl;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -12,8 +8,6 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
 import nfc.model.AttachFile;
-import nfc.model.Code;
-import nfc.model.Role;
 import nfc.service.IFileService;
 
 public class FileService implements IFileService{

@@ -33,6 +33,15 @@
 	 <bean id="fileDAO" class="nfc.serviceImpl.FileService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
+<<<<<<< HEAD
+=======
+	 <bean id="supplierworkDAO" class="nfc.serviceImpl.SupplierWorkService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
+	 <bean id="orderDAO" class="nfc.serviceImpl.OrderService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
+>>>>>>> 9cef7ecb3a978188bd35b103e6a750b7da50edf0
 	 <!-- <bean id="orderDAO" class="nfc.serviceImpl.OrderService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
