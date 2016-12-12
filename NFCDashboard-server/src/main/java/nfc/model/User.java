@@ -35,7 +35,7 @@ public class User {
 	private Date registered_date;
 	private byte is_active;
 	private String email;
-	private int app_id;
+	private String app_id;
 	private Date password_expired_date;
 	@Id
 	@Column(name="user_id")
@@ -214,10 +214,10 @@ public class User {
 		this.email = email;
 	}
 	@Column(name="app_id")
-	public int getApp_id() {
+	public String getApp_id() {
 		return app_id;
 	}
-	public void setApp_id(int app_id) {
+	public void setApp_id(String app_id) {
 		this.app_id = app_id;
 	}
 	@Column(name="password_expired_date")

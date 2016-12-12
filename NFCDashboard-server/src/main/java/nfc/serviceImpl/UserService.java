@@ -7,9 +7,14 @@ import javax.transaction.Transactional;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import nfc.model.Role;
 import nfc.model.User;
+import nfc.model.UserRole;
+import nfc.service.IRoleService;
 import nfc.service.IUserService;
 
 @Transactional
@@ -62,8 +67,29 @@ public class UserService implements IUserService {
 	}
 	public User getUser(String userId){
 		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
 		Criteria criteria = session.createCriteria(User.class);
 		criteria.add(Restrictions.eq("user_id", Integer.parseInt(userId)));
-		return (User) criteria.uniqueResult(); 
+		User user =  (User) criteria.uniqueResult(); 
+		trans.commit();
+		return user;
+	}
+	public User findUserByUserName(String username) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(User.class);
+		criteria.add(Restrictions.eq("user_name", username));
+		User user =  (User) criteria.uniqueResult(); 
+		trans.commit();
+		return user;
+	}
+	public List<UserRole> getListUserRole(String userId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(UserRole.class);
+		criteria.add(Restrictions.eq("user_id", userId));
+		List<UserRole> userRoles =  (List<UserRole>) criteria.list(); 
+		trans.commit();
+		return userRoles;
 	}
 }

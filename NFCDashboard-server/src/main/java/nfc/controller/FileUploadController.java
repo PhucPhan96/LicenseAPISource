@@ -37,7 +37,6 @@ public class FileUploadController {
 		try
 		{
 			String name = UUID.randomUUID().toString()+ "." + file.getOriginalFilename().split("\\.")[1]; //file.getOriginalFilename();//request.getParameter("name");
-			System.out.println("Name "+name);
 			/*Integer chunk = 0, chunks = 0;
 			if(null != request.getParameter("chunk") && !request.getParameter("chunk").equals(""))
 			{
@@ -59,7 +58,7 @@ public class FileUploadController {
 		        destFile = new File(folder, name);
 			}
 			appendFile(file.getInputStream(), destFile);  
-			attachFile = insertImage(name, (int) file.getSize());
+			attachFile = insertImage(name, (int) file.getSize(), file.getOriginalFilename());
 	        /*if (chunk == chunks - 1) {  
 	            System.out.println("finish");
 	            insertImage(name);
@@ -107,12 +106,13 @@ public class FileUploadController {
 		}
 	}
 	
-	private AttachFile insertImage(String name, int size){
+	private AttachFile insertImage(String name, int size, String orgName){
 		AttachFile file = new AttachFile();
 		file.setApp_id(Utils.appId);
 		file.setFile_name(name);
 		file.setCreated_date(new Date());
-		file.setFile_org_name(Utils.uploadUrl + name);
+		file.setFile_path(Utils.uploadUrl + name);
+		file.setFile_org_name(orgName);
 		file.setFile_size(size);
 	
 		//img.setImageUrl("/uploads/images/"+ name );
