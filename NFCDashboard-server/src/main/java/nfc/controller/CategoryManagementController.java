@@ -1,8 +1,10 @@
 package nfc.controller;
 
+import nfc.model.AttachFile;
 import nfc.model.Category;
 import nfc.model.Role;
 import nfc.service.ICategoryService;
+import nfc.service.IFileService;
 import nfc.serviceImpl.common.Utils;
 
 import java.text.DateFormat;
@@ -22,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class CategoryManagementController {
 	@Autowired
 	private ICategoryService categoryDAO;
+	@Autowired
+	private IFileService fileDAO;
 	@RequestMapping(value="category",method=RequestMethod.GET)
 	public String getListCategory(){
 		List<Category> category = categoryDAO.getListCategory();
@@ -55,6 +59,13 @@ public class CategoryManagementController {
 		Category category = categoryDAO.getCategory(cateID);
 		return Utils.convertObjectToJsonString(category);
 	} 
+	@RequestMapping(value="category/getFile/{id}", method=RequestMethod.GET)
+	public String getCategory(@PathVariable("id") int fileId){
+		System.out.println("FileId " + fileId);
+		AttachFile file = fileDAO.getAttachFile(fileId);
+		return Utils.convertObjectToJsonString(file);
+	} 
+
 
 
 }

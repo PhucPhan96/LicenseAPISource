@@ -1,6 +1,13 @@
 package nfc.serviceImpl;
 
+<<<<<<< HEAD
+=======
 import java.io.Console;
+import java.io.Serializable;
+import java.math.BigInteger;
+import java.nio.channels.SeekableByteChannel;
+import java.util.HashMap;
+>>>>>>> bde88671b29c9a28f6e1b7197466dc5bf9cca7d7
 import java.util.List;
 
 import nfc.model.Category;
@@ -8,7 +15,11 @@ import nfc.service.ICategoryService;
 
 import nfc.model.AttachFile;
 import org.hibernate.Criteria;
+<<<<<<< HEAD
+=======
 import org.hibernate.FetchMode;
+import org.hibernate.Query;
+>>>>>>> bde88671b29c9a28f6e1b7197466dc5bf9cca7d7
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;

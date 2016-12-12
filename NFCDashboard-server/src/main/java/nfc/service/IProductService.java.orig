@@ -3,13 +3,21 @@ package nfc.service;
 import java.util.List;
 
 import nfc.model.Product;
+<<<<<<< HEAD
 import nfc.model.Role;
 
+=======
+>>>>>>> bde88671b29c9a28f6e1b7197466dc5bf9cca7d7
 public interface IProductService {
 	List<Product> getListProduct(int supplId);
 	Product getProduct(int productId);
 	boolean insertProduct(Product product);
+<<<<<<< HEAD
 	boolean updateProduct(Product product);
-	Product getProducts(String productId);
+	Product getProduct(String prodId);
 	boolean deleteProduct(List<Product> products);
+=======
+	List<Product> getProduct(String prodId);
+	Product getProducts(String productId);
+>>>>>>> bde88671b29c9a28f6e1b7197466dc5bf9cca7d7
 }
