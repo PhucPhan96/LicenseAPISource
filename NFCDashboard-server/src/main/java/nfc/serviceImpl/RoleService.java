@@ -103,7 +103,6 @@ public class RoleService implements IRoleService {
 			return false;
 		} 
 	}
-	@Override
 	public List<Role> getListRoleByUserId(String userId) {
 		List<Role> roles = new ArrayList<Role>();
 		List<UserRole> lstUserRole = userDAO.getListUserRole(userId);
