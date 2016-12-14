@@ -30,6 +30,13 @@ public class ProductManagementController {
 		System.out.println(products);
 		return Utils.convertObjectToJsonString(products);
 	}
+	@RequestMapping(value="products/{id}",method=RequestMethod.GET)
+	/*	@PreAuthorize("hasRole('SysAdmin')")*/
+		public String getProductsBySuppID(@PathVariable("id") int supplId){
+			List<Product> products = productDAO.getListProduct(supplId);
+			System.out.println(products);
+			return Utils.convertObjectToJsonString(products);
+		}
 	@RequestMapping(value="product/{id}", method=RequestMethod.GET)
 	public String getProduct(@PathVariable("id") String productId){
 		String resutl =  Utils.convertObjectToJsonString(productDAO.getProduct(Integer.parseInt(productId)));

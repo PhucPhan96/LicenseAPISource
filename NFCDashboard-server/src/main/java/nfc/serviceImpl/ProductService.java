@@ -34,6 +34,7 @@ public class ProductService implements IProductService{
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
+	//get list product by Supplier ID
 	public List<Product> getListProduct(int supplId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();

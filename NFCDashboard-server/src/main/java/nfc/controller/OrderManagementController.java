@@ -92,7 +92,7 @@ public class OrderManagementController {
 	}
 	*/
 	
-    @Bean
+   /* @Bean
     IntegrationFlow webSocketFlow() {
         return f -> {
             Function<Message , Object> splitter = m -> serverWebSocketContainer()
@@ -107,7 +107,7 @@ public class OrderManagementController {
                     .channel(c -> c.executor(Executors.newCachedThreadPool()))
                     .handle(webSocketOutboundAdapter());
         };
-    }
+    }*/
     @RequestMapping("/order/{name}")
     public void send(@PathVariable String name) {
     	requestGateway.echo("aaaaa");
