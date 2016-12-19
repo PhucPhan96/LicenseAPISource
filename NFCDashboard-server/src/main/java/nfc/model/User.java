@@ -15,11 +15,12 @@ public class User {
 	private String luser_name;
 	private String user_alias;
 	private String last_name;
+	private String first_name;
 	private String is_anonymous;
 	private String password;
 	private String password_salt;
-	private byte is_lockedout;
-	private byte is_registered;
+	private boolean is_lockedout;
+	private boolean is_registered;
 	private Date created_date;
 	private Date last_act_date;
 	private Date last_login_date;
@@ -31,9 +32,9 @@ public class User {
 	private String phone_no;
 	private String english_name;
 	private String idcard_no;
-	private byte sex_type;
+	private boolean sex_type;
 	private Date registered_date;
-	private byte is_active;
+	private boolean is_active;
 	private String email;
 	private String app_id;
 	private Date password_expired_date;
@@ -73,6 +74,13 @@ public class User {
 	public void setLast_name(String last_name) {
 		this.last_name = last_name;
 	}
+	@Column(name="first_name")
+	public String getFirst_name() {
+		return first_name;
+	}
+	public void setFirst_name(String first_name) {
+		this.first_name = first_name;
+	}
 	@Column(name="is_anonymous")
 	public String getIs_anonymous() {
 		return is_anonymous;
@@ -95,17 +103,17 @@ public class User {
 		this.password_salt = password_salt;
 	}
 	@Column(name="is_lockedout")
-	public byte getIs_lockedout() {
+	public boolean getIs_lockedout() {
 		return is_lockedout;
 	}
-	public void setIs_lockedout(byte is_lockedout) {
+	public void setIs_lockedout(boolean is_lockedout) {
 		this.is_lockedout = is_lockedout;
 	}
 	@Column(name="is_registered")
-	public byte getIs_registered() {
+	public boolean getIs_registered() {
 		return is_registered;
 	}
-	public void setIs_registered(byte is_registered) {
+	public void setIs_registered(boolean is_registered) {
 		this.is_registered = is_registered;
 	}
 	@Column(name="created_date")
@@ -186,10 +194,10 @@ public class User {
 		this.idcard_no = idcard_no;
 	}
 	@Column(name="sex_type")
-	public byte getSex_type() {
+	public boolean getSex_type() {
 		return sex_type;
 	}
-	public void setSex_type(byte sex_type) {
+	public void setSex_type(boolean sex_type) {
 		this.sex_type = sex_type;
 	}
 	@Column(name="registered_date")
@@ -200,10 +208,10 @@ public class User {
 		this.registered_date = registered_date;
 	}
 	@Column(name="is_active")
-	public byte getIs_active() {
+	public boolean getIs_active() {
 		return is_active;
 	}
-	public void setIs_active(byte is_active) {
+	public void setIs_active(boolean is_active) {
 		this.is_active = is_active;
 	}
 	@Column(name="email")
