@@ -34,6 +34,7 @@ public class ProductService implements IProductService{
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
+	//get list product by Supplier ID
 	public List<Product> getListProduct(int supplId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
@@ -49,7 +50,7 @@ public class ProductService implements IProductService{
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
 		Criteria criteria = session.createCriteria(Product.class, "product")
-				.createAlias("product.attachFiles", "attachFile", Criteria.INNER_JOIN);
+				.createAlias("product.attachFiles", "attachFile", Criteria.LEFT_JOIN);
 		criteria.add(Restrictions.eq("prod_id",productId));
 		Product product = (Product) criteria.uniqueResult();
 		trans.commit();

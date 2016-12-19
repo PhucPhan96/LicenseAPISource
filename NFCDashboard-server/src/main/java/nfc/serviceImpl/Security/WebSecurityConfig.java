@@ -31,8 +31,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     @Autowired
     public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
-                .userDetailsService(this.userDetailsService)
-                .passwordEncoder(passwordEncoder());
+                .userDetailsService(this.userDetailsService);
+                //.passwordEncoder(passwordEncoder());
     }
 
     @Bean
@@ -70,6 +70,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
             
             // allow anonymous resource requests
             .antMatchers("/auth/**").permitAll()
+            .antMatchers("/supplier/**").permitAll()
+            .antMatchers("/products/**").permitAll()
+            .antMatchers("/product/**").permitAll()
+            .antMatchers("/supplierImg/**").permitAll()
             .anyRequest().authenticated();
 
     // Custom JWT based security filter

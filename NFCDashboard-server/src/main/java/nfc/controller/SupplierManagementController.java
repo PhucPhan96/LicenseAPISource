@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class SupplierManagementController {
 	@Autowired
 	private ISupplierService supplierDAO;
-	
 	@RequestMapping(value="supplier",method=RequestMethod.GET)
 	public String getSupplier(){
 		List<Supplier> supplier = supplierDAO.getListSupplier();
