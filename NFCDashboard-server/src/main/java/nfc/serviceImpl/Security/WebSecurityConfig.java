@@ -67,6 +67,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
             .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .antMatchers("/resources/**").permitAll()
             .antMatchers("/uploads/images/**").permitAll()
+            .antMatchers("/file/upload/**").permitAll()
             
             // allow anonymous resource requests
             .antMatchers("/auth/**").permitAll()

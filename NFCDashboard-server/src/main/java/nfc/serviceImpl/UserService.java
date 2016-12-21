@@ -34,15 +34,18 @@ public class UserService implements IUserService {
 		System.out.println("count:" + list.size());
 		return list;		
 	}
-	public boolean updateUser(User user){
+	public boolean updateUser(User user){		
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
 		try
 		{
-			Session session = this.sessionFactory.getCurrentSession();
 			session.update(user);
-			return true;
+			trans.commit();
+			return true;			
 		}
 		catch(Exception ex)
 		{
+			trans.rollback();
 			return false;
 		}
 	}
@@ -53,6 +56,7 @@ public class UserService implements IUserService {
 		try
 		{
 			session.save(user);
+			insertUserRole(session, user);
 			trans.commit();
 			return true;			
 		}
@@ -62,6 +66,14 @@ public class UserService implements IUserService {
 			trans.rollback();
 			return false;
 		}
+	}
+	private void insertUserRole(Session session, User user)
+	{
+		UserRole userRole = new UserRole();
+		userRole.setUser_id(user.getUser_id());
+		userRole.setApp_id(user.getApp_id());
+		userRole.setRole_id(user.getRole_id());
+		session.save(userRole);
 	}
 	public boolean deleteUser(String userID) {
 		System.out.print("Vao nay roi " + userID);

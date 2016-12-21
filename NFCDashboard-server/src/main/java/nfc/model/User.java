@@ -1,5 +1,6 @@
 package nfc.model;
 
+import java.beans.Transient;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -38,6 +39,8 @@ public class User {
 	private String email;
 	private String app_id;
 	private Date password_expired_date;
+	private int role_id;
+	
 	@Id
 	@Column(name="user_id")
 	public String getUser_id() {
@@ -234,5 +237,13 @@ public class User {
 	}
 	public void setPassword_expired_date(Date password_expired_date) {
 		this.password_expired_date = password_expired_date;
+	}
+	@javax.persistence.Transient
+	@Column(name="role_id")
+	public int getRole_id() {
+		return role_id;
+	}
+	public void setRole_id(int role_id) {
+		this.role_id = role_id;
 	}
 }
