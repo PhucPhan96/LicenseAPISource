@@ -40,6 +40,7 @@ public class User {
 	private String app_id;
 	private Date password_expired_date;
 	private int role_id;
+	private int suppl_id;
 	
 	@Id
 	@Column(name="user_id")
@@ -245,5 +246,13 @@ public class User {
 	}
 	public void setRole_id(int role_id) {
 		this.role_id = role_id;
+	}
+	@javax.persistence.Transient
+	@Column(name="suppl_id")
+	public int getSuppl_id() {
+		return suppl_id;
+	}
+	public void setSuppl_id(int suppl_id) {
+		this.suppl_id = suppl_id;
 	}
 }
