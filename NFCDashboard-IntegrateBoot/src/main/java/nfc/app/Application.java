@@ -18,6 +18,7 @@ import nfc.app.order.RequestGateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -59,35 +60,17 @@ import org.springframework.messaging.support.MessageBuilder;
 @RestController
 @ImportResource("classpath:/config/order-context.xml")
 public class Application {
+	AbstractApplicationContext context = null;
 	@Autowired
 	RequestGateway requestGateway;
 	public static void main(String[] args) throws Exception {
-		/*AbstractApplicationContext context = null;
-	    if(args.length > 0) {
-	        context = new FileSystemXmlApplicationContext(args);
-	    }
-	    else {
-	        context = new ClassPathXmlApplicationContext("/config/order-context.xml", Application.class);
-	        requestGateway = context.getBean("requestGateway", RequestGateway.class);
-	    }
-	    context.start();*/
-	   /* Order order = (Order) context.getBean("order");
-	    OrderDetail orderDetail = new OrderDetail();
-	    OrderItem orderItem1 = new OrderItem();
-	    orderItem1.setDelivery(true);
-	    OrderItem orderItem2 = new OrderItem();
-	    orderItem2.setDelivery(false);
-	    orderDetail.addItem(orderItem1);
-	    orderDetail.addItem(orderItem2);
-	    for (int i = 0; i < 2; i++) {
-	    	order.process(orderDetail);
-	    }*/
-		
-        SpringApplication.run(Application.class, args);
-    }
+		ConfigurableApplicationContext ctx = SpringApplication.run(Application.class, args);
+		//context = new ClassPathXmlApplicationContext("/config/integration-context.xml", OrderManagementController.class);
+	}
 	@Bean
 	public ServerWebSocketContainer serverWebSocketContainer() {
-		return new ServerWebSocketContainer("/time").setAllowedOrigins("*").withSockJs();
+		System.out.println("Vao nay ne");
+		return new ServerWebSocketContainer("/order/store").setAllowedOrigins("*").withSockJs();
 		//new ServerWebSocketContainer.SockJsServiceOptions().setHeartbeatTime(60_000)
 	}
    @Bean

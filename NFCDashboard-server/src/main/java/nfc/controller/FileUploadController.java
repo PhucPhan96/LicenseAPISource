@@ -7,7 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Date;
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -110,7 +111,7 @@ public class FileUploadController {
 		AttachFile file = new AttachFile();
 		file.setApp_id(Utils.appId);
 		file.setFile_name(name);
-		file.setCreated_date(new Date());
+		file.setCreated_date(new Date(Calendar.getInstance().getTime().getTime()).toString());
 		file.setFile_path(Utils.uploadUrl + name);
 		file.setFile_org_name(orgName);
 		file.setFile_size(size);

@@ -49,6 +49,7 @@ public class ProductManagementController {
 	public @ResponseBody String eidtProduct(@RequestBody Product product){
 		String data = productDAO.updateProduct(product) + "";
 		return "{\"result\":\"" + data + "\"}";
+	}
 	
 
 	@RequestMapping(value="product/delete", method=RequestMethod.POST)

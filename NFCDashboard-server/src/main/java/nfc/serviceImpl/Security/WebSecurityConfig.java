@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 
 @Configuration
 @EnableWebSecurity
@@ -31,8 +32,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     @Autowired
     public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
-                .userDetailsService(this.userDetailsService)
-                .passwordEncoder(passwordEncoder());
+                .userDetailsService(this.userDetailsService);
+                //.passwordEncoder(passwordEncoder());
     }
 
     @Bean
@@ -58,6 +59,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.csrf().disable()
+			//.headers().xssProtection().disable()
+			//.headers().frameOptions().disable()
 			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 
             // don't create session
@@ -69,6 +72,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
             .antMatchers("/uploads/images/**").permitAll()
             
             // allow anonymous resource requests
+            .antMatchers("/file/upload/**").permitAll()
+            .antMatchers("/notify/**").permitAll()
+            .antMatchers("/receiveGateway/**").permitAll()
+            .antMatchers("/order/**").permitAll()
             .antMatchers("/auth/**").permitAll()
             .anyRequest().authenticated();
 

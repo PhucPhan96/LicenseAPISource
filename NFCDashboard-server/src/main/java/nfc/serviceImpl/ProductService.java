@@ -38,8 +38,7 @@ public class ProductService implements IProductService{
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
 		Criteria criteria = session.createCriteria(Product.class, "product")
-				.createAlias("product.attachFiles", "attachFile", Criteria.INNER_JOIN);
-				//.createAlias("product.category","category",Criteria.INNER_JOIN);
+				.createAlias("product.attachFiles", "attachFile", Criteria.LEFT_JOIN);
 		criteria.add(Restrictions.eq("suppl_id",supplId));
 		List<Product>  products = (List<Product>) criteria.list();
 		trans.commit();

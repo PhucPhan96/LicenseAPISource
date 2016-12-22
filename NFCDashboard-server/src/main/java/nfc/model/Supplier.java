@@ -24,9 +24,9 @@ public class Supplier {
 	private String busi_intro;
 	private String sales_info;
 	private String app_id;
-	
 	@Id
 	@Column(name="suppl_id")
+	@GeneratedValue
 	public int getSuppl_id() {
 		return suppl_id;
 	}
