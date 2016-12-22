@@ -70,6 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
             .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .antMatchers("/resources/**").permitAll()
             .antMatchers("/uploads/images/**").permitAll()
+            .antMatchers("/file/upload/**").permitAll()
             
             // allow anonymous resource requests
             .antMatchers("/file/upload/**").permitAll()
@@ -77,6 +78,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
             .antMatchers("/receiveGateway/**").permitAll()
             .antMatchers("/order/**").permitAll()
             .antMatchers("/auth/**").permitAll()
+            .antMatchers("/supplier/**").permitAll()
+            .antMatchers("/products/**").permitAll()
+            .antMatchers("/product/**").permitAll()
+            .antMatchers("/supplierImg/**").permitAll()
             .anyRequest().authenticated();
 
     // Custom JWT based security filter

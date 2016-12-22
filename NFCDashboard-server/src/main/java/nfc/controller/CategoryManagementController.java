@@ -66,6 +66,4 @@ public class CategoryManagementController {
 		return Utils.convertObjectToJsonString(file);
 	} 
 
-
-
 }

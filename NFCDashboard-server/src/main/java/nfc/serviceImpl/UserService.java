@@ -11,6 +11,7 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import nfc.model.Category;
 import nfc.model.Role;
 import nfc.model.User;
 import nfc.model.UserRole;
@@ -25,51 +26,78 @@ public class UserService implements IUserService {
 	}
 	public List<User> getListUser(){
 		Session session = this.sessionFactory.getCurrentSession();
-		Criteria criteria = session.createCriteria(User.class);
-		return (List<User>) criteria.list();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(User.class);		
+		List<User> list = (List<User>)criteria.list();
+		
+		trans.commit();
+		System.out.println("count:" + list.size());
+		return list;		
 	}
-	public boolean updateUser(User user){
+	public boolean updateUser(User user){		
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
 		try
 		{
-			Session session = this.sessionFactory.getCurrentSession();
 			session.update(user);
-			return true;
+			trans.commit();
+			return true;			
 		}
 		catch(Exception ex)
 		{
+			trans.rollback();
 			return false;
 		}
 	}
 	public boolean insertUser(User user){
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
 		try
 		{
-			Session session = this.sessionFactory.getCurrentSession();
 			session.save(user);
-			return true;
+			insertUserRole(session, user);
+			trans.commit();
+			return true;			
 		}
 		catch(Exception ex)
 		{
+			System.out.println("Error " + ex.getMessage());
+			trans.rollback();
 			return false;
 		}
 	}
-	public boolean deleteUser(String userId){
+	private void insertUserRole(Session session, User user)
+	{
+		UserRole userRole = new UserRole();
+		userRole.setUser_id(user.getUser_id());
+		userRole.setApp_id(user.getApp_id());
+		userRole.setRole_id(user.getRole_id());
+		session.save(userRole);
+	}
+	public boolean deleteUser(String userID) {
+		System.out.print("Vao nay roi " + userID);
+		User user = getUser(userID);
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
 		try
 		{
-			Session session = this.sessionFactory.getCurrentSession();
-			User user = getUser(userId);
 			session.delete(user);
+			trans.commit();
 			return true;
 		}
-		catch(Exception ex)
-		{
+		catch (Exception e) {
+			// TODO: handle exception
+			trans.rollback();
 			return false;
-		} 
+		}
+		
 	}
 	public User getUser(String userId){
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
 		Criteria criteria = session.createCriteria(User.class);
-		criteria.add(Restrictions.eq("user_id", Integer.parseInt(userId)));
+		criteria.add(Restrictions.eq("user_id", userId));
 		User user =  (User) criteria.uniqueResult(); 
 		trans.commit();
 		return user;

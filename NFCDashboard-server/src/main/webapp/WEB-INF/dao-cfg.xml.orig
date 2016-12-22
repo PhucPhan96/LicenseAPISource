@@ -24,19 +24,32 @@
 	 <bean id="supplierDAO" class="nfc.serviceImpl.SupplierService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
-	 <bean id="supplierworkDAO" class="nfc.serviceImpl.SupplierWorkService">
+<<<<<<< HEAD
+	 <!-- <bean id="supplierworkDAO" class="nfc.serviceImpl.SupplierWorkService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
-	 </bean>
+	 </bean> -->
+=======
+>>>>>>> 23b129edc58e0e51685a274fc6a613b8de24c2b1
 	 <bean id="productDAO" class="nfc.serviceImpl.ProductService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
 	 <bean id="fileDAO" class="nfc.serviceImpl.FileService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
+<<<<<<< HEAD
 	 <bean id="orderDAO" class="nfc.serviceImpl.OrderService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
 	 <bean id="codeDAO" class="nfc.serviceImpl.CodeService">
+=======
+	 <!-- <bean id="orderDAO" class="nfc.serviceImpl.OrderService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
+	 <bean id="loginDAO" class="nfc.serviceImpl.LoginService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
+	 <bean id="userDAO" class="nfc.serviceImpl.UserService">
+>>>>>>> 23b129edc58e0e51685a274fc6a613b8de24c2b1
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
 </beans>
