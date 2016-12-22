@@ -1,4 +1,6 @@
 package nfc.model;
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,23 +11,24 @@ import javax.persistence.Table;
 @Table(name="fg_supplier_work")
 public class SupplierWork {
 	private int suppl_id;
-	private int is_active;
+	private boolean is_active;
 	private String wd_start_hm;
 	private String wd_end_hm;
 	private String sat_start_hm;
 	private String sat_end_hm;
 	private String sun_start_hm;
 	private String sun_end_hm;
-	private int is_online;
-	private double rank5;
+	private boolean is_online;
+	private BigDecimal rank5;
 	private int order_count;
 	private int favorite_count;
-	private int call_order;
-	private int direct_pay;
-	private int visit_pay;
-	private double min_order_amt;
+	private boolean call_order;
+	private boolean direct_pay;
+	private boolean visit_pay;
+	private BigDecimal min_order_amt;
 	private int owner_suppl_id;
 	private int manage_suppl_id;
+	private String suppl_role;
 	@Id
 	@Column(name="suppl_id")
 	public int getSuppl_id() {
@@ -34,11 +37,18 @@ public class SupplierWork {
 	public void setSuppl_id(int suppl_id) {
 		this.suppl_id = suppl_id;
 	}
+	@Column(name="suppl_role")
+	public String getSuppl_role() {
+		return suppl_role;
+	}
+	public void setSuppl_role(String suppl_role) {
+		this.suppl_role = suppl_role;
+	}
 	@Column(name="is_active")
-	public int getIs_active() {
+	public boolean getIs_active() {
 		return is_active;
 	}
-	public void setIs_active(int is_active) {
+	public void setIs_active(boolean is_active) {
 		this.is_active = is_active;
 	}
 	@Column(name="wd_start_hm")
@@ -84,17 +94,17 @@ public class SupplierWork {
 		this.sun_end_hm = sun_end_hm;
 	}
 	@Column(name="is_online")
-	public int getIs_online() {
+	public boolean getIs_online() {
 		return is_online;
 	}
-	public void setIs_online(int is_online) {
+	public void setIs_online(boolean is_online) {
 		this.is_online = is_online;
 	}
 	@Column(name="rank5")
-	public double getRank5() {
+	public BigDecimal getRank5() {
 		return rank5;
 	}
-	public void setRank5(double rank5) {
+	public void setRank5(BigDecimal rank5) {
 		this.rank5 = rank5;
 	}
 	@Column(name="order_count")
@@ -112,31 +122,31 @@ public class SupplierWork {
 		this.favorite_count = favorite_count;
 	}
 	@Column(name="call_order")
-	public int getCall_order() {
+	public boolean getCall_order() {
 		return call_order;
 	}
-	public void setCall_order(int call_order) {
+	public void setCall_order(boolean call_order) {
 		this.call_order = call_order;
 	}
 	@Column(name="direct_pay")
-	public int getDirect_pay() {
+	public boolean getDirect_pay() {
 		return direct_pay;
 	}
-	public void setDirect_pay(int direct_pay) {
+	public void setDirect_pay(boolean direct_pay) {
 		this.direct_pay = direct_pay;
 	}
 	@Column(name="visit_pay")
-	public int getVisit_pay() {
+	public boolean getVisit_pay() {
 		return visit_pay;
 	}
-	public void setVisit_pay(int visit_pay) {
+	public void setVisit_pay(boolean visit_pay) {
 		this.visit_pay = visit_pay;
 	}
 	@Column(name="min_order_amt")
-	public double getMin_order_amt() {
+	public BigDecimal getMin_order_amt() {
 		return min_order_amt;
 	}
-	public void setMin_order_amt(double min_order_amt) {
+	public void setMin_order_amt(BigDecimal min_order_amt) {
 		this.min_order_amt = min_order_amt;
 	}
 	@Column(name="owner_suppl_id")

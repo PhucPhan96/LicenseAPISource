@@ -22,12 +22,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class SupplierManagementController {
 	@Autowired
 	private ISupplierService supplierDAO;
+<<<<<<< HEAD
 	@Value("Authorization")
     private String tokenHeader;
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
+=======
+>>>>>>> 23b129edc58e0e51685a274fc6a613b8de24c2b1
 	@RequestMapping(value="supplier",method=RequestMethod.GET)
 	public String getSupplier(){
 		List<Supplier> supplier = supplierDAO.getListSupplier();

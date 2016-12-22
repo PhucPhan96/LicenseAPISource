@@ -28,6 +28,7 @@
           /WEB-INF/data-source-hiber-cfg.xml
           /WEB-INF/dao-cfg.xml
           /WEB-INF/transaction-cfg.xml
+          /WEB-INF/integration-context.xml
        	 <!--  /WEB-INF/spring-security.xml -->
         </param-value>    
    </context-param>

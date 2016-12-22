@@ -40,6 +40,10 @@ public class ProductService implements IProductService{
 		Transaction trans = session.beginTransaction();
 		Criteria criteria = session.createCriteria(Product.class, "product")
 				.createAlias("product.attachFiles", "attachFile", Criteria.LEFT_JOIN);
+<<<<<<< HEAD
+=======
+				//.createAlias("product.category","category",Criteria.INNER_JOIN);
+>>>>>>> 23b129edc58e0e51685a274fc6a613b8de24c2b1
 		criteria.add(Restrictions.eq("suppl_id",supplId));
 		List<Product>  products = (List<Product>) criteria.list();
 		trans.commit();

@@ -68,7 +68,43 @@ public class OrderManagementController {
     MessageChannel sendToStore() {
         return new DirectChannel();
     }
+<<<<<<< HEAD
+    @Bean
+=======
+	
+	/*@Bean
+	MessageChannel requestChannel(){
+		return new DirectChannel();
+	}
+	@Bean
+	MessageChannel orders(){
+		return new DirectChannel();
+	}
+	@Transformer(inputChannel="requestChannel", outputChannel="orders")
+	public Order tranJsonToOrder(String data)
+	{
+		System.out.println("Data ne " + data);
+		//Order order = new Order();
+		JSONObject orderJsonObj = Utils.convertStringToJsonObject(data);
+		Order order = (Order) Utils.convertJsonObjectToClass(orderJsonObj, "nfc.app.order.Order", new String[]{"orderDetails"});
+		if(orderJsonObj.containsKey("orderDetails"))
+		{
+			List<OrderDetail> lstOrderDetail = new ArrayList<OrderDetail>();
+			JSONArray arrOrderDetail = (JSONArray) orderJsonObj.get("orderDetails");
+			for(int i=0;i<arrOrderDetail.size();i++)
+			{
+				JSONObject jsonOrderDetail = (JSONObject) arrOrderDetail.get(i);
+				OrderDetail orderDetail = (OrderDetail) Utils.convertJsonObjectToClass(jsonOrderDetail, "nfc.app.order.OrderDetail", new String[]{});
+				lstOrderDetail.add(orderDetail);
+			}
+			//order.setOrderDetails(lstOrderDetail);	
+		}
+		return order;
+	}
+	*/
+	
    /* @Bean
+>>>>>>> 23b129edc58e0e51685a274fc6a613b8de24c2b1
     IntegrationFlow webSocketFlow() {
     	System.out.println("Vao integration Flow");
         return f -> {
@@ -84,7 +120,8 @@ public class OrderManagementController {
                     .channel(c -> c.executor(Executors.newCachedThreadPool()))
                     .handle(webSocketOutboundAdapter());
         };
-    }*/
+<<<<<<< HEAD
+    }
     @Bean
 	@ServiceActivator(inputChannel = "webSocketFlow.input")
 	public MessageHandler splitter() {
@@ -102,6 +139,12 @@ public class OrderManagementController {
         System.out.println("chuan bi vao request");
         //System.out.println(requestGateway);
     	requestGateway.echo(orderView);
+=======
+    }*/
+    @RequestMapping("/order/{name}")
+    public void send(@PathVariable String name) {
+    	requestGateway.echo("aaaaa");
+>>>>>>> 23b129edc58e0e51685a274fc6a613b8de24c2b1
     	//requestGateway.echo(name);
 	    return "aaaa";
         //requestChannel().send(MessageBuilder.withPayload(name).build());

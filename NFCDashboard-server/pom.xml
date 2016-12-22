@@ -15,6 +15,7 @@
   <url>http://maven.apache.org</url>
   <properties>
        <springsecurity.version>3.2.3.RELEASE</springsecurity.version>
+       <springframework.version>4.3.4.RELEASE</springframework.version><!-- 4.1.4.RELEASE -->
   </properties>
   <dependencies>
     <dependency>
@@ -51,31 +52,31 @@
     <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-core</artifactId>
-        <version>4.1.4.RELEASE</version>
+        <version>${springframework.version}</version>
     </dependency>
     <!-- http://mvnrepository.com/artifact/org.springframework/spring-web -->
      <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-web</artifactId>
-         <version>4.1.4.RELEASE</version>
+         <version>${springframework.version}</version>
      </dependency>
      <!-- http://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
      <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-webmvc</artifactId>
-         <version>4.1.4.RELEASE</version>
+         <version>${springframework.version}</version>
      </dependency>
      <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-context</artifactId>
-         <version>4.1.4.RELEASE</version>
+         <version>${springframework.version}</version>
      </dependency>
 
      <!-- http://mvnrepository.com/artifact/org.springframework/spring-orm -->
      <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-orm</artifactId>
-         <version>4.1.4.RELEASE</version>
+         <version>${springframework.version}</version>
      </dependency>
      <!-- Hibernate -->
        <!-- http://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
@@ -190,11 +191,6 @@
 	        <artifactId>spring-integration-java-dsl</artifactId>
 	        <version>1.1.2.RELEASE</version>
 	    </dependency>
-	    <!-- <dependency>
-	        <groupId>org.springframework.boot</groupId>
-	        <artifactId>spring-boot-starter-websocket</artifactId>
-	        <version>1.4.2.RELEASE</version>
-	    </dependency> -->
 	    <dependency>
 	        <groupId>org.springframework.integration</groupId>
 	        <artifactId>spring-integration-websocket</artifactId>
@@ -215,6 +211,43 @@
             <artifactId>jjwt</artifactId>
             <version>0.7.0</version>
         </dependency>
+        <dependency>
+	      <groupId>commons-codec</groupId>
+	      <artifactId>commons-codec</artifactId>
+	      <version>1.8</version>
+	    </dependency>
+	    <!-- https://mvnrepository.com/artifact/org.springframework/spring-websocket -->
+		<!-- <dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-websocket</artifactId>
+		    <version>4.3.4.RELEASE</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-messaging</artifactId>
+		    <version>4.3.4.RELEASE</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-core</artifactId>
+		    <version>2.8.5</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-annotations</artifactId> 
+		    <version>2.8.5</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-databind</artifactId> 
+		    <version>2.8.5</version>
+		</dependency>
+		<dependency> 
+			<groupId>javax.websocket</groupId>
+			<artifactId>javax.websocket-api</artifactId> 
+			<version>1.1</version> 
+			<scope>provided</scope>
+		</dependency> -->
   </dependencies>
   <build>
     <finalName>NFCDashboard-server</finalName>

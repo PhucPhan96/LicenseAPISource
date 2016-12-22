@@ -9,4 +9,5 @@ public interface IRoleService {
 	boolean updateRole(Role role);
 	boolean deleteRole(String roleId);
 	List<Role> getListRoleByUserId(String userId);
+	List<Role> getListRoleOfUserPermission(String username);
 }
