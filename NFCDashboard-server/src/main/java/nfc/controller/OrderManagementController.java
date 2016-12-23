@@ -91,7 +91,7 @@ public class OrderManagementController {
 		DefaultMessageSplitter splitter = new DefaultMessageSplitter();
 		splitter.setOutputChannelName("headerEnricherChannel");
 		return splitter;
-	}*/
+	}
     @RequestMapping(value="/order/customer", method = RequestMethod.GET)
     public String send(HttpServletRequest request) {//@RequestBody OrderView orderView, 
     	String token = request.getHeader(tokenHeader);

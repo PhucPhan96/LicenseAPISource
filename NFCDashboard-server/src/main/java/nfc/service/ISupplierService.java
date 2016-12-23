@@ -20,5 +20,6 @@ public interface ISupplierService {
 	boolean insertSupplierView(SupplierView supplierView, String username);
 	boolean updateSupplierView(SupplierView supplierView);
 	boolean deleteSupplierView(int supplId);
+	List<SupplierUser> getListSupplierUserId(String userId);
 	
 }

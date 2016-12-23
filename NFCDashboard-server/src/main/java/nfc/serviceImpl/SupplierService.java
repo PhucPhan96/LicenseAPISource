@@ -351,4 +351,13 @@ public class SupplierService implements ISupplierService {
 		}
 		return lstSupplierView;
 	}
+	public List<SupplierUser> getListSupplierUserId(String userId){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(SupplierUser.class);
+		criteria.add(Restrictions.eq("user_id", userId));
+		List<SupplierUser> list = (List<SupplierUser>) criteria.list();
+		trans.commit();
+		return list;
+	}
 }

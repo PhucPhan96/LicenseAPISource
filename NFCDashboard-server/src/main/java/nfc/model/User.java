@@ -1,12 +1,16 @@
 package nfc.model;
 
 import java.beans.Transient;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import nfc.model.ViewModel.UserAddressView;
 
 @Entity
 @Table(name="fg_users")
@@ -41,6 +45,8 @@ public class User {
 	private Date password_expired_date;
 	private int role_id;
 	private int suppl_id;
+	
+	private List<UserAddressView> lstuserAddress = new ArrayList<UserAddressView>();
 	
 	@Id
 	@Column(name="user_id")
@@ -254,5 +260,12 @@ public class User {
 	}
 	public void setSuppl_id(int suppl_id) {
 		this.suppl_id = suppl_id;
+	}
+	@javax.persistence.Transient
+	public List<UserAddressView> getLstuserAddress() {
+		return lstuserAddress;
+	}
+	public void setLstuserAddress(List<UserAddressView> lstuserAddress) {
+		this.lstuserAddress = lstuserAddress;
 	}
 }
