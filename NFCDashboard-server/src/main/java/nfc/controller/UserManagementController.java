@@ -37,7 +37,7 @@ public class UserManagementController {
 		String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
 		List<User> users = userDAO.getListUser();
-		
+		User user = userDAO.findUserByUserName(username);
 		return Utils.convertObjectToJsonString(users);
 	}
 	@RequestMapping(value="user/detail/{id}",method=RequestMethod.GET)
@@ -46,9 +46,7 @@ public class UserManagementController {
 		return Utils.convertObjectToJsonString(users);
 	}
 	@RequestMapping(value="user/add", method=RequestMethod.POST)
-	public @ResponseBody String insertUser(@RequestBody User user){
-		System.out.println("vao duoc insert user");
-		
+	public @ResponseBody String insertUser(@RequestBody User user){	
 		user.setApp_id(Utils.appId);
 		UUID uuid = UUID.randomUUID();
 		String randomUUID = uuid.toString();
