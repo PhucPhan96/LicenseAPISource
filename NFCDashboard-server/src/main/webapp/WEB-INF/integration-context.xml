@@ -8,6 +8,7 @@
              xmlns:int-websocket="http://www.springframework.org/schema/integration/websocket"
              xmlns:int-http="http://www.springframework.org/schema/integration/http"
              xmlns:util="http://www.springframework.org/schema/util"
+             xmlns:task="http://www.springframework.org/schema/task"
              xsi:schemaLocation="http://www.springframework.org/schema/beans
                                  http://www.springframework.org/schema/beans/spring-beans.xsd
                                  http://www.springframework.org/schema/context
@@ -21,6 +22,7 @@
                                  http://www.springframework.org/schema/integration/websocket
     							 http://www.springframework.org/schema/integration/websocket/spring-integration-websocket-4.3.xsd
     							 http://www.springframework.org/schema/integration/http http://www.springframework.org/schema/integration/http/spring-integration-http-4.3.xsd
+    							 http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
     							 http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
     <gateway id="requestGateway" 
@@ -47,36 +49,55 @@
     <beans:bean id="orderService" class="nfc.serviceImpl.integration.endpoint.OrderServiceEndpoint"/>
     <channel id="prepareSendToStore" >
     </channel>
-    <!-- <int-http:outbound-gateway id="trafficGateway"
-	    url="http://localhost:1234/NFCDashboard-server/receiveGateway/{data}"
-	    request-channel="prepareSendToStore"
-	    http-method="GET"
+    <beans:bean id="transformOrder" class="nfc.serviceImpl.integration.endpoint.TransformOrder"/>
+    <transformer input-channel="prepareSendToStore" ref="transformOrder" method="tranOrderToJson" output-channel="transformerOrderChannel" ></transformer>
+   	<channel id="transformerOrderChannel" >
+    </channel>
+    <int-http:outbound-gateway id="trafficGateway"
+	    url="http://localhost:1234/NFCDashboard-server/receiveGateway"
+	    request-channel="transformerOrderChannel"
+	    http-method="POST"
 	    expected-response-type="java.lang.String">
-	    <int-http:uri-variable name="data" expression="payload"/>
+	    <!-- <int-http:uri-variable name="data" expression="payload"/> -->
 	</int-http:outbound-gateway>
-	 -->
-	 <!-- <inbound-channel-adapter ref="nfc.serviceImpl.integration.endpoint.WebSocketSessionsMessageSource" method="webSocketSessionsMessageSource" channel="prepareSendToStore">
+	
+	 <!-- <beans:bean id="webSocketSessionsMessageSourceBean" class="nfc.serviceImpl.integration.endpoint.WebSocketSessionsMessageSource"></beans:bean>
+	 <inbound-channel-adapter ref="webSocketSessionsMessageSourceBean" method="webSocketSessionsMessageSource" channel="prepareSendToStore">
 	 	<poller fixed-delay="1000" max-messages-per-poll="1"></poller>
 	 </inbound-channel-adapter>
 	 
-	 <service-activator input-channel="prepareSendToStore" ref="orderService" method="splitter" output-channel="prepareSendToStore" /> -->
-	
-	<int-websocket:server-container path="/notify" allowed-origins="*" id="serverWebSocketContainer">
+	 <splitter input-channel="prepareSendToStore" ref="orderService" method="splitter" output-channel="headerEnricherChannel"></splitter>
+	 <service-activator input-channel="prepareSendToStore" ref="orderService" method="splitter" output-channel="headerEnricherChannel"/>
+	 <task:executor id="taskExcutor" pool-size="10"/>
+	 <channel id="headerEnricherChannel">
+	 	<dispatcher task-executor="taskExcutor"/>java.util.concurrent.Executors.newCachedThreadPool()
+	 </channel>
+	 <beans:bean id="taskExcutor" class="java.util.concurrent.Executors">
+	 </beans:bean>
+	 
+	 <beans:bean id="headerEnricherChannelBean" class="nfc.serviceImpl.integration.endpoint.TransformerHeaderEnricher"></beans:bean>
+	 <transformer input-channel="headerEnricherChannel" ref="headerEnricherChannelBean" output-channel="sendOrderChannel" method="headerEnricher" id="transformerHeaderEnricher"></transformer>
+	 <publish-subscribe-channel id="sendOrderChannel"></publish-subscribe-channel>
+	 
+	 <service-activator input-channel="sendOrderChannel" ref="orderService" output-channel="finishSendOrderChannel" method="webSocketOutboundAdapter"></service-activator>
+	 <channel id="finishSendOrderChannel"></channel> -->
+	 <!-- <int-websocket:outbound-channel-adapter id="webSocketOutboundChannelAdapter" channel="prepareSendToStore" container="serverWebSocketContainer"></int-websocket:outbound-channel-adapter> -->
+	<!-- <int-websocket:server-container path="/notify" allowed-origins="*" id="serverWebSocketContainer">
 		<int-websocket:sockjs/>
-	</int-websocket:server-container>
-	<!-- <beans:bean id="webSocketSessionStore" class="org.springframework.integration.metadata.SimpleMetadataStore"/>
-	
-	<chain input-channel="prepareSendToStore">
+	</int-websocket:server-container> -->
+	<!-- <int-websocket:outbound-channel-adapter id="webSocketOutboundChannelAdapter" channel="prepareSendToStore" container="serverWebSocketContainer"></int-websocket:outbound-channel-adapter> -->
+	<!-- <chain input-channel="prepareSendToStore">
 	    <header-enricher>
 	        <header 
-	            name="#{T(org.springframework.messaging.simp.SimpMessageHeaderAccessor).SESSION_ID_HEADER}"
-	            expression="webSocketSessionStore.sessionId"
+	            name="#{T(org.springframework.messaging.simp.SimpMessageHeaderAccessor).SESSION_ID_HEADER}" value=""
+	             ref="webSocketSessionsMessageSourceBean" method="getSessionId"
 	        />
 	    </header-enricher>
 	    <int-websocket:outbound-channel-adapter container="serverWebSocketContainer" />
 	</chain> -->
-	<int-websocket:outbound-channel-adapter id="webSocketOutboundChannelAdapter" channel="prepareSendToStore" container="serverWebSocketContainer"></int-websocket:outbound-channel-adapter>
-    <poller default="true" fixed-delay="1"/>
+	<!-- <beans:bean id="webSocketSessionStore" class="org.springframework.integration.metadata.SimpleMetadataStore"/> -->
+	
+    <!-- <poller default="true" fixed-delay="1"/> -->
     
     <!-- <int-jdbc:inbound-channel-adapter channel="orders"></int-jdbc:inbound-channel-adapter> -->
 </beans:beans>

@@ -1,7 +1,7 @@
 package nfc.model;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 
 @Entity
@@ -66,6 +68,7 @@ public class Order {
 	public void setApp_id(String app_id) {
 		this.app_id = app_id;
 	}
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="order_date")
 	public Date getOrder_date() {
 		return order_date;
@@ -73,6 +76,7 @@ public class Order {
 	public void setOrder_date(Date order_date) {
 		this.order_date = order_date;
 	}
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="deliver_date")
 	public Date getDeliver_date() {
 		return deliver_date;
@@ -80,6 +84,7 @@ public class Order {
 	public void setDeliver_date(Date deliver_date) {
 		this.deliver_date = deliver_date;
 	}
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="required_date")
 	public Date getRequired_date() {
 		return required_date;

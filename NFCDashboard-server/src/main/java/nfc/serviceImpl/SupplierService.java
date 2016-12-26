@@ -351,4 +351,15 @@ public class SupplierService implements ISupplierService {
 		}
 		return lstSupplierView;
 	}
+	@Override
+	public Supplier getSupplierFromUser(String username) {
+		List<SupplierUser> lstSupplierUser = getListSupplierUser(username);
+		int supplierId = 0;
+		if(lstSupplierUser.size() > 0)
+		{
+			supplierId = lstSupplierUser.get(0).getSuppl_id();
+		}
+		Supplier supplier = getSupplier(supplierId+"");
+		return supplier;
+	}
 }

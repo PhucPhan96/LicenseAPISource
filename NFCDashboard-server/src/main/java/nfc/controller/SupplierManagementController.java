@@ -40,6 +40,13 @@ public class SupplierManagementController {
 		List<SupplierView> lstSupplierView = supplierDAO.getListSupplierView(username);
 		return Utils.convertObjectToJsonString(lstSupplierView);
 	}
+	@RequestMapping(value="supplier/user",method=RequestMethod.GET)
+	public String getListSupplierUser(HttpServletRequest request){
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+		Supplier supplier = supplierDAO.getSupplierFromUser(username);
+		return Utils.convertObjectToJsonString(supplier);
+	}
 	@RequestMapping(value="supplier/{id}", method=RequestMethod.GET)
 	public String getSupplier(@PathVariable("id") String supplId){
 		String supplierStr =  Utils.convertObjectToJsonString(supplierDAO.getSupplier(supplId));

@@ -12,6 +12,7 @@ public interface ISupplierService {
 	List<Supplier> getListSupplier();
 	List<SupplierView> getListSupplierView(String username);
 	Supplier getSupplier(String supplId);
+	Supplier getSupplierFromUser(String username);
 	SupplierWork getSupplierWork(int supplId);
 	SupplierView getSupplierView(int supplId);
 	List<SupplierImage> getListSupplierImage(int supplId);
