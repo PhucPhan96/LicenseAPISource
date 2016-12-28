@@ -34,6 +34,8 @@ public class UserService implements IUserService {
 	@Autowired
 	private ISupplierService supplDAO;
 	private SessionFactory sessionFactory;
+	@Autowired
+	private IRoleService roleServiceDao;
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
@@ -73,6 +75,8 @@ public class UserService implements IUserService {
 				userAddr.setIs_main(addrView.isIs_main());
 				session.save(userAddr);
 			}
+			deleteRoleOfUser(session, user.getUser_id());
+			insertUserRole(session, user);
 			trans.commit();
 			return true;			
 		}
@@ -89,7 +93,7 @@ public class UserService implements IUserService {
 		try
 		{
 			session.save(user);
-			//insertUserRole(session, user);
+			insertUserRole(session, user);
 			insertUserSupplier(session,user);
 			//save supplier address
 			System.out.println("con save address");
@@ -112,7 +116,7 @@ public class UserService implements IUserService {
 				userAddr.setIs_deliver(addrView.isIs_deliver());
 				userAddr.setIs_main(addrView.isIs_main());
 				session.save(userAddr);
-			}
+			}			
 			trans.commit();
 			return true;			
 		}
@@ -125,11 +129,15 @@ public class UserService implements IUserService {
 	}
 	private void insertUserRole(Session session, User user)
 	{
-		UserRole userRole = new UserRole();
-		userRole.setUser_id(user.getUser_id());
-		userRole.setApp_id(user.getApp_id());
-		userRole.setRole_id(user.getRole_id());
-		session.save(userRole);
+		for(Role r :user.getLstRoles())
+		{
+			UserRole userRole = new UserRole();
+			userRole.setUser_id(user.getUser_id());
+			userRole.setApp_id(Utils.appId);
+			userRole.setRole_id(r.getRole_id());
+			session.save(userRole);
+		}
+		
 	}
 	private void insertUserSupplier(Session session, User user)
 	{
@@ -182,9 +190,6 @@ public class UserService implements IUserService {
 		List<UserAddressView> userAddressViewLst = new ArrayList<UserAddressView>();
 		for(UserAddress userAddr: userAddresses)
 		{
-			System.out.println("vao dc for");
-			System.out.println(userAddresses.size());
-			System.out.println(userAddr.getAddr_id());
 			UserAddressView userAddrView = new UserAddressView();
 			userAddrView.setAddressOfUser(getAddress(session,userAddr.getAddr_id()));
 			userAddrView.setIs_deliver(userAddr.isIs_deliver());
@@ -192,6 +197,18 @@ public class UserService implements IUserService {
 			userAddressViewLst.add(userAddrView);
 		}
 		user.setLstuserAddress(userAddressViewLst);
+//		set role user
+		List<UserRole> listUserRoles = getlstUserRolePrivate(session,userId);
+		List<Role> listRole = new ArrayList<Role>();
+		for(UserRole item : listUserRoles)
+		{
+			Role role = new Role();
+			role = roleServiceDao.getRoleWithSeeion(session,String.valueOf(item.getRole_id()));
+			System.out.println("get 1 dc phan tu");	
+			System.out.println("id la:"+ role.getRole_id());	
+			listRole.add(role);
+		}
+		user.setLstRoles(listRole);
 		trans.commit();
 		return user;
 	}
@@ -207,15 +224,29 @@ public class UserService implements IUserService {
 	public List<UserRole> getListUserRole(String userId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
+		session = this.sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(UserRole.class);
 		criteria.add(Restrictions.eq("user_id", userId));
 		List<UserRole> userRoles =  (List<UserRole>) criteria.list(); 
 		trans.commit();
 		return userRoles;
 	}
+	public List<UserRole> getlstUserRolePrivate(Session session, String userId) {
+		session = this.sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(UserRole.class);
+		criteria.add(Restrictions.eq("user_id", userId));
+		List<UserRole> userRoles =  (List<UserRole>) criteria.list(); 
+		return userRoles;
+	}
 	private void deleteAddressOfUser(Session session, String userId)
 	{
 		String deleteQuery = "delete from fg_user_address where user_id = '" + userId+"'";
+		Query query = session.createSQLQuery(deleteQuery);
+	    query.executeUpdate();
+	}
+	private void deleteRoleOfUser(Session session, String userId)
+	{
+		String deleteQuery = "delete from fg_user_roles where user_id = '" + userId+"'";
 		Query query = session.createSQLQuery(deleteQuery);
 	    query.executeUpdate();
 	}
@@ -242,5 +273,23 @@ public class UserService implements IUserService {
 		Address role = (Address) criteria.uniqueResult();
 		//trans.commit();
 		return role;
+	}
+	public boolean ChangPasswordUser(String userId,String pass){	
+		System.out.println("vao dc update");
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		try
+		{
+			String strQuery = "update fg_users set password='" + pass + "' where user_id = '" + userId +"'";
+			Query query = session.createSQLQuery(strQuery);
+		    query.executeUpdate();			
+			trans.commit();
+			return true;			
+		}
+		catch(Exception ex)
+		{
+			trans.rollback();
+			return false;
+		}
 	}
 }

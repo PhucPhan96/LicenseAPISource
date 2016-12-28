@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -53,7 +54,11 @@ public class UserManagementController {
 		user.setUser_id(randomUUID);
 		Date date = new Date();
 		user.setCreated_date(date);
+		System.out.println("vao insert");
+		System.out.println(user.getLstRoles().size());
+		
 		String data = userDAO.insertUser(user)+"";
+		//String data = "";
 		return "{\"result\":\"" + data + "\"}";
 	}
 	@RequestMapping(value="user/delete/{id}", method=RequestMethod.DELETE)
@@ -65,6 +70,13 @@ public class UserManagementController {
 	public @ResponseBody String updateUser(@RequestBody User user){
 		System.out.println("vao duoc update user");
 		String data = userDAO.updateUser(user)+"";
+		return "{\"result\":\"" + data + "\"}";
+	}
+	@RequestMapping(value="user/changePassword",method=RequestMethod.POST)
+	public @ResponseBody String ChangePasswordUser(@RequestBody String[] temp){
+		System.out.println("vao change password: Pass:  " + temp[0]);
+		System.out.println("vao change password: Id: " + temp[1]);
+		String data = userDAO.ChangPasswordUser(temp[1],temp[0])+"";
 		return "{\"result\":\"" + data + "\"}";
 	}
 }
