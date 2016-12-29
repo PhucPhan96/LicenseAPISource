@@ -18,7 +18,6 @@ public class OrderDetail {
 	private BigDecimal disc_rate;
 	private BigDecimal deliver_amt;
 	private BigDecimal prod_amt;
-	@Id
 	@Column(name="order_id")
 	public int getOrder_id() {
 		return order_id;
@@ -26,6 +25,7 @@ public class OrderDetail {
 	public void setOrder_id(int order_id) {
 		this.order_id = order_id;
 	}
+	@Id
 	@Column(name="prod_id")
 	public int getProd_id() {
 		return prod_id;

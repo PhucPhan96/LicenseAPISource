@@ -20,7 +20,6 @@ public class SupplierAddress {
 	public void setApp_id(String app_id) {
 		this.app_id = app_id;
 	}
-	@Id
 	@Column(name="suppl_id")
 	public int getSuppl_id() {
 		return suppl_id;
@@ -28,6 +27,7 @@ public class SupplierAddress {
 	public void setSuppl_id(int suppl_id) {
 		this.suppl_id = suppl_id;
 	}
+	@Id
 	@Column(name="addr_id")
 	public int getAddr_id() {
 		return addr_id;

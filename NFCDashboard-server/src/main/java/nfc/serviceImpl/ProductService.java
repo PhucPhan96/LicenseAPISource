@@ -1,6 +1,7 @@
 package nfc.serviceImpl;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,12 +25,18 @@ import nfc.model.ProductCategory;
 import nfc.model.ProductImage;
 import nfc.model.Role;
 import nfc.model.Supplier;
+import nfc.model.ViewModel.ProductAttachFileView;
+import nfc.model.ViewModel.ProductView;
+import nfc.service.IFileService;
 import nfc.service.IProductService;
 import nfc.service.common.ICommonService;
+import nfc.serviceImpl.common.Utils;
 @Transactional
 public class ProductService implements IProductService{
 	@Autowired
 	private ICommonService commonDAO;
+	@Autowired
+	private IFileService fileDAO;
 	private SessionFactory sessionFactory;
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
@@ -38,8 +45,8 @@ public class ProductService implements IProductService{
 	public List<Product> getListProduct(int supplId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
-		Criteria criteria = session.createCriteria(Product.class, "product")
-				.createAlias("product.attachFiles", "attachFile", Criteria.LEFT_JOIN);
+		Criteria criteria = session.createCriteria(Product.class);
+				/*.createAlias("product.attachFiles", "attachFile", Criteria.LEFT_JOIN);*/
 		criteria.add(Restrictions.eq("suppl_id",supplId));
 		List<Product>  products = (List<Product>) criteria.list();
 		trans.commit();
@@ -48,34 +55,21 @@ public class ProductService implements IProductService{
 	public Product getProduct(int productId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
-		Criteria criteria = session.createCriteria(Product.class, "product")
-				.createAlias("product.attachFiles", "attachFile", Criteria.LEFT_JOIN);
+		Criteria criteria = session.createCriteria(Product.class);
 		criteria.add(Restrictions.eq("prod_id",productId));
 		Product product = (Product) criteria.uniqueResult();
 		trans.commit();
 		return product;
 	}
-	private void deleteImagesOfProduct(Session session, int productId)
-	{
-		String deleteQuery = "delete from fg_prod_imgs where prod_id = " + productId;
-		Query query = session.createSQLQuery(deleteQuery);
-	    query.executeUpdate();
-	}
-	private void deleteCategoryProduct(Session session, int productId)
-	{
-		String deleteQuery = "delete from fg_product_categories where prod_id = " + productId;
-		Query query = session.createSQLQuery(deleteQuery);
-	    query.executeUpdate();
-	}
-	private void insertProductImage(Session session, Product product){
-		for(AttachFile attachFile : product.getAttachFiles())
+	private void insertProductImage(Session session, ProductView productView){
+		for(ProductAttachFileView attachFileView : productView.getLstAttachFileView())
         {
-			System.out.println("attachFileID " + attachFile.getFile_id());
+			System.out.println("attachFileID " + attachFileView.getAttachFile().getFile_id());
         	ProductImage proImg = new ProductImage();
-        	proImg.setImg_id(attachFile.getFile_id());
-        	proImg.setImg_name(attachFile.getFile_name());
-        	proImg.setProd_id(product.getProd_id());
-        	proImg.setImg_type(attachFile.getFile_name().split("\\.")[1]);
+        	proImg.setImg_id(attachFileView.getAttachFile().getFile_id());
+        	proImg.setImg_name(attachFileView.getAttachFile().getFile_name());
+        	proImg.setProd_id(productView.getProduct().getProd_id());
+        	proImg.setImg_type(attachFileView.getImageType());
         	session.save(proImg);
         }
 	}
@@ -86,23 +80,26 @@ public class ProductService implements IProductService{
 		proCate.setCate_id(product.getCate_id());
 		session.save(proCate);
 	}
-	public boolean insertProduct(Product product) {
+	public boolean insertProductView(ProductView productView) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
 		try
 		{
 			System.out.println("Vao insert product");
+			System.out.println("Category Id " + productView.getProduct().getCate_id());
 			int productIdDesc = 0;
-			Serializable ser = session.save(product);
+			productView.getProduct().setApp_id(Utils.appId);
+			Serializable ser = session.save(productView.getProduct());
 	        if (ser != null) {
 	        	productIdDesc = (Integer) ser;
 	        }
 			System.out.println("Product Id " + productIdDesc);
 			//deleteImagesOfProduct(session, product.getProd_id());
-	        product.setProd_id(productIdDesc);
+			productView.getProduct().setProd_id(productIdDesc);
 	        //insertProductImage(session, product);
 	        //deleteCategoryProduct(session, product.getProd_id());
-	        insertProductCategory(session, product);
+	        insertProductCategory(session, productView.getProduct());
+	        insertProductImage(session, productView);
 			trans.commit();
 			return true;
 		}
@@ -132,14 +129,16 @@ public class ProductService implements IProductService{
 		trans.commit();
 		return product;
 	}
-	public boolean updateProduct(Product product) {
+	public boolean updateProductView(ProductView productView) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
 		try
 		{
-			session.update(product);
-			deleteCategoryProduct(session, product.getProd_id());
-			insertProductCategory(session, product);
+			session.update(productView.getProduct());
+			deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_product_categories");
+			insertProductCategory(session, productView.getProduct());
+			deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_prod_imgs");
+			insertProductImage(session, productView);
 			trans.commit();
 			return true;
 		}
@@ -149,27 +148,21 @@ public class ProductService implements IProductService{
 			return false;
 		}
 	}
-	private void deleteProduct(Session session, int productId)
-	{
-		String deleteQuery = "delete from fg_products where prod_id = " + productId;
-		Query query = session.createSQLQuery(deleteQuery);
-	    query.executeUpdate();
-	}
-	public boolean deleteProduct(List<Product> products) {
+	public boolean deleteProductView(List<ProductView> productViews) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
 		try
 		{
-			for(Product product: products)
+			for(ProductView productView: productViews)
 			{
 				/*for(AttachFile file: product.getAttachFiles())
 				{
 					System.out.println("FileID " + file.getFile_id());
 					session.delete(file);
 				}*/
-				deleteImagesOfProduct(session,product.getProd_id());
-				deleteCategoryProduct(session, product.getProd_id());
-				deleteProduct(session, product.getProd_id());
+				deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_prod_imgs");
+				deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_product_categories");
+				deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_products");
 				//session.delete(product);
 				
 			}
@@ -182,7 +175,43 @@ public class ProductService implements IProductService{
 			return false;
 		} 
 	}
-	
-	
+	public List<ProductImage> getListProductImage(int productId){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(ProductImage.class);
+		criteria.add(Restrictions.eq("prod_id",productId));
+		List<ProductImage>  productImages = (List<ProductImage>) criteria.list();
+		trans.commit();
+		return productImages;
+	}
+	private void deleteReferenceOfProduct(Session session, int productId, String table)
+	{
+		String deleteQuery = "delete from "+table+" where prod_id = " + productId;
+		Query query = session.createSQLQuery(deleteQuery);
+	    query.executeUpdate();
+	}
+	public ProductView getProductView(int productId)
+	{
+		ProductView prodView = new ProductView();
+		prodView.setProduct(getProduct(productId));
+		List<ProductImage> lstProdImage = getListProductImage(productId);
+		List<ProductAttachFileView> lstProdAttachView = new ArrayList<ProductAttachFileView>();
+		for(ProductImage prodImage: lstProdImage){
+			ProductAttachFileView proAttachView = new ProductAttachFileView();
+			proAttachView.setImageType(prodImage.getImg_type());
+			proAttachView.setAttachFile(fileDAO.getAttachFile(prodImage.getImg_id()));
+			lstProdAttachView.add(proAttachView);
+		}
+		prodView.setLstAttachFileView(lstProdAttachView);
+		return prodView;
+	}
+	public List<ProductView> getListProductView(int supplId){
+		List<ProductView> lstProductView = new ArrayList<ProductView>();
+		List<Product> lstProduct = getListProduct(supplId);
+		for(Product prod: lstProduct){
+			lstProductView.add(getProductView(prod.getProd_id()));
+		}
+		return lstProductView;
+	}
 	
 }

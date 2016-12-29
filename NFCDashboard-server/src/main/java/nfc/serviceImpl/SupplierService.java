@@ -284,7 +284,10 @@ public class SupplierService implements ISupplierService {
 			        if (serAdd != null) {
 			        	addressIdDesc = (Integer) serAdd;
 			        }
-					session.save(addrView.getAddressOfSuppl());
+				}
+				else
+				{
+					session.update(addrView.getAddressOfSuppl());
 				}
 				
 				
@@ -308,6 +311,7 @@ public class SupplierService implements ISupplierService {
 		}
 		catch(Exception ex)
 		{
+			System.out.println("Error " + ex.getMessage());
 			trans.rollback();
 			return false;
 		}
@@ -360,6 +364,8 @@ public class SupplierService implements ISupplierService {
 			supplierId = lstSupplierUser.get(0).getSuppl_id();
 		}
 		Supplier supplier = getSupplier(supplierId+"");
+		return supplier;
+	}
 	public List<SupplierUser> getListSupplierUserId(String userId){
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
@@ -368,7 +374,5 @@ public class SupplierService implements ISupplierService {
 		List<SupplierUser> list = (List<SupplierUser>) criteria.list();
 		trans.commit();
 		return list;
-	}
-		return supplier;
 	}
 }

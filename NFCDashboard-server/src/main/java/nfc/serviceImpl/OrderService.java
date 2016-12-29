@@ -2,6 +2,7 @@ package nfc.serviceImpl;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -96,7 +97,7 @@ public class OrderService implements IOrderService{
 		Query query = session.createSQLQuery(deleteQuery);
 	    query.executeUpdate();
 	}
-	public boolean deleteOrderView(long orderId) {
+	public boolean deleteOrderView(int orderId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
 		try
@@ -156,6 +157,49 @@ public class OrderService implements IOrderService{
 		List<Order> orders = (List<Order>) criteria.list();
 		trans.commit();
 		return orders;
+	}
+	private List<Order> getListOrderSearch(String dateFrom, String dateTo){
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		java.util.Date dateF = null;
+		try {
+			dateF = formatter.parse(dateFrom);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Date dateSqlFrom = new Date(dateF.getYear(), dateF.getMonth(), dateF.getDate());
+		java.util.Date dateT=null;
+		try {
+			dateT = formatter.parse(dateTo);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Date dateSqlTo = new Date(dateT.getYear(), dateT.getMonth(), dateT.getDate());
+		System.out.println(dateSqlFrom);
+		System.out.println(dateSqlTo);
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(Order.class);
+		criteria.add(Restrictions.between("order_date", dateSqlFrom, dateSqlTo));
+		List<Order> orders = (List<Order>) criteria.list();
+		trans.commit();
+		return orders;
+	}
+	public List<OrderView> getListOrderViewSearch(String dateFrom, String dateTo){
+		List<OrderView> lstOrderForPos = new ArrayList<OrderView>();
+		
+		
+		List<Order> orders = getListOrderSearch(dateFrom,dateTo);
+		for(Order order: orders){
+			OrderView orderView = new OrderView();
+			orderView.setOrder(order);
+			orderView.setLstOrderDetail(getListOrderDetail(order.getOrder_id()));
+			User cusUser = userDAO.getUser(order.getUser_id());
+			orderView.setCustomer_name(cusUser.getFirst_name() + " " + cusUser.getMiddle_name() + " " + cusUser.getLast_name());
+			lstOrderForPos.add(orderView);
+		}
+		return lstOrderForPos;
 	}
 	public List<OrderDetail> getListOrderDetail(int orderId) {
 		Session session = this.sessionFactory.getCurrentSession();

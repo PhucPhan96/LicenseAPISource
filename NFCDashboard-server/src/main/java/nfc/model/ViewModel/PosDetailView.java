@@ -8,8 +8,15 @@ import nfc.model.User;
 
 public class PosDetailView {
 	private Order order;
-	private List<OrderDetailView> lstOrderDetailView;
 	private User user;
+	private List<OrderDetailView> lstOrderDetailView;
+	private List<UserAddressView> lstUserAddressView;
+	public List<UserAddressView> getLstUserAddressView() {
+		return lstUserAddressView;
+	}
+	public void setLstUserAddressView(List<UserAddressView> lstUserAddressView) {
+		this.lstUserAddressView = lstUserAddressView;
+	}
 	public User getUser() {
 		return user;
 	}

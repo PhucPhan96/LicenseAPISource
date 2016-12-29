@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
@@ -52,6 +53,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 @RestController
@@ -159,5 +161,14 @@ public class OrderManagementController {
         PosDetailView  posDetailView = posDAO.getPosDetailView(orderId);
 		return Utils.convertObjectToJsonString(posDetailView);
 	}
-    
+    @RequestMapping(value="order/search",method=RequestMethod.POST)
+	public @ResponseBody String getListOrderSearch(@RequestBody Map<String,String> data){
+    	List<OrderView>  lstOrderView = orderDAO.getListOrderViewSearch(data.get("dateFrom"), data.get("dateTo"));
+		return Utils.convertObjectToJsonString(lstOrderView);
+	}
+    @RequestMapping(value="order/delete/{id}", method=RequestMethod.DELETE)
+	public @ResponseBody String deleteRole(@PathVariable("id") int orderId){
+		String data = orderDAO.deleteOrderView(orderId) + "";
+		return "{\"result\":\"" + data + "\"}";
+	}
 }
