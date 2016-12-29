@@ -47,6 +47,7 @@ public class User {
 	private int suppl_id;
 	
 	private List<UserAddressView> lstuserAddress = new ArrayList<UserAddressView>();
+	private List<Role> lstRoles = new ArrayList<Role>();
 	
 	@Id
 	@Column(name="user_id")
@@ -267,5 +268,12 @@ public class User {
 	}
 	public void setLstuserAddress(List<UserAddressView> lstuserAddress) {
 		this.lstuserAddress = lstuserAddress;
+	}
+	@javax.persistence.Transient
+	public List<Role> getLstRoles() {
+		return lstRoles;
+	}
+	public void setLstRoles(List<Role> lstRoles) {
+		this.lstRoles = lstRoles;
 	}
 }

@@ -274,6 +274,16 @@ public class UserService implements IUserService {
 		//trans.commit();
 		return role;
 	}
+<<<<<<< HEAD
+	public List<UserAddress> getListUserAddress(String userId){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(UserAddress.class);
+		criteria.add(Restrictions.eq("user_id", userId));
+		List<UserAddress> lstUserAddress =  (List<UserAddress>) criteria.list(); 
+		trans.commit();
+		return lstUserAddress;
+=======
 	public boolean ChangPasswordUser(String userId,String pass){	
 		System.out.println("vao dc update");
 		Session session = this.sessionFactory.getCurrentSession();
@@ -291,14 +301,6 @@ public class UserService implements IUserService {
 			trans.rollback();
 			return false;
 		}
-	}
-	public List<UserAddress> getListUserAddress(String userId){
-		Session session = this.sessionFactory.getCurrentSession();
-		Transaction trans = session.beginTransaction();
-		Criteria criteria = session.createCriteria(UserAddress.class);
-		criteria.add(Restrictions.eq("user_id", userId));
-		List<UserAddress> lstUserAddress =  (List<UserAddress>) criteria.list(); 
-		trans.commit();
-		return lstUserAddress;
+>>>>>>> dc261aa47a724aeda99d4dbd8eaf1b15ee65fec7
 	}
 }

@@ -74,6 +74,15 @@ public class RoleService implements IRoleService {
 		trans.commit();
 		return role;
 	}
+	public Role getRoleWithSeeion(Session session,String roleId){
+		//Session session = this.sessionFactory.getCurrentSession();
+		//Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(Role.class);
+		criteria.add(Restrictions.eq("role_id", Integer.parseInt(roleId)));
+		Role role = (Role) criteria.uniqueResult();
+		//trans.commit();
+		return role;
+	}
 	public boolean updateRole(Role role){
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();

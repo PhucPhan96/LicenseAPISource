@@ -1,5 +1,8 @@
 package nfc.service;
 import java.util.List;
+
+import org.hibernate.Session;
+
 import nfc.model.Role;
 
 public interface IRoleService {
@@ -10,4 +13,5 @@ public interface IRoleService {
 	boolean deleteRole(String roleId);
 	List<Role> getListRoleByUserId(String userId);
 	List<Role> getListRoleOfUserPermission(String username);
+	Role getRoleWithSeeion(Session session,String roleId);
 }
