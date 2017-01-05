@@ -101,10 +101,10 @@ public class OrderManagementController {
                     .handle(webSocketOutboundAdapter());
         };
     }
-    @RequestMapping(value="/order/customer", method = RequestMethod.GET)
-    public void send(HttpServletRequest request) {//@RequestBody OrderView orderView, 
+    @RequestMapping(value="/order/customer", method = RequestMethod.POST)
+    public void send(@RequestBody OrderView orderView) {
     	try{
-    		String token = request.getHeader(tokenHeader);
+    		/*String token = request.getHeader(tokenHeader);
             String username = jwtTokenUtil.getUsernameFromToken(token);
             java.util.Date date = new java.util.Date();
     		Date dateSql = new Date(date.getYear(), date.getMonth(), date.getDate());
@@ -123,7 +123,7 @@ public class OrderManagementController {
             orderView.getOrder().setProd_amt(BigDecimal.valueOf(0));
             orderView.getOrder().setRequired_date(dateSql);
             orderView.getOrder().setTax_amt(BigDecimal.valueOf(0));
-            System.out.println("chuan bi vao request");
+            System.out.println("chuan bi vao request");*/
             //System.out.println(requestGateway);
             
         	requestGateway.echo(orderView);

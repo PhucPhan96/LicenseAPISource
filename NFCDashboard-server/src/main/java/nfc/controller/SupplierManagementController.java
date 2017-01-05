@@ -4,6 +4,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import nfc.model.Supplier;
+import nfc.model.ViewModel.SupplierAppView;
 import nfc.model.ViewModel.SupplierView;
 import nfc.service.ISupplierService;
 import nfc.serviceImpl.Security.JwtTokenUtil;
@@ -40,6 +41,12 @@ public class SupplierManagementController {
 		List<SupplierView> lstSupplierView = supplierDAO.getListSupplierView(username);
 		return Utils.convertObjectToJsonString(lstSupplierView);
 	}
+	@RequestMapping(value="supplier/app/{id}",method=RequestMethod.GET)
+	public String getListSupplierViewOfCategory(@PathVariable("id") int categoryId){
+		List<SupplierAppView> lstSupplierView = supplierDAO.getListSupplierViewOfCategory(categoryId);
+		return Utils.convertObjectToJsonString(lstSupplierView);
+	}
+	
 	@RequestMapping(value="supplier/user",method=RequestMethod.GET)
 	public String getListSupplierUser(HttpServletRequest request){
 		String token = request.getHeader(tokenHeader);

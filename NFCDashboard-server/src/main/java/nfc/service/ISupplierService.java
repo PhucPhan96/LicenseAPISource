@@ -6,6 +6,7 @@ import nfc.model.Supplier;
 import nfc.model.SupplierImage;
 import nfc.model.SupplierUser;
 import nfc.model.SupplierWork;
+import nfc.model.ViewModel.SupplierAppView;
 import nfc.model.ViewModel.SupplierView;
 
 public interface ISupplierService {
@@ -22,5 +23,5 @@ public interface ISupplierService {
 	boolean updateSupplierView(SupplierView supplierView);
 	boolean deleteSupplierView(int supplId);
 	List<SupplierUser> getListSupplierUserId(String userId);
-	
+	List<SupplierAppView> getListSupplierViewOfCategory(int categoryId);
 }

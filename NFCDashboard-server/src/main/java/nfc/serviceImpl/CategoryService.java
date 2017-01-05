@@ -4,6 +4,7 @@ import java.io.Console;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.nio.channels.SeekableByteChannel;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,9 @@ import javax.transaction.Transactional;
 import nfc.model.Category;
 import nfc.model.Code;
 import nfc.model.User;
+import nfc.model.ViewModel.CategoryView;
 import nfc.service.ICategoryService;
+import nfc.service.IFileService;
 import nfc.service.IRoleService;
 import nfc.service.IUserService;
 import nfc.service.common.ICommonService;
@@ -33,6 +36,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class CategoryService implements ICategoryService{
 	@Autowired
 	private SessionFactory sessionFactory;
+	@Autowired
+	private IFileService fileDAO;
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
@@ -113,5 +118,16 @@ public class CategoryService implements ICategoryService{
 		List<Category> list = (List<Category>)criteria.list();
 		trans.commit();
 		return list;
+	}
+	public List<CategoryView> getListCategoryView(String type){
+		List<CategoryView> lstCategoryView = new ArrayList<CategoryView>();
+		List<Category> lstCategory = getListCategoryFilterType(type);
+		for(Category cate: lstCategory){
+			CategoryView cateView = new CategoryView();
+			cateView.setCategory(cate);
+			cateView.setAttachFile(fileDAO.getAttachFile(cate.getCate_img_id()));
+			lstCategoryView.add(cateView);
+		}
+		return lstCategoryView;
 	}
 }

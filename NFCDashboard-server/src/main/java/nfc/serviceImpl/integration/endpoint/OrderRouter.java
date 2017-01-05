@@ -15,10 +15,10 @@ public class OrderRouter {
 	ServerWebSocketContainer serverWebSocketContainer;*/
 	public String routeOrder(OrderView orderView) {
 		String result = "prepareSendToStore"; 
-		if(orderView.getOrder().getOrder_status() == "new"){
+		if(orderView.getOrder().getOrder_status().trim().equals("new")){
 			result = "newOrder";
 		}
-		else if(orderView.getOrder().getOrder_status() == "paid"){
+		else if(orderView.getOrder().getOrder_status().trim().equals("paid")){
 			result = "paidOrder";
 		}
 		/*switch (orderView.getOrder().getOrder_status()) {

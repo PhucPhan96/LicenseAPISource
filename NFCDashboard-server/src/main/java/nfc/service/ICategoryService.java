@@ -3,6 +3,7 @@ package nfc.service;
 import java.util.List;
 
 import nfc.model.Category;
+import nfc.model.ViewModel.CategoryView;
 
 public interface ICategoryService {
 	List<Category> getListCategory();
@@ -11,4 +12,5 @@ public interface ICategoryService {
 	boolean updateCategory(Category cate);
 	boolean deleteCategory(String cateID);
 	Category getCategory(String cateID);
+	List<CategoryView> getListCategoryView(String type);
 }

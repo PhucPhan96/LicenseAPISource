@@ -3,6 +3,7 @@ package nfc.controller;
 import nfc.model.AttachFile;
 import nfc.model.Category;
 import nfc.model.Role;
+import nfc.model.ViewModel.CategoryView;
 import nfc.service.ICategoryService;
 import nfc.service.IFileService;
 import nfc.serviceImpl.common.Utils;
@@ -35,6 +36,11 @@ public class CategoryManagementController {
 	public @ResponseBody String getListCategoryFilterType(@PathVariable("type") String type){
 		List<Category> category = categoryDAO.getListCategoryFilterType(type);
 		return Utils.convertObjectToJsonString(category);
+	}
+	@RequestMapping(value="category/view/{type}", method=RequestMethod.GET)
+	public @ResponseBody String getListCategoryViewFilterType(@PathVariable("type") String type){
+		List<CategoryView> categoryView = categoryDAO.getListCategoryView(type);
+		return Utils.convertObjectToJsonString(categoryView);
 	}
 	@RequestMapping(value="category/add", method=RequestMethod.POST)
 	public @ResponseBody String insertCategory(@RequestBody Category cate){

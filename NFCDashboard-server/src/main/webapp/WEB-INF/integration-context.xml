@@ -54,7 +54,7 @@
    	<channel id="transformerOrderChannel" >
     </channel>
     <int-http:outbound-gateway id="trafficGateway"
-	    url="http://localhost:1234/NFCDashboard-server/receiveGateway"
+	    url="http://foodgo.thlsoft.com:1234/NFCDashboard-server/receiveGateway"
 	    request-channel="transformerOrderChannel"
 	    http-method="POST"
 	    expected-response-type="java.lang.String">
