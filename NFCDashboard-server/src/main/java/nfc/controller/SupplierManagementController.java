@@ -41,7 +41,7 @@ public class SupplierManagementController {
 		List<SupplierView> lstSupplierView = supplierDAO.getListSupplierView(username);
 		return Utils.convertObjectToJsonString(lstSupplierView);
 	}
-	@RequestMapping(value="supplier/app/{id}",method=RequestMethod.GET)
+	@RequestMapping(value="app/supplier/{id}",method=RequestMethod.GET)
 	public String getListSupplierViewOfCategory(@PathVariable("id") int categoryId){
 		List<SupplierAppView> lstSupplierView = supplierDAO.getListSupplierViewOfCategory(categoryId);
 		return Utils.convertObjectToJsonString(lstSupplierView);

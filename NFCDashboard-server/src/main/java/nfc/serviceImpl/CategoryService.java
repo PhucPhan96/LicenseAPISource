@@ -13,11 +13,15 @@ import javax.transaction.Transactional;
 
 import nfc.model.Category;
 import nfc.model.Code;
+import nfc.model.SupplierCategories;
 import nfc.model.User;
 import nfc.model.ViewModel.CategoryView;
+import nfc.model.ViewModel.SupplierProductView;
 import nfc.service.ICategoryService;
 import nfc.service.IFileService;
+import nfc.service.IProductService;
 import nfc.service.IRoleService;
+import nfc.service.ISupplierService;
 import nfc.service.IUserService;
 import nfc.service.common.ICommonService;
 import nfc.serviceImpl.common.Utils;
@@ -38,6 +42,12 @@ public class CategoryService implements ICategoryService{
 	private SessionFactory sessionFactory;
 	@Autowired
 	private IFileService fileDAO;
+	@Autowired
+	private ISupplierService supplierDAO;
+	@Autowired
+	private ICategoryService categoryDAO;
+	@Autowired
+	private IProductService productDAO;
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
@@ -129,5 +139,18 @@ public class CategoryService implements ICategoryService{
 			lstCategoryView.add(cateView);
 		}
 		return lstCategoryView;
+	}
+	@Override
+	public List<SupplierProductView> getListProductOfCategory(int supplierId) {
+		List<SupplierProductView> lstSupplierProductView = new ArrayList<SupplierProductView>();
+		List<SupplierCategories> lstSupplierCategory = supplierDAO.getListSupplierCategory(supplierId);
+		for(SupplierCategories supplCate: lstSupplierCategory)
+		{
+			SupplierProductView supplierProductView = new SupplierProductView();
+			supplierProductView.setCategory(categoryDAO.getCategory(supplCate.getCate_id()+""));
+			supplierProductView.setProducts(productDAO.getListProductOfCategory(supplCate.getCate_id(), supplierId));
+			lstSupplierProductView.add(supplierProductView);
+		}
+		return lstSupplierProductView;
 	}
 }

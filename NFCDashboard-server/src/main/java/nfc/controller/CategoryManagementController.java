@@ -4,6 +4,7 @@ import nfc.model.AttachFile;
 import nfc.model.Category;
 import nfc.model.Role;
 import nfc.model.ViewModel.CategoryView;
+import nfc.model.ViewModel.SupplierProductView;
 import nfc.service.ICategoryService;
 import nfc.service.IFileService;
 import nfc.serviceImpl.common.Utils;
@@ -70,6 +71,11 @@ public class CategoryManagementController {
 		System.out.println("FileId " + fileId);
 		AttachFile file = fileDAO.getAttachFile(fileId);
 		return Utils.convertObjectToJsonString(file);
+	} 
+	@RequestMapping(value="app/product/store/{id}", method=RequestMethod.GET)
+	public String getProductOfStore(@PathVariable("id") int supplierId){
+		List<SupplierProductView> lstSupplierProductView = categoryDAO.getListProductOfCategory(supplierId);
+		return Utils.convertObjectToJsonString(lstSupplierProductView);
 	} 
 
 }

@@ -213,5 +213,33 @@ public class ProductService implements IProductService{
 		}
 		return lstProductView;
 	}
+	private Product getProductSupplier(int productId, int supplId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(Product.class);
+		criteria.add(Restrictions.eq("prod_id",productId));
+		criteria.add(Restrictions.eq("suppl_id",supplId));
+		Product product = (Product) criteria.uniqueResult();
+		trans.commit();
+		return product;
+	}
+	public List<Product> getListProductOfCategory(int cateId, int supplId){
+		List<Product> lstProduct = new ArrayList<Product>();
+		List<ProductCategory> lstProductCategory = getListProductCategory(cateId);
+		for(ProductCategory proCate: lstProductCategory){
+			lstProduct.add(getProductSupplier(proCate.getProd_id() , supplId));
+		}
+		return lstProduct;
+	}
+	public List<ProductCategory> getListProductCategory(int cateId){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(ProductCategory.class);
+		criteria.add(Restrictions.eq("cate_id", cateId));
+		//Product product = (Product) criteria.uniqueResult();
+		List<ProductCategory> lstProductCategory = (List<ProductCategory>) criteria.list();
+		trans.commit();
+		return lstProductCategory;
+	}
 	
 }

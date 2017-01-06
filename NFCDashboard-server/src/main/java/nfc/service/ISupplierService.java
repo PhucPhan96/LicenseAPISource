@@ -3,6 +3,7 @@ import java.util.List;
 
 import nfc.model.Address;
 import nfc.model.Supplier;
+import nfc.model.SupplierCategories;
 import nfc.model.SupplierImage;
 import nfc.model.SupplierUser;
 import nfc.model.SupplierWork;
@@ -24,4 +25,5 @@ public interface ISupplierService {
 	boolean deleteSupplierView(int supplId);
 	List<SupplierUser> getListSupplierUserId(String userId);
 	List<SupplierAppView> getListSupplierViewOfCategory(int categoryId);
+	List<SupplierCategories> getListSupplierCategory(int supplId);
 }
