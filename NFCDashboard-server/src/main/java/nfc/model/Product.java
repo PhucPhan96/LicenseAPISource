@@ -47,7 +47,7 @@ public class Product {
 		this.category = category;
 	}*/
 
-	private Set<AttachFile> attachFiles = new HashSet<AttachFile>();
+	/*private Set<AttachFile> attachFiles = new HashSet<AttachFile>();
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name="fg_prod_imgs",joinColumns={@JoinColumn(name = "prod_id")},inverseJoinColumns={@JoinColumn(name = "img_id")})
 	public Set<AttachFile> getAttachFiles() {
@@ -55,7 +55,7 @@ public class Product {
 	}
 	public void setAttachFiles(Set<AttachFile> attachFiles) {
 		this.attachFiles = attachFiles;
-	}
+	}*/
 	@Id
 	@Column(name="prod_id")
 	@GeneratedValue

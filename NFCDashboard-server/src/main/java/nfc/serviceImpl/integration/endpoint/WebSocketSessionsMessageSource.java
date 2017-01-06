@@ -8,6 +8,8 @@ import org.springframework.integration.websocket.ServerWebSocketContainer;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
 
+import antlr.collections.List;
+
 public class WebSocketSessionsMessageSource {
 	@Autowired
 	ServerWebSocketContainer serverWebSocketContainer;
@@ -20,5 +22,8 @@ public class WebSocketSessionsMessageSource {
 			}
 
 		};
+	}
+	public Iterator<String> getSessionId(){
+		return serverWebSocketContainer.getSessions().keySet().iterator();
 	}
 }

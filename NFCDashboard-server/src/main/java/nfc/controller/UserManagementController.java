@@ -41,6 +41,17 @@ public class UserManagementController {
 		//User user = userDAO.findUserByUserName(username);
 		return Utils.convertObjectToJsonString(users);
 	}
+	@RequestMapping(value="userOne",method=RequestMethod.GET)
+	 	public String getUser(HttpServletRequest request){
+		String token = request.getHeader(tokenHeader);
+	    String username = jwtTokenUtil.getUsernameFromToken(token);
+	    User users = userDAO.findUserByUserName(username); 
+	    String userid = users.getUser_id();
+	    String userName = users.getUser_name();
+	    //return Utils.convertObjectToJsonString(users);
+	    return userid;
+	    //return "{\"result\":\"" + userid +  "\"}";
+	}
 	@RequestMapping(value="user/detail/{id}",method=RequestMethod.GET)
 	public String getUser(@PathVariable("id") String userId){
 		User users = userDAO.getUser(userId);	

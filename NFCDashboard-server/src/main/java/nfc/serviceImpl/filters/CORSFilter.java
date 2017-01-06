@@ -15,7 +15,7 @@ public class CORSFilter extends OncePerRequestFilter{
 	protected void doFilterInternal(HttpServletRequest request,
 			HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		response.addHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+		response.addHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
 		response.addHeader("Access-Control-Allow-Credentials", "true");
 		if (request.getHeader("Access-Control-Request-Method") != null && "OPTIONS".equals(request.getMethod())) {
 			System.out.println("Vao nay ne crosite");

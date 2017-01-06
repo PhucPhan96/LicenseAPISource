@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans
+ http://www.springframework.org/schema/beans/spring-beans-4.1.xsd">
+ 	
+ 	 <bean id="loginDAO" class="nfc.serviceImpl.LoginService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
+	 <bean id="userDAO" class="nfc.serviceImpl.UserService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
+	 <bean id="roleDAO" class="nfc.serviceImpl.RoleService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
+	 <bean id="commonDAO" class="nfc.serviceImpl.common.CommonService">
+	 </bean>
+	 <bean id="groupDAO" class="nfc.serviceImpl.GroupService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
+	 <bean id="categoryDAO" class="nfc.serviceImpl.CategoryService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
+	 <bean id="supplierDAO" class="nfc.serviceImpl.SupplierService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
+	 <!-- <bean id="supplierworkDAO" class="nfc.serviceImpl.SupplierWorkService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean> -->
+	 <bean id="productDAO" class="nfc.serviceImpl.ProductService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
+	 <bean id="fileDAO" class="nfc.serviceImpl.FileService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
+	 <bean id="orderDAO" class="nfc.serviceImpl.OrderService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
+	 <bean id="codeDAO" class="nfc.serviceImpl.CodeService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
+<<<<<<< HEAD
+	 <bean id="programDAO" class="nfc.serviceImpl.ProgramService">
+=======
+	 <bean id="posDAO" class="nfc.serviceImpl.PosService">
+>>>>>>> a0cfb9e3945d70f80697732bb66f0230976c846a
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
+</beans>

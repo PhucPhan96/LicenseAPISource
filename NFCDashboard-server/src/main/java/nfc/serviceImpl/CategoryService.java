@@ -4,6 +4,7 @@ import java.io.Console;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.nio.channels.SeekableByteChannel;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,9 +13,15 @@ import javax.transaction.Transactional;
 
 import nfc.model.Category;
 import nfc.model.Code;
+import nfc.model.SupplierCategories;
 import nfc.model.User;
+import nfc.model.ViewModel.CategoryView;
+import nfc.model.ViewModel.SupplierProductView;
 import nfc.service.ICategoryService;
+import nfc.service.IFileService;
+import nfc.service.IProductService;
 import nfc.service.IRoleService;
+import nfc.service.ISupplierService;
 import nfc.service.IUserService;
 import nfc.service.common.ICommonService;
 import nfc.serviceImpl.common.Utils;
@@ -33,6 +40,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class CategoryService implements ICategoryService{
 	@Autowired
 	private SessionFactory sessionFactory;
+	@Autowired
+	private IFileService fileDAO;
+	@Autowired
+	private ISupplierService supplierDAO;
+	@Autowired
+	private ICategoryService categoryDAO;
+	@Autowired
+	private IProductService productDAO;
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
@@ -113,5 +128,29 @@ public class CategoryService implements ICategoryService{
 		List<Category> list = (List<Category>)criteria.list();
 		trans.commit();
 		return list;
+	}
+	public List<CategoryView> getListCategoryView(String type){
+		List<CategoryView> lstCategoryView = new ArrayList<CategoryView>();
+		List<Category> lstCategory = getListCategoryFilterType(type);
+		for(Category cate: lstCategory){
+			CategoryView cateView = new CategoryView();
+			cateView.setCategory(cate);
+			cateView.setAttachFile(fileDAO.getAttachFile(cate.getCate_img_id()));
+			lstCategoryView.add(cateView);
+		}
+		return lstCategoryView;
+	}
+	@Override
+	public List<SupplierProductView> getListProductOfCategory(int supplierId) {
+		List<SupplierProductView> lstSupplierProductView = new ArrayList<SupplierProductView>();
+		List<SupplierCategories> lstSupplierCategory = supplierDAO.getListSupplierCategory(supplierId);
+		for(SupplierCategories supplCate: lstSupplierCategory)
+		{
+			SupplierProductView supplierProductView = new SupplierProductView();
+			supplierProductView.setCategory(categoryDAO.getCategory(supplCate.getCate_id()+""));
+			supplierProductView.setProducts(productDAO.getListProductOfCategory(supplCate.getCate_id(), supplierId));
+			lstSupplierProductView.add(supplierProductView);
+		}
+		return lstSupplierProductView;
 	}
 }

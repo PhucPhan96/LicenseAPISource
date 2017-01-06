@@ -7,5 +7,18 @@ import nfc.model.Product;
 
 public class ProductView {
 	private Product product;
-	private List<AttachFile> attachFiles;
+	private List<ProductAttachFileView> lstAttachFileView;
+	public Product getProduct() {
+		return product;
+	}
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+	public List<ProductAttachFileView> getLstAttachFileView() {
+		return lstAttachFileView;
+	}
+	public void setLstAttachFileView(List<ProductAttachFileView> lstAttachFileView) {
+		this.lstAttachFileView = lstAttachFileView;
+	}
+	
 }

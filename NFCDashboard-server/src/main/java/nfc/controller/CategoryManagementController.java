@@ -3,6 +3,8 @@ package nfc.controller;
 import nfc.model.AttachFile;
 import nfc.model.Category;
 import nfc.model.Role;
+import nfc.model.ViewModel.CategoryView;
+import nfc.model.ViewModel.SupplierProductView;
 import nfc.service.ICategoryService;
 import nfc.service.IFileService;
 import nfc.serviceImpl.common.Utils;
@@ -36,6 +38,11 @@ public class CategoryManagementController {
 		List<Category> category = categoryDAO.getListCategoryFilterType(type);
 		return Utils.convertObjectToJsonString(category);
 	}
+	@RequestMapping(value="category/view/{type}", method=RequestMethod.GET)
+	public @ResponseBody String getListCategoryViewFilterType(@PathVariable("type") String type){
+		List<CategoryView> categoryView = categoryDAO.getListCategoryView(type);
+		return Utils.convertObjectToJsonString(categoryView);
+	}
 	@RequestMapping(value="category/add", method=RequestMethod.POST)
 	public @ResponseBody String insertCategory(@RequestBody Category cate){
 		cate.setApp_id(Utils.appId);
@@ -64,6 +71,11 @@ public class CategoryManagementController {
 		System.out.println("FileId " + fileId);
 		AttachFile file = fileDAO.getAttachFile(fileId);
 		return Utils.convertObjectToJsonString(file);
+	} 
+	@RequestMapping(value="app/product/store/{id}", method=RequestMethod.GET)
+	public String getProductOfStore(@PathVariable("id") int supplierId){
+		List<SupplierProductView> lstSupplierProductView = categoryDAO.getListProductOfCategory(supplierId);
+		return Utils.convertObjectToJsonString(lstSupplierProductView);
 	} 
 
 }

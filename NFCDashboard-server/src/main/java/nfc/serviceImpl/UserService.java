@@ -292,4 +292,13 @@ public class UserService implements IUserService {
 			return false;
 		}
 	}
+	public List<UserAddress> getListUserAddress(String userId){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(UserAddress.class);
+		criteria.add(Restrictions.eq("user_id", userId));
+		List<UserAddress> lstUserAddress =  (List<UserAddress>) criteria.list(); 
+		trans.commit();
+		return lstUserAddress;
+	}
 }

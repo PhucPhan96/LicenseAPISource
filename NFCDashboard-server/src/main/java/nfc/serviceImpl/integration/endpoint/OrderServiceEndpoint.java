@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.splitter.DefaultMessageSplitter;
 import org.springframework.integration.websocket.ServerWebSocketContainer;
+import org.springframework.integration.websocket.outbound.WebSocketOutboundMessageHandler;
 import org.springframework.messaging.MessageHandler;
 
 import nfc.model.Order;
@@ -19,11 +20,11 @@ import com.mysql.jdbc.Statement;
 public class OrderServiceEndpoint {
 	@Autowired
 	private IOrderService orderDAO;
+	@Autowired
+	ServerWebSocketContainer serverWebSocketContainer;
 	public OrderView saveOrder(OrderView orderView)
 	{
 		orderDAO.insertOrderView(orderView);
-		
-		
 		return orderView;
 	}
 	public OrderView updateOrder(OrderView orderView){
@@ -31,8 +32,13 @@ public class OrderServiceEndpoint {
 		return orderView;
 	}
 	public MessageHandler splitter() {
+		
 		DefaultMessageSplitter splitter = new DefaultMessageSplitter();
 		splitter.setOutputChannelName("headerEnricherChannel");
 		return splitter;
+	}
+	public MessageHandler webSocketOutboundAdapter() {
+		System.out.println("Vao socket");
+		return new WebSocketOutboundMessageHandler(serverWebSocketContainer);
 	}
 }

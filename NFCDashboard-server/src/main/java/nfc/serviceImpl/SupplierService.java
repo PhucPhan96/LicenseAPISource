@@ -25,6 +25,7 @@ import nfc.model.SupplierUser;
 import nfc.model.SupplierWork;
 import nfc.model.User;
 import nfc.model.ViewModel.SupplierAddressView;
+import nfc.model.ViewModel.SupplierAppView;
 import nfc.model.ViewModel.SupplierView;
 import nfc.service.ICategoryService;
 import nfc.service.ICodeService;
@@ -284,7 +285,10 @@ public class SupplierService implements ISupplierService {
 			        if (serAdd != null) {
 			        	addressIdDesc = (Integer) serAdd;
 			        }
-					session.save(addrView.getAddressOfSuppl());
+				}
+				else
+				{
+					session.update(addrView.getAddressOfSuppl());
 				}
 				
 				
@@ -308,6 +312,7 @@ public class SupplierService implements ISupplierService {
 		}
 		catch(Exception ex)
 		{
+			System.out.println("Error " + ex.getMessage());
 			trans.rollback();
 			return false;
 		}
@@ -351,6 +356,17 @@ public class SupplierService implements ISupplierService {
 		}
 		return lstSupplierView;
 	}
+	@Override
+	public Supplier getSupplierFromUser(String username) {
+		List<SupplierUser> lstSupplierUser = getListSupplierUser(username);
+		int supplierId = 0;
+		if(lstSupplierUser.size() > 0)
+		{
+			supplierId = lstSupplierUser.get(0).getSuppl_id();
+		}
+		Supplier supplier = getSupplier(supplierId+"");
+		return supplier;
+	}
 	public List<SupplierUser> getListSupplierUserId(String userId){
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
@@ -360,4 +376,36 @@ public class SupplierService implements ISupplierService {
 		trans.commit();
 		return list;
 	}
+	private List<SupplierCategories> getListSupplierCategoryFromCategory(int categoryId){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(SupplierCategories.class);
+		criteria.add(Restrictions.eq("cate_id", categoryId));
+		List<SupplierCategories> list = (List<SupplierCategories>) criteria.list();
+		trans.commit();
+		return list;
+	}
+	public List<SupplierAppView> getListSupplierViewOfCategory(int categoryId){
+		List<SupplierAppView> lstSupplierAppView = new ArrayList<SupplierAppView>();
+		List<SupplierCategories> lstSupplierCategory = getListSupplierCategoryFromCategory(categoryId);
+		for(SupplierCategories supplierCategory: lstSupplierCategory){
+			SupplierWork supplierWork = getSupplierWork(supplierCategory.getSuppl_id());
+			if(Integer.parseInt(supplierWork.getSuppl_role()) == 21)
+			{
+				SupplierAppView supplierAppView = new SupplierAppView();
+				supplierAppView.setSupplier(getSupplier(supplierCategory.getSuppl_id() + ""));
+				supplierAppView.setSupplierWork(supplierWork);
+				List<SupplierImage> supplImgs = getListSupplierImage(supplierCategory.getSuppl_id());
+				List<AttachFile> supplAttachFiles = new ArrayList<AttachFile>();
+				for(SupplierImage supImg: supplImgs)
+				{
+					supplAttachFiles.add(fileDAO.getAttachFile(supImg.getImg_id()));
+				}
+				supplierAppView.setImages(supplAttachFiles);
+				lstSupplierAppView.add(supplierAppView);
+			}
+		}
+		return lstSupplierAppView;
+	}
+	
 }
