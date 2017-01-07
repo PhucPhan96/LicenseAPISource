@@ -41,15 +41,22 @@ public class ProgramManagementController {
 		return Utils.convertObjectToJsonString(programs);
 	}
 	@RequestMapping(value="program/add", method=RequestMethod.POST)
-	public @ResponseBody String insertCategory(@RequestBody Program prog){
+	public @ResponseBody String insertProgram(@RequestBody Program prog){
 		prog.setApp_id(Utils.appId);
 		UUID uuid = UUID.randomUUID();
 		String randomUUID = uuid.toString();
-		prog.setProgram_id(randomUUID);
-		prog.setProgram_url("");
-		System.out.println("URL la: "+ prog.getProgram_url());
-		System.out.println("URL la: "+ prog.getProgram_url().length());
+		prog.setProgram_id(randomUUID);	
 		String data = programDAO.insertProgram(prog)+"";
+		return "{\"result\":\"" + data + "\"}";
+	}
+	@RequestMapping(value="program/delete/{id}", method=RequestMethod.DELETE)
+	public @ResponseBody String deleteProgram(@PathVariable("id") String progID){
+		String data = programDAO.deleteProgram(progID)+"";
+		return "{\"result\":\"" + data + "\"}";
+	}
+	@RequestMapping(value="program/edit", method=RequestMethod.POST)
+	public @ResponseBody String editProgram(@RequestBody Program prog){
+		String data = programDAO.editProgram(prog)+"";
 		return "{\"result\":\"" + data + "\"}";
 	}
 }
