@@ -85,22 +85,22 @@ public class OrderManagementController {
     MessageHandler webSocketOutboundAdapter() {
         return new WebSocketOutboundMessageHandler(serverWebSocketContainer());
     }
-    @Bean
-    IntegrationFlow webSocketFlow() {
-        return f -> {
-            Function<Message , Object> splitter = m -> serverWebSocketContainer()
-                    .getSessions()
-                    .keySet()
-                    .stream()
-                    .map(s -> MessageBuilder.fromMessage(m)
-                            .setHeader(SimpMessageHeaderAccessor.SESSION_ID_HEADER, s)
-                            .build())
-                    .collect(Collectors.toList());
-            f.split( Message.class, splitter)
-                    .channel(c -> c.executor(Executors.newCachedThreadPool()))
-                    .handle(webSocketOutboundAdapter());
-        };
-    }
+//    @Bean
+//    IntegrationFlow webSocketFlow() {
+//        return f -> {
+//            Function<Message , Object> splitter = m -> serverWebSocketContainer()
+//                    .getSessions()
+//                    .keySet()
+//                    .stream()
+//                    .map(s -> MessageBuilder.fromMessage(m)
+//                            .setHeader(SimpMessageHeaderAccessor.SESSION_ID_HEADER, s)
+//                            .build())
+//                    .collect(Collectors.toList());
+//            f.split( Message.class, splitter)
+//                    .channel(c -> c.executor(Executors.newCachedThreadPool()))
+//                    .handle(webSocketOutboundAdapter());
+//        };
+//    }
     @RequestMapping(value="/order/customer", method = RequestMethod.POST)
     public void send(@RequestBody OrderView orderView) {
     	try{

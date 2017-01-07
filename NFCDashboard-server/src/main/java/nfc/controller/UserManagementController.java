@@ -38,7 +38,7 @@ public class UserManagementController {
 		String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
 		List<User> users = userDAO.getListUser();
-		User user = userDAO.findUserByUserName(username);
+		//User user = userDAO.findUserByUserName(username);
 		return Utils.convertObjectToJsonString(users);
 	}
 	@RequestMapping(value="userOne",method=RequestMethod.GET)
@@ -87,7 +87,8 @@ public class UserManagementController {
 	public @ResponseBody String ChangePasswordUser(@RequestBody String[] temp){
 		System.out.println("vao change password: Pass:  " + temp[0]);
 		System.out.println("vao change password: Id: " + temp[1]);
-		String data = userDAO.ChangPasswordUser(temp[1],temp[0])+"";
+		System.out.println("vao change password: Id: " + temp[2]);
+		String data = userDAO.ChangPasswordUser(temp[1],temp[0],temp[2])+"";
 		return "{\"result\":\"" + data + "\"}";
 	}
 }

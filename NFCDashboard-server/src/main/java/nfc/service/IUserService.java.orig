@@ -14,6 +14,10 @@ public interface IUserService {
 	User getUser(String userId);
 	User findUserByUserName(String username);
 	List<UserRole> getListUserRole(String userId);
+<<<<<<< HEAD
 	boolean ChangPasswordUser(String userId,String pass,String passSalt);
+=======
 	List<UserAddress> getListUserAddress(String userId);
+	boolean ChangPasswordUser(String userId,String pass);
+>>>>>>> a0cfb9e3945d70f80697732bb66f0230976c846a
 }

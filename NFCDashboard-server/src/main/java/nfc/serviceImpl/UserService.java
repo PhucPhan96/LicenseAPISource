@@ -274,13 +274,13 @@ public class UserService implements IUserService {
 		//trans.commit();
 		return role;
 	}
-	public boolean ChangPasswordUser(String userId,String pass){	
+	public boolean ChangPasswordUser(String userId,String pass,String passSalt){	
 		System.out.println("vao dc update");
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
 		try
 		{
-			String strQuery = "update fg_users set password='" + pass + "' where user_id = '" + userId +"'";
+			String strQuery = "update fg_users set password='" + pass + "',password_salt='"+ passSalt +"' where user_id = '" + userId +"'";
 			Query query = session.createSQLQuery(strQuery);
 		    query.executeUpdate();			
 			trans.commit();

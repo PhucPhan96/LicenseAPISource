@@ -39,10 +39,11 @@
 	 <bean id="codeDAO" class="nfc.serviceImpl.CodeService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
+<<<<<<< HEAD
 	 <bean id="programDAO" class="nfc.serviceImpl.ProgramService">
-	     <property name="sessionFactory" ref="mySessionFactory" />
-	 </bean>
+=======
 	 <bean id="posDAO" class="nfc.serviceImpl.PosService">
+>>>>>>> a0cfb9e3945d70f80697732bb66f0230976c846a
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
 </beans>
