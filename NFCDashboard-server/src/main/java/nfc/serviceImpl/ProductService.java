@@ -23,6 +23,7 @@ import nfc.model.Code;
 import nfc.model.Product;
 import nfc.model.ProductCategory;
 import nfc.model.ProductImage;
+import nfc.model.ProductOptional;
 import nfc.model.Role;
 import nfc.model.Supplier;
 import nfc.model.ViewModel.ProductAttachFileView;
@@ -119,6 +120,16 @@ public class ProductService implements IProductService{
 		List<Product> product = (List<Product>) criteria.list();
 		trans.commit();
 		return product;
+	}
+	public List<ProductOptional> getProductOptional(int prodId){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(ProductOptional.class);
+		criteria.add(Restrictions.eq("prod_id", prodId));
+		//Product product = (Product) criteria.uniqueResult();
+		List<ProductOptional> products = (List<ProductOptional>) criteria.list();
+		trans.commit();
+		return products;
 	}
 	public Product getProducts(String productId){
 		Session session = this.sessionFactory.getCurrentSession();
