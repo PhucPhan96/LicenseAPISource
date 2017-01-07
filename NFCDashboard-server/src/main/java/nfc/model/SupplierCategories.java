@@ -14,13 +14,12 @@ import nfc.model.PKModel.CategorySupplierPK;
 @Entity
 @Table(name="fg_supplier_categories")
 @IdClass(CategorySupplierPK.class)
-public class SupplierCategories implements Serializable{
+public class SupplierCategories{
 	@Id
 	private int cate_id; 
 	@Id
 	private int suppl_id; 
 	private String cate_name;
-	
 	@Column(name="cate_id")
 	public int getCate_id() {
 		return cate_id;
@@ -28,7 +27,6 @@ public class SupplierCategories implements Serializable{
 	public void setCate_id(int cate_id) {
 		this.cate_id = cate_id;
 	}
-	
 	@Column(name="suppl_id")
 	public int getSuppl_id() {
 		return suppl_id;

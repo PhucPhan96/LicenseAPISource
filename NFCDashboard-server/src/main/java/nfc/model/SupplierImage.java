@@ -3,15 +3,20 @@ package nfc.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
+
+import nfc.model.PKModel.SupplierImagePK;
 
 @Entity
 @Table(name="fg_supplier_imgs")
+@IdClass(SupplierImagePK.class)
 public class SupplierImage {
+	@Id
 	private int suppl_id; 
+	@Id
 	private int img_id; 
 	private String img_name;
-	@Id
 	@Column(name="suppl_id")
 	public int getSuppl_id() {
 		return suppl_id;
