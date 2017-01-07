@@ -3,13 +3,20 @@ package nfc.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
+
+import nfc.model.PKModel.SupplierUserPK;
 
 @Entity
 @Table(name="fg_supplier_users")
+@IdClass(SupplierUserPK.class)
 public class SupplierUser {
-	private String app_id; 
+	@Id
+	private String app_id;
+	@Id
 	private int suppl_id;
+	@Id
 	private String user_id; 
 	private Boolean is_director;
 	@Column(name="app_id")
@@ -19,7 +26,6 @@ public class SupplierUser {
 	public void setApp_id(String app_id) {
 		this.app_id = app_id;
 	}
-	@Id
 	@Column(name="suppl_id")
 	public int getSuppl_id() {
 		return suppl_id;

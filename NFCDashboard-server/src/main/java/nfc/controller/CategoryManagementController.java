@@ -38,7 +38,7 @@ public class CategoryManagementController {
 		List<Category> category = categoryDAO.getListCategoryFilterType(type);
 		return Utils.convertObjectToJsonString(category);
 	}
-	@RequestMapping(value="category/view/{type}", method=RequestMethod.GET)
+	@RequestMapping(value="app/category/view/{type}", method=RequestMethod.GET)
 	public @ResponseBody String getListCategoryViewFilterType(@PathVariable("type") String type){
 		List<CategoryView> categoryView = categoryDAO.getListCategoryView(type);
 		return Utils.convertObjectToJsonString(categoryView);

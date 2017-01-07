@@ -1,18 +1,25 @@
 package nfc.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
+
+import nfc.model.PKModel.ProductImagePK;
 
 @Entity
 @Table(name="fg_prod_imgs")
-public class ProductImage {
+@IdClass(ProductImagePK.class)
+public class ProductImage{
+	@Id
 	private int prod_id;
+	@Id
 	private int img_id;
 	private String img_name;
 	private String img_type;
-	@Id
 	@Column(name="prod_id")
 	public int getProd_id() {
 		return prod_id;
