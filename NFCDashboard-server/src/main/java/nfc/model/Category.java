@@ -1,5 +1,6 @@
 package nfc.model;
- import java.util.Date;
+ import java.io.Serializable;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,7 +18,7 @@ import javax.persistence.Table;
 
  @Entity
  @Table(name="fg_categories")
-public class Category {
+public class Category implements Serializable{
 	private int cate_id;
 	private String app_id;
 	private int cate_img_id;

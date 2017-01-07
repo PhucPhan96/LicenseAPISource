@@ -227,7 +227,12 @@ public class ProductService implements IProductService{
 		List<Product> lstProduct = new ArrayList<Product>();
 		List<ProductCategory> lstProductCategory = getListProductCategory(cateId);
 		for(ProductCategory proCate: lstProductCategory){
-			lstProduct.add(getProductSupplier(proCate.getProd_id() , supplId));
+			System.out.println("categoryID " + proCate.getCate_id());
+			System.out.println("product ID " + proCate.getProd_id());
+			Product product = getProductSupplier(proCate.getProd_id() , supplId);
+			if(product != null){
+				lstProduct.add(getProductSupplier(proCate.getProd_id() , supplId));
+			}
 		}
 		return lstProduct;
 	}

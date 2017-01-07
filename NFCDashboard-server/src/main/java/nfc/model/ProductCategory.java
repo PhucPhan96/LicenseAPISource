@@ -3,15 +3,21 @@ package nfc.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
+
+import nfc.model.PKModel.CategorySupplierPK;
+import nfc.model.PKModel.ProductCategoryPK;
 
 @Entity
 @Table(name="fg_product_categories")
+@IdClass(ProductCategoryPK.class)
 public class ProductCategory {
+	@Id
 	private int cate_id;
+	@Id
 	private int prod_id;
 	private int sort_seq;
-	@Id
 	@Column(name="cate_id")
 	public int getCate_id() {
 		return cate_id;
