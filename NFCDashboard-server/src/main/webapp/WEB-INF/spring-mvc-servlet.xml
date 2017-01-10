@@ -26,6 +26,18 @@
    </bean>
    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		 <property name="maxUploadSize" value="1000000"></property>
+   </bean>
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com" />
+		<property name="port" value="587" />
+		<property name="username" value="kjncunn@gmail.com" />
+		<property name="password" value="tinhyeutrongem" />
+		<property name="javaMailProperties">
+		   <props>
+	       	      <prop key="mail.smtp.auth">true</prop>
+	       	      <prop key="mail.smtp.starttls.enable">true</prop>
+	       	   </props>
+		</property>
 	</bean>
    <mvc:resources mapping="/resources/**" location="/assets/"/>
    <mvc:resources mapping="/uploads/images/**" location="/uploads/images/" />

@@ -17,6 +17,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,10 +25,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import nfc.model.User;
+import nfc.model.UserRegister;
+import nfc.service.IUserService;
 import nfc.serviceImpl.Security.JwtAuthenticationRequest;
 import nfc.serviceImpl.Security.JwtAuthenticationResponse;
 import nfc.serviceImpl.Security.JwtTokenUtil;
 import nfc.serviceImpl.Security.JwtUser;
+import nfc.serviceImpl.common.Utils;
 
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
@@ -35,7 +40,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 public class AccountController {
 	@Value("Authorization")
     private String tokenHeader;
-
+	
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -44,6 +49,9 @@ public class AccountController {
 
     @Autowired
     private UserDetailsService userDetailsService;
+    
+    @Autowired
+    private IUserService userDAO;
 
     @RequestMapping(value = "/auth", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest) throws AuthenticationException {
@@ -81,5 +89,29 @@ public class AccountController {
         } else {
             return ResponseEntity.badRequest().body(null);
         }
+    }
+    @RequestMapping(value = "/app/user/add", method = RequestMethod.POST)
+    public ResponseEntity<?> registerUser(@RequestBody UserRegister userRegister) {
+    	String body = userDAO.saveUserRegister(userRegister);
+    	
+    	if(body.contains(":"))
+    	{	
+    		User user = userDAO.findUserByUserName(userRegister.getReq_email());
+    		final Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            body.split(":")[0],
+                            body.split(":")[1]
+                    )
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            final UserDetails userDetails = userDetailsService.loadUserByUsername(body.split(":")[0]);
+            final String token = jwtTokenUtil.generateToken(userDetails);
+            return ResponseEntity.ok(new JwtAuthenticationResponse(token));
+    	}
+        return ResponseEntity.ok(new JwtAuthenticationResponse(body));
+    }
+    @RequestMapping(value = "/app/user/shaq/{id}", method = RequestMethod.GET)
+    public String getSha1(@PathVariable("id") String password) {
+    	return Utils.Sha1(password);
     }
 }

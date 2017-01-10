@@ -75,11 +75,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
             // allow anonymous resource requests
             .antMatchers("/file/upload/**").permitAll()
             .antMatchers("/notify/**").permitAll()
+            .antMatchers("/customer/**").permitAll()
             .antMatchers("/receiveGateway/**").permitAll()
             .antMatchers("/order/**").permitAll()
             .antMatchers("/auth/**").permitAll()
             .antMatchers("/app/**").permitAll()
             .antMatchers("/supplierImg/**").permitAll()
+            .antMatchers("/sms/send").permitAll()
             .anyRequest().authenticated();
 
     // Custom JWT based security filter

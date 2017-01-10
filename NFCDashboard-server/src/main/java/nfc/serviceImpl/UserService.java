@@ -1,8 +1,13 @@
 package nfc.serviceImpl;
 
 import java.io.Serializable;
+import java.security.MessageDigest;
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import javax.transaction.Transactional;
 
@@ -13,17 +18,25 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+
+import com.google.common.base.Charsets;
+import com.google.common.hash.Hashing;
 
 import nfc.model.Address;
+import nfc.model.AppUser;
 import nfc.model.Category;
+import nfc.model.Code;
 import nfc.model.Role;
 import nfc.model.SupplierAddress;
 import nfc.model.SupplierUser;
 import nfc.model.User;
 import nfc.model.UserAddress;
+import nfc.model.UserRegister;
 import nfc.model.UserRole;
 import nfc.model.ViewModel.SupplierAddressView;
 import nfc.model.ViewModel.UserAddressView;
+import nfc.service.IMailService;
 import nfc.service.IRoleService;
 import nfc.service.ISupplierService;
 import nfc.service.IUserService;
@@ -33,9 +46,11 @@ import nfc.serviceImpl.common.Utils;
 public class UserService implements IUserService {
 	@Autowired
 	private ISupplierService supplDAO;
-	private SessionFactory sessionFactory;
 	@Autowired
 	private IRoleService roleServiceDao;
+	@Autowired
+	private IMailService mailDAO;
+	private SessionFactory sessionFactory;
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
@@ -300,5 +315,122 @@ public class UserService implements IUserService {
 		List<UserAddress> lstUserAddress =  (List<UserAddress>) criteria.list(); 
 		trans.commit();
 		return lstUserAddress;
+	}
+	public boolean insertUserRegister(UserRegister userRegist){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		try
+		{
+			session.save(userRegist);
+			trans.commit();
+			return true;
+		}
+		catch(Exception ex)
+		{
+			System.out.println("Error " + ex.getMessage());
+			trans.rollback();
+			return false;
+		}
+	}
+	public boolean updateUserRegister(UserRegister userRegist){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		try
+		{
+			session.update(userRegist);
+			trans.commit();
+			return true;
+		}
+		catch(Exception ex)
+		{
+			System.out.println("Error " + ex.getMessage());
+			trans.rollback();
+			return false;
+		}
+	}
+	public UserRegister getUserRegister(String email){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(UserRegister.class);
+		criteria.add(Restrictions.eq("req_email", email));
+		UserRegister userRegist =  (UserRegister) criteria.uniqueResult(); 
+		trans.commit();
+		return userRegist;
+	}
+	public String saveUserRegister(UserRegister userRegist){
+		UserRegister userExist = getUserRegister(userRegist.getReq_email());
+		if(userExist == null){
+			userRegist.setReq_code(Utils.generationCode());
+			userRegist.setReq_approved(false);
+			if(insertUserRegister(userRegist))
+			{
+				mailDAO.sendSimpleMail("kjncunn@gmail.com", userRegist.getReq_email(), "Verify", "Code for register nfc account: " + userRegist.getReq_code());
+				return "sendNewVerify";
+			}
+		}
+		else if(!userExist.isReq_approved())
+		{
+			if(StringUtils.isEmpty(userRegist.getReq_code()))
+			{
+				userExist.setReq_code(Utils.generationCode());
+				if(updateUserRegister(userExist)){
+					mailDAO.sendSimpleMail("kjncunn@gmail.com", userRegist.getReq_email(), "Verify", "Code for register nfc account: " + userExist.getReq_code());
+					return "refreshVerify";
+				}
+			}
+			else if(userRegist.getReq_code().equals(userExist.getReq_code()))
+			{
+				
+				Session session = this.sessionFactory.getCurrentSession();
+				Transaction trans = session.beginTransaction();
+				String passwordRandom = Utils.randomPassword(8);
+				try{
+					userExist.setReq_approved(true);
+					AppUser user = new AppUser();
+					user.setApp_id(Utils.appId);
+					user.setUser_id(UUID.randomUUID().toString());
+					user.setUser_name(userExist.getReq_email());
+					user.setPassword(Utils.Sha1(passwordRandom));
+					java.util.Date currentDay = new java.util.Date();
+					user.setCreated_date(new Date(currentDay.getTime()));
+					user.setIs_active((byte) 1);
+					user.setIs_lockedout((byte) 0);
+					user.setMobile_no(userRegist.getReq_mobile());
+					user.setLast_name(userExist.getReq_name());
+					session.save(user);
+					//Insert Address
+					Address address = new Address();
+					address.setAddress(userRegist.getReq_address());
+					address.setApp_id(Utils.appId);
+					int addressIdDesc = 0;
+					Serializable serAdd = session.save(address);
+			        if (serAdd != null) {
+			        	addressIdDesc = (Integer) serAdd;
+			        }
+			        System.out.println("addressId " + addressIdDesc);
+					//insert user address
+			        UserAddress userAddr = new UserAddress();
+					userAddr.setAddr_id(addressIdDesc);
+					userAddr.setApp_id(Utils.appId);
+					userAddr.setUser_id(user.getUser_id());
+					userAddr.setIs_deliver(true);
+					userAddr.setIs_main(true);
+					session.save(userAddr);
+					trans.commit();
+					updateUserRegister(userExist);
+				}catch(Exception ex){
+					System.out.println(ex.getMessage());
+					trans.rollback();
+				}
+				
+				mailDAO.sendSimpleMail("kjncunn@gmail.com", userRegist.getReq_email(), "Verify Password", "password for email " + userRegist.getReq_email() + " : " + passwordRandom);
+				return userRegist.getReq_email()+":"+Utils.Sha1(passwordRandom);
+			}
+		}
+		else
+		{
+			return "exist";
+		}
+		return "fail";
 	}
 }
