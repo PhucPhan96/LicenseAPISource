@@ -1,5 +1,7 @@
 package nfc.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -12,7 +14,7 @@ import nfc.model.PKModel.ProductCategoryPK;
 @Entity
 @Table(name="fg_product_categories")
 @IdClass(ProductCategoryPK.class)
-public class ProductCategory {
+public class ProductCategory{
 	@Id
 	private int cate_id;
 	@Id

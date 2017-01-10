@@ -45,4 +45,6 @@
 	 <bean id="posDAO" class="nfc.serviceImpl.PosService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
+	 <bean id="mailDAO" class="nfc.serviceImpl.MailService">
+	 </bean>
 </beans>

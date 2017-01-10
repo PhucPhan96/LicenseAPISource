@@ -1,10 +1,16 @@
 package nfc.serviceImpl.common;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Field;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Random;
 import java.util.Set;
 
+import org.apache.commons.codec.binary.Hex;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -82,5 +88,30 @@ public class Utils {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	public static String generationCode(){
+		 Random rNo = new Random();
+		 int code = rNo.nextInt((9999 - 1000) + 1) + 1000;
+		 return String.valueOf(code);
+	}
+	
+	static final String characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+	static SecureRandom rnd = new SecureRandom();
+	public static String randomPassword(int len){
+	   StringBuilder sb = new StringBuilder(len);
+	   for( int i = 0; i < len; i++ ) 
+	      sb.append(characters.charAt( rnd.nextInt(characters.length())));
+	   return sb.toString();
+	}
+	public static String Sha1(String password){
+		try {
+			MessageDigest sha = MessageDigest.getInstance("SHA-1");
+			byte[] hash = sha.digest(password.getBytes());
+			return Hex.encodeHexString(hash);
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "";
 	}
 }
