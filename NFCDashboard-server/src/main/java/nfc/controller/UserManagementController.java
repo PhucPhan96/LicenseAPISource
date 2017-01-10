@@ -11,8 +11,10 @@ import nfc.model.User;
 import nfc.service.IUserService;
 import nfc.serviceImpl.Security.JwtTokenUtil;
 import nfc.serviceImpl.common.Utils;
+
 import java.util.UUID;
 
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,15 +43,34 @@ public class UserManagementController {
 		//User user = userDAO.findUserByUserName(username);
 		return Utils.convertObjectToJsonString(users);
 	}
+	@RequestMapping(value="app/user",method=RequestMethod.GET)
+	public String getListUserApp(HttpServletRequest request){
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+		List<User> users = userDAO.getListUser();
+		//User user = userDAO.findUserByUserName(username);
+		return Utils.convertObjectToJsonString(users);
+	}
 	@RequestMapping(value="userOne",method=RequestMethod.GET)
 	 	public String getUser(HttpServletRequest request){
 		String token = request.getHeader(tokenHeader);
 	    String username = jwtTokenUtil.getUsernameFromToken(token);
-	    User users = userDAO.findUserByUserName(username); 
+	    User users = userDAO.findUserByUserName(username);
 	    String userid = users.getUser_id();
 	    String userName = users.getUser_name();
+	    List address = users.getLstuserAddress();
+	    String phone = users.getPhone_no();
+	    String lastname = users.getLast_name();
+	    String firstname = users.getFirst_name();
+	    String midname = users.getMiddle_name();
+	    String fullname = firstname + midname + lastname;
+	    JSONObject jsonObj = new JSONObject();
+	    jsonObj.put("userid", userid);
+	    jsonObj.put("userName", fullname);
+	    jsonObj.put("address", address);
+	    jsonObj.put("phone", phone);
 	    //return Utils.convertObjectToJsonString(users);
-	    return userid;
+	    return Utils.convertObjectToJsonString(jsonObj);
 	    //return "{\"result\":\"" + userid +  "\"}";
 	}
 	@RequestMapping(value="user/detail/{id}",method=RequestMethod.GET)
