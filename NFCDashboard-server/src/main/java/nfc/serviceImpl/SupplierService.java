@@ -18,6 +18,7 @@ import nfc.model.Code;
 import nfc.model.Product;
 import nfc.model.Role;
 import nfc.model.Supplier;
+import nfc.model.SupplierFavorite;
 import nfc.model.SupplierAddress;
 import nfc.model.SupplierCategories;
 import nfc.model.SupplierImage;
@@ -42,6 +43,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -407,5 +409,19 @@ public class SupplierService implements ISupplierService {
 		}
 		return lstSupplierAppView;
 	}
+
+	public String getSupplierFavorite(int supplierId){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(SupplierFavorite.class);
+		criteria.add(Restrictions.eq("suppl_id", supplierId));
+		criteria.setProjection(Projections.rowCount());
+		List rowCount = criteria.list();
+		String favoCount = rowCount.get(0).toString();
+		trans.commit();
+		System.out.println(favoCount);
+		return favoCount;
+	}
+	
 	
 }

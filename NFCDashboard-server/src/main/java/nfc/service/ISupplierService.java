@@ -26,4 +26,5 @@ public interface ISupplierService {
 	List<SupplierUser> getListSupplierUserId(String userId);
 	List<SupplierAppView> getListSupplierViewOfCategory(int categoryId);
 	List<SupplierCategories> getListSupplierCategory(int supplId);
+	String getSupplierFavorite(int supplId);
 }

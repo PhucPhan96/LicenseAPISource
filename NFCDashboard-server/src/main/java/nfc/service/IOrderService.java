@@ -14,4 +14,5 @@ public interface IOrderService {
 	List<Order> getListOrder(int supplierId);
 	Order getOrder(int orderId);
 	List<OrderView> getListOrderViewSearch(String dateFrom, String dateTo);
+	String getOrderCount(int supplierId);
 }

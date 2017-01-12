@@ -4,15 +4,20 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
+
+import nfc.model.PKModel.ProductOptionalPK;
 
 @Entity
 @Table(name="fg_prod_optional")
+@IdClass(ProductOptionalPK.class)
 public class ProductOptional {
+	@Id
 	private int prod_id;
+	@Id
 	private int option_prod_id;
 	private boolean is_optional;
-	@Id
 	@Column(name="prod_id")
 	public int getProd_id() {
 		return prod_id;
