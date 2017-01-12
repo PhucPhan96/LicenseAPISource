@@ -60,7 +60,12 @@ public class SupplierManagementController {
 		System.out.println("SupplierStr " + supplierStr);
 		return supplierStr;
 	}
-	
+	@RequestMapping(value="app/supplierFavorite/{id}", method=RequestMethod.GET)
+	public @ResponseBody String getSupplierFavorite(@PathVariable("id") int supplId){
+		String supplierFavorite =  supplierDAO.getSupplierFavorite(supplId);
+		return supplierFavorite;
+	}
+
 	//get supplier view
 	@RequestMapping(value="supplier/detail/{id}", method=RequestMethod.GET)
 	public String getSupplierView(@PathVariable("id") String supplId, HttpServletRequest request){

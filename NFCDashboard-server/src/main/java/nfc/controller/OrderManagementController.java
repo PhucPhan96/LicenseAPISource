@@ -102,7 +102,7 @@ public class OrderManagementController {
     MessageHandler webSocketOutboundAdapterCustomer() {
         return new WebSocketOutboundMessageHandler(serverWebSocketContainerCustomer());
     }
-    @Bean
+    /*@Bean
     IntegrationFlow webSocketFlow() {
         return f -> {
             Function<Message , Object> splitter = m -> serverWebSocketContainer()
@@ -133,7 +133,7 @@ public class OrderManagementController {
                     .channel(c -> c.executor(Executors.newCachedThreadPool()))
                     .handle(webSocketOutboundAdapterCustomer());
         };
-    }
+    }*/
     @RequestMapping(value="/order/customer", method = RequestMethod.POST)
     public void send(@RequestBody OrderView orderView) {
     	try{
@@ -206,5 +206,10 @@ public class OrderManagementController {
 	public @ResponseBody String deleteRole(@PathVariable("id") int orderId){
 		String data = orderDAO.deleteOrderView(orderId) + "";
 		return "{\"result\":\"" + data + "\"}";
+	}
+    @RequestMapping(value="app/orderCount/{id}", method=RequestMethod.GET)
+	public @ResponseBody String getOrderCount(@PathVariable("id") int supplierId){
+		String data = orderDAO.getOrderCount(supplierId);
+		return data;
 	}
 }
