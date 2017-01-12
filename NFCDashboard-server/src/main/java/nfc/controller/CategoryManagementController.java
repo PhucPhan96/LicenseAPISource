@@ -47,7 +47,7 @@ public class CategoryManagementController {
 	public @ResponseBody String insertCategory(@RequestBody Category cate){
 		cate.setApp_id(Utils.appId);
 		Date date = new Date();
-		cate.setCreated_date(date.toString());
+		cate.setCreated_date(date);
 		String data = categoryDAO.insertCategory(cate)+"";
 		return "{\"result\":\"" + data + "\"}";
 	}

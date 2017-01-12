@@ -160,6 +160,7 @@ public class UserService implements IUserService {
 		Transaction trans = session.beginTransaction();
 		try
 		{
+			deleteRoleOfUser(session, userID);
 			session.delete(user);
 			deleteAddressOfUser(session, userID);
 			deleteSupplierOfUser(session, userID);
