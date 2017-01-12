@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nfc.model.Group;
 import nfc.model.Order;
 import nfc.model.OrderDetail;
 import nfc.model.ViewModel.OrderView;
@@ -22,6 +23,7 @@ import nfc.serviceImpl.common.Utils;
 import nfc.serviceImpl.integration.RequestGateway;
 
 import org.hibernate.annotations.common.reflection.java.generics.TypeEnvironmentFactory;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -80,27 +82,58 @@ public class OrderManagementController {
     MessageChannel sendToStore() {
         return new DirectChannel();
     }
+    
+    @Bean
+   	public ServerWebSocketContainer serverWebSocketContainerCustomer() {
+   		return new ServerWebSocketContainer("/customer").setAllowedOrigins("*").withSockJs();
+   		//return new ServerWebSocketContainer.SockJsServiceOptions().setHeartbeatTime(60_000)
+   	}
+    @Bean(name = "webSocketFlowCustomer.input")
+    MessageChannel sendToCustomer() {
+        return new DirectChannel();
+    }
     MessageChannel prepareSendToStore;
     @Bean
     MessageHandler webSocketOutboundAdapter() {
         return new WebSocketOutboundMessageHandler(serverWebSocketContainer());
     }
-//    @Bean
-//    IntegrationFlow webSocketFlow() {
-//        return f -> {
-//            Function<Message , Object> splitter = m -> serverWebSocketContainer()
-//                    .getSessions()
-//                    .keySet()
-//                    .stream()
-//                    .map(s -> MessageBuilder.fromMessage(m)
-//                            .setHeader(SimpMessageHeaderAccessor.SESSION_ID_HEADER, s)
-//                            .build())
-//                    .collect(Collectors.toList());
-//            f.split( Message.class, splitter)
-//                    .channel(c -> c.executor(Executors.newCachedThreadPool()))
-//                    .handle(webSocketOutboundAdapter());
-//        };
-//    }
+    
+    @Bean
+    MessageHandler webSocketOutboundAdapterCustomer() {
+        return new WebSocketOutboundMessageHandler(serverWebSocketContainerCustomer());
+    }
+    @Bean
+    IntegrationFlow webSocketFlow() {
+        return f -> {
+            Function<Message , Object> splitter = m -> serverWebSocketContainer()
+                    .getSessions()
+                    .keySet()
+                    .stream()
+                    .map(s -> MessageBuilder.fromMessage(m)
+                            .setHeader(SimpMessageHeaderAccessor.SESSION_ID_HEADER, s)
+                            .build())
+                    .collect(Collectors.toList());
+            f.split( Message.class, splitter)
+                    .channel(c -> c.executor(Executors.newCachedThreadPool()))
+                    .handle(webSocketOutboundAdapter());
+        };
+    }
+    @Bean
+    IntegrationFlow webSocketFlowCustomer() {
+        return f -> {
+            Function<Message , Object> splitter = m -> serverWebSocketContainerCustomer()
+                    .getSessions()
+                    .keySet()
+                    .stream()
+                    .map(s -> MessageBuilder.fromMessage(m)
+                            .setHeader(SimpMessageHeaderAccessor.SESSION_ID_HEADER, s)
+                            .build())
+                    .collect(Collectors.toList());
+            f.split( Message.class, splitter)
+                    .channel(c -> c.executor(Executors.newCachedThreadPool()))
+                    .handle(webSocketOutboundAdapterCustomer());
+        };
+    }
     @RequestMapping(value="/order/customer", method = RequestMethod.POST)
     public void send(@RequestBody OrderView orderView) {
     	try{
@@ -143,6 +176,9 @@ public class OrderManagementController {
     	try{
     		System.out.println("data" + data);
     		sendToStore().send(MessageBuilder.withPayload(data).build());
+    		JSONObject jsonObject = Utils.convertStringToJsonObject(data);
+    		JSONObject order = (JSONObject) jsonObject.get("order");
+    		sendToCustomer().send(MessageBuilder.withPayload(order.get("user_id")).build());
     	}
     	catch(Exception ex){
     	}

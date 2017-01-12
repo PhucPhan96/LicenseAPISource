@@ -35,11 +35,18 @@ public class ProductManagementController {
 			System.out.println(products);
 			return Utils.convertObjectToJsonString(products);
 		}
-	@RequestMapping(value="product/{id}", method=RequestMethod.GET)
+	@RequestMapping(value="app/product/{id}", method=RequestMethod.GET)
 	public String getProduct(@PathVariable("id") String productId){
 		/*String resutl =  Utils.convertObjectToJsonString(productDAO.getProduct(Integer.parseInt(productId)));
 		return resutl;*/
 		String resutl =  Utils.convertObjectToJsonString(productDAO.getProductView(Integer.parseInt(productId)));
+		return resutl;
+	}
+	@RequestMapping(value="app/products/{id}", method=RequestMethod.GET)
+	public String getProductOptional(@PathVariable("id") String productId){
+		/*String resutl =  Utils.convertObjectToJsonString(productDAO.getProduct(Integer.parseInt(productId)));
+		return resutl;*/
+		String resutl =  Utils.convertObjectToJsonString(productDAO.getProductOptional(Integer.parseInt(productId)));
 		return resutl;
 	}
 	@RequestMapping(value="product/add", method=RequestMethod.POST)
