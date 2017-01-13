@@ -181,6 +181,7 @@ public class OrderManagementController {
     		sendToCustomer().send(MessageBuilder.withPayload(order.get("user_id")).build());
     	}
     	catch(Exception ex){
+    		System.out.println("vao nay ne");
     	}
     }
     @RequestMapping(value="order/pos",method=RequestMethod.GET)
