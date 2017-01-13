@@ -423,5 +423,38 @@ public class SupplierService implements ISupplierService {
 		return favoCount;
 	}
 	
+	public SupplierFavorite isSupplierFavorite(String userId){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(SupplierFavorite.class);
+		criteria.add(Restrictions.eq("user_id", userId));
+		SupplierFavorite supplierFavorite = (SupplierFavorite) criteria.uniqueResult();
+		trans.commit();
+		return supplierFavorite;
+	}
 	
+	public boolean insertSupplierFavorite(int supplId, String userId){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		try
+		{
+			SupplierFavorite supplFavo = new SupplierFavorite();
+			supplFavo.setApp_id("e6271952-d4b9-4ed3-b83b-63a56d47a713");
+			supplFavo.setSuppl_id(supplId);
+			supplFavo.setUser_id(userId);
+			session.save(supplFavo);
+			trans.commit();
+			return true;
+		}
+		catch(Exception ex)
+		{
+			System.out.println("Error " + ex.getMessage());
+			trans.rollback();
+			return false;
+		}
+		finally{
+			if(session.isOpen())
+				session.close();
+		}
+	}
 }
