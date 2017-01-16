@@ -7,6 +7,7 @@ import nfc.model.SupplierCategories;
 import nfc.model.SupplierImage;
 import nfc.model.SupplierUser;
 import nfc.model.SupplierWork;
+import nfc.model.SupplierFavorite;
 import nfc.model.ViewModel.SupplierAppView;
 import nfc.model.ViewModel.SupplierView;
 
@@ -26,4 +27,7 @@ public interface ISupplierService {
 	List<SupplierUser> getListSupplierUserId(String userId);
 	List<SupplierAppView> getListSupplierViewOfCategory(int categoryId);
 	List<SupplierCategories> getListSupplierCategory(int supplId);
+	String getSupplierFavorite(int supplId);
+	boolean insertSupplierFavorite(int supplId, String userId);
+	SupplierFavorite isSupplierFavorite(String userId);
 }

@@ -24,7 +24,7 @@ public class Category implements Serializable{
 	private int cate_img_id;
 	private String cate_name;
 	private int parent_cate_id;
-	private String created_date;
+	private Date created_date;
 	private int cate_seq;
 	private String cate_type;
 	@Id
@@ -65,10 +65,10 @@ public class Category implements Serializable{
 		this.parent_cate_id = parent_cate_id;
 	}
 	@Column(name="created_date")
-	public String getCreated_date() {
+	public Date getCreated_date() {
 		return created_date;
 	}
-	public void setCreated_date(String created_date) {
+	public void setCreated_date(Date created_date) {
 		this.created_date = created_date;
 	}
 	@Column(name="cate_seq")

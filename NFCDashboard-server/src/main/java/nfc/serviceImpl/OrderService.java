@@ -12,6 +12,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -144,6 +145,17 @@ public class OrderService implements IOrderService{
 		List<Order> orders = (List<Order>) criteria.list();
 		trans.commit();
 		return orders;
+	}
+	public String getOrderCount(int supplierId){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(Order.class);
+		criteria.add(Restrictions.eq("suppl_id", supplierId));
+		criteria.setProjection(Projections.rowCount());
+		List rowCount = criteria.list();
+		String orderCount = rowCount.get(0).toString();
+		trans.commit();
+		return orderCount;
 	}
 	private List<Order> getListOrderCurrentDay(int supplierId)
 	{

@@ -208,4 +208,9 @@ public class OrderManagementController {
 		String data = orderDAO.deleteOrderView(orderId) + "";
 		return "{\"result\":\"" + data + "\"}";
 	}
+    @RequestMapping(value="app/orderCount/{id}", method=RequestMethod.GET)
+	public @ResponseBody String getOrderCount(@PathVariable("id") int supplierId){
+		String data = orderDAO.getOrderCount(supplierId);
+		return data;
+	}
 }
