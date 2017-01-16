@@ -479,4 +479,25 @@ public class SupplierService implements ISupplierService {
 				session.close();
 		}
 	}
+	private void deleteReferenceOfSupplierFavorite(Session session, int supplId, String userId, String table)
+	{
+		String deleteQuery = "delete from "+table+" where suppl_id = " + supplId + "and user_id = " + userId;
+		Query query = session.createSQLQuery(deleteQuery);
+	    query.executeUpdate();
+	}
+	public boolean deleteSupplierFavorite(int supplId, String userId){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		try
+		{
+			deleteReferenceOfSupplierFavorite(session, supplId, userId, "fg_favorite_suppliers");
+			trans.commit();
+			return true;
+		}
+		catch(Exception ex)
+		{
+			trans.rollback();
+			return false;
+		} 
+	}
 }
