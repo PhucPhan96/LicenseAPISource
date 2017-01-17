@@ -4,6 +4,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import nfc.model.Supplier;
+import nfc.model.SupplierFavorite;
 import nfc.model.ViewModel.SupplierAppView;
 import nfc.model.ViewModel.SupplierView;
 import nfc.service.ISupplierService;
@@ -39,7 +40,7 @@ public class SupplierManagementController {
 		String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
 		List<SupplierView> lstSupplierView = supplierDAO.getListSupplierView(username);
-//		System.out.println(lstSupplierView.size());
+		System.out.println(Utils.convertObjectToJsonString(lstSupplierView));
 		return Utils.convertObjectToJsonString(lstSupplierView);
 	}
 	@RequestMapping(value="app/supplier/{id}",method=RequestMethod.GET)
@@ -97,6 +98,27 @@ public class SupplierManagementController {
 	public @ResponseBody String deleteRole(@PathVariable("id") String supplierId){
 		System.out.println("Vao delete " + supplierId);
 		String data = supplierDAO.deleteSupplierView(Integer.parseInt(supplierId)) + "";
+		return "{\"result\":\"" + data + "\"}";
+	}
+	@RequestMapping(value="app/supplierFavorite/add/{supplierID}/{userID}", method=RequestMethod.POST)
+	public @ResponseBody String insertSupplierFavorite(@PathVariable("supplierID") int supplierId, @PathVariable("userID") String userId){
+		//System.out.println("Vao Inser supplier ne " + supplierView.getSupplier().getApp_id());
+		//System.out.println("Image size " + supplierView.getImages().size());
+//		String token = request.getHeader(tokenHeader);
+//        String username = jwtTokenUtil.getUsernameFromToken(token);
+		String data = supplierDAO.insertSupplierFavorite(supplierId, userId) + "";
+		return "{\"result\":\"" + data + "\"}";
+	}
+	@RequestMapping(value="app/isSupplierFavorite/{id}", method=RequestMethod.GET)
+	public String isSupplierFavorite(@PathVariable("id") String userId){
+		String supplierStr =  Utils.convertObjectToJsonString(supplierDAO.isSupplierFavorite(userId));
+		System.out.println("SupplierStr " + supplierStr);
+		return supplierStr;
+	}
+	@RequestMapping(value="app/deleteSupplierFavorite/{supplierID}/{userID}", method=RequestMethod.POST)
+	public String deleteSupplierFavorite(@PathVariable("supplierID") int supplId, @PathVariable("userID") String userId){
+		System.out.println("Vao delete " + supplId);
+		String data = supplierDAO.deleteSupplierFavorite(supplId, userId) + "";
 		return "{\"result\":\"" + data + "\"}";
 	}
 }

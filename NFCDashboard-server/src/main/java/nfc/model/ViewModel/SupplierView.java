@@ -18,6 +18,13 @@ public class SupplierView {
 	private List<AttachFile> images = new ArrayList<AttachFile>();
 	private List<Category> categories = new ArrayList<Category>();
 	private List<SupplierAddressView> lstSupplAddressView = new ArrayList<SupplierAddressView>();
+	private User director = new User();
+	public User getDirector() {
+		return director;
+	}
+	public void setDirector(User director) {
+		this.director = director;
+	}
 	/*private List<Role> roles;*/
 	//private Supplier supplierManage;
 	public Supplier getSupplier() {

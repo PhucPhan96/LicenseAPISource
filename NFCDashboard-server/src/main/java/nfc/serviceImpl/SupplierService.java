@@ -339,6 +339,16 @@ public class SupplierService implements ISupplierService {
 			return false;
 		} 
 	}
+	private User getDirectorSuplier(int supplierId){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Query query = session.createSQLQuery(
+				"SELECT p.* FROM fg_users p INNER JOIN fg_supplier_users pc ON p.user_id = pc.user_id WHERE is_director = 1 and pc.suppl_id = " + supplierId)
+				.addEntity(User.class);
+		User result = (User) query.uniqueResult();
+		trans.commit();
+		return result;
+	}
 	public List<SupplierUser> getListSupplierUser(String username){
 		User user = userDAO.findUserByUserName(username);
 		Session session = this.sessionFactory.getCurrentSession();
@@ -353,9 +363,20 @@ public class SupplierService implements ISupplierService {
 		// TODO Auto-generated method stub
 		List<SupplierView> lstSupplierView = new ArrayList<SupplierView>();		
 		List<SupplierUser> supplierUsers = getListSupplierUser(username);
-		System.out.println("list la: "+supplierUsers.size());
-		for(SupplierUser supplUser: supplierUsers){
-			lstSupplierView.add(getSupplierView(supplUser.getSuppl_id()));
+		if(supplierUsers.size()>0){
+			Session session = this.sessionFactory.getCurrentSession();
+			Transaction trans = session.beginTransaction();
+			Query query = session.createSQLQuery(
+					"CALL GetListSupplierWorkTree(:managerId)")
+					.addEntity(SupplierWork.class)
+					.setParameter("managerId", supplierUsers.get(0).getSuppl_id());
+			List<SupplierWork> result = query.list();
+			trans.commit();
+			for(SupplierWork supplWork: result){
+				SupplierView supplView = getSupplierView(supplWork.getSuppl_id());
+				supplView.setDirector(getDirectorSuplier(supplWork.getSuppl_id()));
+				lstSupplierView.add(supplView);
+			}
 		}
 		return lstSupplierView;
 	}
@@ -435,4 +456,59 @@ public class SupplierService implements ISupplierService {
 		return lstSupplierView;
 	}
 	
+	public SupplierFavorite isSupplierFavorite(String userId){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(SupplierFavorite.class);
+		criteria.add(Restrictions.eq("user_id", userId));
+		SupplierFavorite supplierFavorite = (SupplierFavorite) criteria.uniqueResult();
+		trans.commit();
+		return supplierFavorite;
+	}
+	
+	public boolean insertSupplierFavorite(int supplId, String userId){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		try
+		{
+			SupplierFavorite supplFavo = new SupplierFavorite();
+			supplFavo.setApp_id("e6271952-d4b9-4ed3-b83b-63a56d47a713");
+			supplFavo.setSuppl_id(supplId);
+			supplFavo.setUser_id(userId);
+			session.save(supplFavo);
+			trans.commit();
+			return true;
+		}
+		catch(Exception ex)
+		{
+			System.out.println("Error " + ex.getMessage());
+			trans.rollback();
+			return false;
+		}
+		finally{
+			if(session.isOpen())
+				session.close();
+		}
+	}
+	private void deleteReferenceOfSupplierFavorite(Session session, int supplId, String userId, String table)
+	{
+		String deleteQuery = "delete from "+table+" where suppl_id = " + supplId + "and user_id = " + userId;
+		Query query = session.createSQLQuery(deleteQuery);
+	    query.executeUpdate();
+	}
+	public boolean deleteSupplierFavorite(int supplId, String userId){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		try
+		{
+			deleteReferenceOfSupplierFavorite(session, supplId, userId, "fg_favorite_suppliers");
+			trans.commit();
+			return true;
+		}
+		catch(Exception ex)
+		{
+			trans.rollback();
+			return false;
+		} 
+	}
 }

@@ -107,6 +107,7 @@ public class UserService implements IUserService {
 		Transaction trans = session.beginTransaction();
 		try
 		{
+			user.setPassword(Utils.BCryptPasswordEncoder(user.getPassword()));
 			session.save(user);
 			insertUserRole(session, user);
 			insertUserSupplier(session,user);

@@ -52,7 +52,7 @@ public class UserManagementController {
 		return Utils.convertObjectToJsonString(users);
 	}
 	@RequestMapping(value="userOne",method=RequestMethod.GET)
-	 	public String getUser(HttpServletRequest request){
+	   	public String getUser(HttpServletRequest request){
 		String token = request.getHeader(tokenHeader);
 	    String username = jwtTokenUtil.getUsernameFromToken(token);
 	    User users = userDAO.findUserByUserName(username);
@@ -69,10 +69,10 @@ public class UserManagementController {
 	    jsonObj.put("userName", fullname);
 	    jsonObj.put("address", address);
 	    jsonObj.put("phone", phone);
-	    //return Utils.convertObjectToJsonString(users);
+	     //return Utils.convertObjectToJsonString(users);
 	    return Utils.convertObjectToJsonString(jsonObj);
-	    //return "{\"result\":\"" + userid +  "\"}";
-	}
+	     //return "{\"result\":\"" + userid +  "\"}";
+	 }
 	@RequestMapping(value="user/detail/{id}",method=RequestMethod.GET)
 	public String getUser(@PathVariable("id") String userId){
 		User users = userDAO.getUser(userId);	

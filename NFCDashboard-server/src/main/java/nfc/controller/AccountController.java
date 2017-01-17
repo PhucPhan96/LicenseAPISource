@@ -55,20 +55,14 @@ public class AccountController {
 
     @RequestMapping(value = "/auth", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest) throws AuthenticationException {
-
-    	System.out.println("Vao crateAuthenticationToken");
-    	System.out.println("username " + authenticationRequest.getUsername());
-    	System.out.println("password " + authenticationRequest.getPassword());
-    	System.out.println("authentication " + authenticationManager);
         // Perform the security
-        final Authentication authentication = authenticationManager.authenticate(
+		final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         authenticationRequest.getUsername(),
                         authenticationRequest.getPassword()
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         // Reload password post-security so we can generate token
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         final String token = jwtTokenUtil.generateToken(userDetails);
@@ -96,11 +90,12 @@ public class AccountController {
     	
     	if(body.contains(":"))
     	{	
-    		User user = userDAO.findUserByUserName(userRegister.getReq_email());
+    		String username = body.split(":")[0];
+    		String password = body.split(":")[1];
     		final Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            body.split(":")[0],
-                            body.split(":")[1]
+                            username,
+                            password
                     )
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -112,6 +107,6 @@ public class AccountController {
     }
     @RequestMapping(value = "/app/user/shaq/{id}", method = RequestMethod.GET)
     public String getSha1(@PathVariable("id") String password) {
-    	return Utils.Sha1(password);
+    	return Utils.BCryptPasswordEncoder(Utils.Sha1(password));
     }
 }

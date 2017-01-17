@@ -14,6 +14,8 @@ import org.apache.commons.codec.binary.Hex;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.google.gson.Gson;
 
@@ -113,5 +115,9 @@ public class Utils {
 			e.printStackTrace();
 		}
 		return "";
+	}
+	public static String BCryptPasswordEncoder(String password){
+		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		return passwordEncoder.encode(password);
 	}
 }

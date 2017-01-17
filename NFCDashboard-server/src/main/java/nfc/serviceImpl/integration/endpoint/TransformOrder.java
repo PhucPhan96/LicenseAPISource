@@ -7,6 +7,7 @@ import nfc.serviceImpl.common.Utils;
 public class TransformOrder {
 	public String tranOrderToJson(OrderView orderView)
 	{
+		System.out.println("Vao transform order");
 		return Utils.convertObjectToJsonString(orderView);
 	}
 }

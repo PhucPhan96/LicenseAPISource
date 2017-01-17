@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 
 import nfc.model.Category;
 import nfc.model.Code;
+import nfc.model.Product;
 import nfc.model.SupplierCategories;
 import nfc.model.User;
 import nfc.model.ViewModel.CategoryView;
@@ -30,6 +31,7 @@ import nfc.model.AttachFile;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -140,9 +142,44 @@ public class CategoryService implements ICategoryService{
 		}
 		return lstCategoryView;
 	}
+	
+	private List<Category> getListCategoryFromSupplier(int supplierId){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		String sql = "SELECT * FROM fg_categories c INNER JOIN fg_product_categories pc ON c.cate_id = pc.cate_id INNER JOIN fg_products p ON pc.prod_id = p.prod_id WHERE p.suppl_id = "+supplierId;
+		SQLQuery query = session.createSQLQuery(sql);
+		query.addEntity(Category.class);
+		List results = query.list();
+		trans.commit();
+		return results;
+	}
+	private List<Product> getListProductOfCategoryProduct(int cate){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		String sql = "SELECT * FROM fg_products p INNER JOIN fg_product_categories pc ON p.prod_id = pc.prod_id WHERE pc.cate_id = "+cate;
+		SQLQuery query = session.createSQLQuery(sql);
+		query.addEntity(Product.class);
+		List results = query.list();
+		trans.commit();
+		return results;
+	}
+	
 	@Override
 	public List<SupplierProductView> getListProductOfCategory(int supplierId) {
 		List<SupplierProductView> lstSupplierProductView = new ArrayList<SupplierProductView>();
+		
+		
+		List<Category> categoies = getListCategoryFromSupplier(supplierId);
+		for(Category category: categoies)
+		{
+			SupplierProductView supplierProductView = new SupplierProductView();
+			supplierProductView.setCategory(category);
+			supplierProductView.setProducts(getListProductOfCategoryProduct(category.getCate_id()));
+			lstSupplierProductView.add(supplierProductView);
+		}
+		/*List<Product> lstProdduct = productDAO.getListProduct(supplierId);
+		
+		
 		List<SupplierCategories> lstSupplierCategory = supplierDAO.getListSupplierCategory(supplierId);
 		for(SupplierCategories supplCate: lstSupplierCategory)
 		{
@@ -150,7 +187,7 @@ public class CategoryService implements ICategoryService{
 			supplierProductView.setCategory(categoryDAO.getCategory(supplCate.getCate_id()+""));
 			supplierProductView.setProducts(productDAO.getListProductOfCategory(supplCate.getCate_id(), supplierId));
 			lstSupplierProductView.add(supplierProductView);
-		}
+		}*/
 		return lstSupplierProductView;
 	}
 }
