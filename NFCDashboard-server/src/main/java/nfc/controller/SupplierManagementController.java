@@ -65,7 +65,7 @@ public class SupplierManagementController {
 	@RequestMapping(value="app/supplierFavorite/{id}", method=RequestMethod.GET)
 	public @ResponseBody String getSupplierFavorite(@PathVariable("id") int supplId){
 		String supplierFavorite =  supplierDAO.getSupplierFavorite(supplId);
-		return supplierFavorite;
+		return "{\"result\":\"" + supplierFavorite + "\"}";
 	}
 
 	//get supplier view
