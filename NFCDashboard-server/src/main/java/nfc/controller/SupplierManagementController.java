@@ -39,6 +39,7 @@ public class SupplierManagementController {
 		String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
 		List<SupplierView> lstSupplierView = supplierDAO.getListSupplierView(username);
+//		System.out.println(lstSupplierView.size());
 		return Utils.convertObjectToJsonString(lstSupplierView);
 	}
 	@RequestMapping(value="app/supplier/{id}",method=RequestMethod.GET)

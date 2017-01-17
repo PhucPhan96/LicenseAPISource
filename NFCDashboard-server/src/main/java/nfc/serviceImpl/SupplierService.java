@@ -351,8 +351,9 @@ public class SupplierService implements ISupplierService {
 	}
 	public List<SupplierView> getListSupplierView(String username) {
 		// TODO Auto-generated method stub
-		List<SupplierView> lstSupplierView = new ArrayList<SupplierView>();
+		List<SupplierView> lstSupplierView = new ArrayList<SupplierView>();		
 		List<SupplierUser> supplierUsers = getListSupplierUser(username);
+		System.out.println("list la: "+supplierUsers.size());
 		for(SupplierUser supplUser: supplierUsers){
 			lstSupplierView.add(getSupplierView(supplUser.getSuppl_id()));
 		}
@@ -422,6 +423,16 @@ public class SupplierService implements ISupplierService {
 		System.out.println(favoCount);
 		return favoCount;
 	}
-	
+	public List<SupplierView> getListSupplierView1(String username) {
+		// TODO Auto-generated method stub
+		List<SupplierView> lstSupplierView = new ArrayList<SupplierView>();		
+		List<SupplierUser> supplierUsers = getListSupplierUser(username);
+		
+		System.out.println("list la: "+supplierUsers.size());
+		for(SupplierUser supplUser: supplierUsers){
+			lstSupplierView.add(getSupplierView(supplUser.getSuppl_id()));
+		}
+		return lstSupplierView;
+	}
 	
 }

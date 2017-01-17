@@ -17,6 +17,7 @@ public class Program {
 	private String display_seq;
 	private String use_yn;
 	private String program_url;
+	private String program_class;
 	
 	@Id
 	@Column(name="program_id")
@@ -67,6 +68,13 @@ public class Program {
 	}
 	public void setProgram_url(String program_url) {
 		this.program_url = program_url;
+	}
+	@Column(name="program_class")
+	public String getProgram_class() {
+		return program_class;
+	}
+	public void setProgram_class(String program_class) {
+		this.program_class = program_class;
 	}
 	
 }
