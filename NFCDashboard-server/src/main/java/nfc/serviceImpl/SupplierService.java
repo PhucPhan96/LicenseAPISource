@@ -481,7 +481,7 @@ public class SupplierService implements ISupplierService {
 	}
 	private void deleteReferenceOfSupplierFavorite(Session session, int supplId, String userId, String table)
 	{
-		String deleteQuery = "delete from "+table+" where suppl_id = " + supplId + "and user_id = " + userId;
+		String deleteQuery = "delete from "+table+" where suppl_id = " + "'" + supplId + "'" + " and user_id = " + "'" + userId +"'" ;
 		Query query = session.createSQLQuery(deleteQuery);
 	    query.executeUpdate();
 	}

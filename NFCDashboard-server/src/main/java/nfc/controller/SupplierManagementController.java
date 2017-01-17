@@ -118,6 +118,7 @@ public class SupplierManagementController {
 	@RequestMapping(value="app/deleteSupplierFavorite/{supplierID}/{userID}", method=RequestMethod.POST)
 	public String deleteSupplierFavorite(@PathVariable("supplierID") int supplId, @PathVariable("userID") String userId){
 		System.out.println("Vao delete " + supplId);
+		System.out.println("Vao delete " + userId);
 		String data = supplierDAO.deleteSupplierFavorite(supplId, userId) + "";
 		return "{\"result\":\"" + data + "\"}";
 	}
