@@ -65,7 +65,7 @@ public class SupplierManagementController {
 	@RequestMapping(value="app/supplierFavorite/{id}", method=RequestMethod.GET)
 	public @ResponseBody String getSupplierFavorite(@PathVariable("id") int supplId){
 		String supplierFavorite =  supplierDAO.getSupplierFavorite(supplId);
-		return supplierFavorite;
+		return "{\"result\":\"" + supplierFavorite + "\"}";
 	}
 
 	//get supplier view
@@ -118,6 +118,7 @@ public class SupplierManagementController {
 	@RequestMapping(value="app/deleteSupplierFavorite/{supplierID}/{userID}", method=RequestMethod.POST)
 	public String deleteSupplierFavorite(@PathVariable("supplierID") int supplId, @PathVariable("userID") String userId){
 		System.out.println("Vao delete " + supplId);
+		System.out.println("Vao delete " + userId);
 		String data = supplierDAO.deleteSupplierFavorite(supplId, userId) + "";
 		return "{\"result\":\"" + data + "\"}";
 	}
