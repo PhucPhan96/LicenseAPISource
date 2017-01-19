@@ -105,6 +105,7 @@ public class Product {
 		return qty_per_unit;
 	}
 	public void setQty_per_unit(String qty_per_unit) {
+		
 		this.qty_per_unit = qty_per_unit;
 	}
 	@Column(name="unit_price")
@@ -126,6 +127,13 @@ public class Product {
 		return min_order_qty;
 	}
 	public void setMin_order_qty(int min_order_qty) {
-		this.min_order_qty = min_order_qty;
+		if(Integer.valueOf(min_order_qty) != null)
+		{
+			this.min_order_qty = min_order_qty;
+		}
+		else
+		{
+			this.min_order_qty = 0;
+		}
 	}
 }
