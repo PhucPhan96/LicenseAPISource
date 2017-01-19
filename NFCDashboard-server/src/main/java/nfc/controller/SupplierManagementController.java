@@ -122,4 +122,14 @@ public class SupplierManagementController {
 		String data = supplierDAO.deleteSupplierFavorite(supplId, userId) + "";
 		return "{\"result\":\"" + data + "\"}";
 	}
+	//getSupplierView2
+	@RequestMapping(value="app/supplier/detail2/{id}", method=RequestMethod.GET)
+	public String getSupplierView2(@PathVariable("id") String supplId, HttpServletRequest request){
+		/*String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);*/
+		String supplierView =  Utils.convertObjectToJsonString(supplierDAO.getSupplierView2(Integer.parseInt(supplId)));
+		System.out.println("supplierViewStr" + supplierView);
+		return supplierView;
+		
+	}
 }

@@ -16,9 +16,12 @@ public class SupplierView {
 	private Supplier supplier = new Supplier();
 	private SupplierWork supplierWork = new SupplierWork();
 	private List<AttachFile> images = new ArrayList<AttachFile>();
+	
 	private List<Category> categories = new ArrayList<Category>();
 	private List<SupplierAddressView> lstSupplAddressView = new ArrayList<SupplierAddressView>();
 	private User director = new User();
+	private List<SupplierAttachFileView> lstAttachFileView;
+//	private String img_path;
 	public User getDirector() {
 		return director;
 	}
@@ -57,10 +60,23 @@ public class SupplierView {
 	public void setLstSupplAddressView(List<SupplierAddressView> lstSupplAddressView) {
 		this.lstSupplAddressView = lstSupplAddressView;
 	}
+
+//	public String getImagePath() {
+//		return img_path;
+//	}
+//	public void setImagePath(String img_path) {
+//		this.img_path = img_path;
+//	}
 	/*public Supplier getSupplierManage() {
 		return supplierManage;
 	}
 	public void setSupplierManage(Supplier supplierManage) {
 		this.supplierManage = supplierManage;
 	}*/
+	public List<SupplierAttachFileView> getLstAttachFileView() {
+		return lstAttachFileView;
+	}
+	public void setLstAttachFileView(List<SupplierAttachFileView> lstAttachFileView) {
+		this.lstAttachFileView = lstAttachFileView;
+	}
 }

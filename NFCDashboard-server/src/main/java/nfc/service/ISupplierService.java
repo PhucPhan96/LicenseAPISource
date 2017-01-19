@@ -31,4 +31,5 @@ public interface ISupplierService {
 	boolean insertSupplierFavorite(int supplId, String userId);
 	SupplierFavorite isSupplierFavorite(String userId);
 	boolean deleteSupplierFavorite(int supplId, String userId);
+	SupplierView getSupplierView2(int supplI);
 }

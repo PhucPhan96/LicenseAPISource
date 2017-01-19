@@ -17,6 +17,8 @@ public class SupplierImage {
 	@Id
 	private int img_id; 
 	private String img_name;
+	private String img_type;
+//	private String img_path;
 	@Column(name="suppl_id")
 	public int getSuppl_id() {
 		return suppl_id;
@@ -38,4 +40,18 @@ public class SupplierImage {
 	public void setImg_name(String img_name) {
 		this.img_name = img_name;
 	}
+	@Column(name="img_type")
+	public String getImg_type() {
+		return img_type;
+	}
+	public void setImg_type(String img_type) {
+		this.img_type = img_type;
+	}
+//	@Column(name="img_path")
+//	public String img_path() {
+//		return img_path;
+//	}
+//	public void setIimg_path(String img_path) {
+//		this.img_path = img_path;
+//	}
 }
