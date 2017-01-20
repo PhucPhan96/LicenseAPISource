@@ -3,6 +3,7 @@ package nfc.controller;
 import java.util.List;
 
 import nfc.model.Product;
+import nfc.model.ProductOptional;
 import nfc.model.Role;
 import nfc.model.ViewModel.ProductView;
 import nfc.service.IProductService;
@@ -24,29 +25,31 @@ public class ProductManagementController {
 	private IProductService productDAO;
 /*	@PreAuthorize("hasRole('SysAdmin')")*/
 	@RequestMapping(value="product/supplier/{id}",method=RequestMethod.GET)
-	public String getListProductViewBySupplier(@PathVariable("id") int supplId){
+	public List<ProductView> getListProductViewBySupplier(@PathVariable("id") int supplId){
 		List<ProductView> lstProductView = productDAO.getListProductView(supplId);
-		return Utils.convertObjectToJsonString(lstProductView);
+		return lstProductView;
+		//return Utils.convertObjectToJsonString(lstProductView);
 	}
 	@RequestMapping(value="products/{id}",method=RequestMethod.GET)
 	/*	@PreAuthorize("hasRole('SysAdmin')")*/
-		public String getProductsBySuppID(@PathVariable("id") int supplId){
+		public List<Product> getProductsBySuppID(@PathVariable("id") int supplId){
 			List<Product> products = productDAO.getListProduct(supplId);
 			System.out.println(products);
-			return Utils.convertObjectToJsonString(products);
+			return products;
+			//return Utils.convertObjectToJsonString(products);
 		}
 	@RequestMapping(value="app/product/{id}", method=RequestMethod.GET)
-	public String getProduct(@PathVariable("id") String productId){
+	public ProductView getProduct(@PathVariable("id") String productId){
 		/*String resutl =  Utils.convertObjectToJsonString(productDAO.getProduct(Integer.parseInt(productId)));
 		return resutl;*/
-		String resutl =  Utils.convertObjectToJsonString(productDAO.getProductView(Integer.parseInt(productId)));
-		return resutl;
+		ProductView productView= productDAO.getProductView(Integer.parseInt(productId));
+		return productView;
 	}
 	@RequestMapping(value="app/products/{id}", method=RequestMethod.GET)
-	public String getProductOptional(@PathVariable("id") String productId){
+	public List<ProductOptional> getProductOptional(@PathVariable("id") String productId){
 		/*String resutl =  Utils.convertObjectToJsonString(productDAO.getProduct(Integer.parseInt(productId)));
 		return resutl;*/
-		String resutl =  Utils.convertObjectToJsonString(productDAO.getProductOptional(Integer.parseInt(productId)));
+		List<ProductOptional> resutl =  productDAO.getProductOptional(Integer.parseInt(productId));
 		return resutl;
 	}
 	@RequestMapping(value="product/add", method=RequestMethod.POST)

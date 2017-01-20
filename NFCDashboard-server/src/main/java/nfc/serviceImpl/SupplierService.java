@@ -25,6 +25,7 @@ import nfc.model.SupplierImage;
 import nfc.model.SupplierUser;
 import nfc.model.SupplierWork;
 import nfc.model.User;
+import nfc.model.ViewModel.ProductAttachFileView;
 import nfc.model.ViewModel.SupplierAddressView;
 import nfc.model.ViewModel.SupplierAppView;
 import nfc.model.ViewModel.SupplierView;
@@ -46,6 +47,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import nfc.model.ViewModel.SupplierAttachFileView;
 
 public class SupplierService implements ISupplierService {
 	/*@Autowired
@@ -60,6 +62,7 @@ public class SupplierService implements ISupplierService {
 	private IFileService fileDAO;
 	@Autowired
 	private ICategoryService categoryDAO;
+	
 	private SessionFactory sessionFactory;
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
@@ -349,6 +352,9 @@ public class SupplierService implements ISupplierService {
 		trans.commit();
 		return result;
 	}
+	
+	
+	
 	public List<SupplierUser> getListSupplierUser(String username){
 		User user = userDAO.findUserByUserName(username);
 		Session session = this.sessionFactory.getCurrentSession();
@@ -511,4 +517,47 @@ public class SupplierService implements ISupplierService {
 			return false;
 		} 
 	}
+
+	public SupplierView getSupplierView2(int supplId) {
+		System.out.println("run toi day 2");
+		SupplierView supplierView = new SupplierView();
+		supplierView.setSupplier(getSupplier(supplId+""));
+		supplierView.setSupplierWork(getSupplierWork(supplId));
+		//get image of supplier
+		List<SupplierImage> supplImgs = getListSupplierImage(supplId);
+		List<SupplierAttachFileView> supplAttachFiles = new ArrayList<SupplierAttachFileView>();	
+		for(SupplierImage supImg: supplImgs)
+		{ 	
+			SupplierAttachFileView supAttachView = new SupplierAttachFileView();
+			supAttachView.setImageType(supImg.getImg_type());
+			supAttachView.setAttachFile(fileDAO.getAttachFile(supImg.getImg_id()));
+			supplAttachFiles.add(supAttachView);			
+			
+		}
+		supplierView.setLstAttachFileView(supplAttachFiles);
+		//get categories of supplier
+		List<SupplierCategories> supplCates = getListSupplierCategory(supplId);
+		List<Category> supplCategories = new ArrayList<Category>();
+		for(SupplierCategories supCate: supplCates)
+		{
+			supplCategories.add(categoryDAO.getCategory(supCate.getCate_id()+""));
+		}
+		supplierView.setCategories(supplCategories);
+		//get address of supplier
+		List<SupplierAddress> supplAddresses = getListSupplierAddress(supplId);
+		List<SupplierAddressView> supplAddressViewLst = new ArrayList<SupplierAddressView>();
+		for(SupplierAddress supplAddr: supplAddresses)
+		{
+			SupplierAddressView suppAddrView = new SupplierAddressView();
+			suppAddrView.setAddressOfSuppl(getAddress(supplAddr.getAddr_id()));
+			suppAddrView.setIs_deliver(supplAddr.getIs_deliver());
+			suppAddrView.setIs_main(supplAddr.getIs_main());
+			supplAddressViewLst.add(suppAddrView);
+		}
+		supplierView.setLstSupplAddressView(supplAddressViewLst);
+		//get supplier manager
+		//supplierView.setSupplierManage(getSupplier(supplId + ""));
+		return supplierView;
+	}
+
 }

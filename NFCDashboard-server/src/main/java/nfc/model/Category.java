@@ -16,9 +16,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
  @Entity
  @Table(name="fg_categories")
-public class Category implements Serializable{
+public class Category{
 	private int cate_id;
 	private String app_id;
 	private Integer cate_img_id;
@@ -43,7 +45,7 @@ public class Category implements Serializable{
 	public void setApp_id(String app_id) {
 		this.app_id = app_id;
 	}
-	@Column(name="cate_img_id", nullable = true)
+	@Column(name="cate_img_id", nullable = true )
 	public Integer getCate_img_id() {
 		return cate_img_id;
 	}

@@ -36,23 +36,25 @@ public class UserManagementController {
 	private IUserService userDAO;
 	
 	@RequestMapping(value="user",method=RequestMethod.GET)
-	public String getListUser(HttpServletRequest request){
+	public List<User> getListUser(HttpServletRequest request){
 		String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
 		List<User> users = userDAO.getListUser();
 		//User user = userDAO.findUserByUserName(username);
-		return Utils.convertObjectToJsonString(users);
+		return users;
+		//return Utils.convertObjectToJsonString(users);
 	}
 	@RequestMapping(value="app/user",method=RequestMethod.GET)
-	public String getListUserApp(HttpServletRequest request){
+	public List<User> getListUserApp(HttpServletRequest request){
 		String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
 		List<User> users = userDAO.getListUser();
 		//User user = userDAO.findUserByUserName(username);
-		return Utils.convertObjectToJsonString(users);
+		return users;
+		//return Utils.convertObjectToJsonString(users);
 	}
 	@RequestMapping(value="userOne",method=RequestMethod.GET)
-	   	public String getUser(HttpServletRequest request){
+	   	public JSONObject getUser(HttpServletRequest request){
 		String token = request.getHeader(tokenHeader);
 	    String username = jwtTokenUtil.getUsernameFromToken(token);
 	    User users = userDAO.findUserByUserName(username);
@@ -70,13 +72,15 @@ public class UserManagementController {
 	    jsonObj.put("address", address);
 	    jsonObj.put("phone", phone);
 	     //return Utils.convertObjectToJsonString(users);
-	    return Utils.convertObjectToJsonString(jsonObj);
+	    return jsonObj;
+	    //return Utils.convertObjectToJsonString(jsonObj);
 	     //return "{\"result\":\"" + userid +  "\"}";
 	 }
 	@RequestMapping(value="user/detail/{id}",method=RequestMethod.GET)
-	public String getUser(@PathVariable("id") String userId){
+	public User getUser(@PathVariable("id") String userId){
 		User users = userDAO.getUser(userId);	
-		return Utils.convertObjectToJsonString(users);
+		return users;
+		//return Utils.convertObjectToJsonString(users);
 	}
 	@RequestMapping(value="user/add", method=RequestMethod.POST)
 	public @ResponseBody String insertUser(@RequestBody User user){	

@@ -33,7 +33,7 @@ public class FileUploadController {
 	private static final int BUFFER_SIZE = 100 * 1024;
 	@ResponseBody
 	@RequestMapping(value="/file/upload", method=RequestMethod.POST)
-	public String upload(@RequestParam MultipartFile file, HttpServletRequest request, HttpSession session){
+	public AttachFile upload(@RequestParam MultipartFile file, HttpServletRequest request, HttpSession session){
 		AttachFile attachFile = null;
 		try
 		{
@@ -73,7 +73,8 @@ public class FileUploadController {
 		{
 			System.out.println("Error " + ex.getMessage());
 		}
-		return Utils.convertObjectToJsonString(attachFile);// "response from controller";
+		return attachFile;
+		//return Utils.convertObjectToJsonString(attachFile);// "response from controller";
 	}
 	private void appendFile(InputStream in, File destFile)
 	{

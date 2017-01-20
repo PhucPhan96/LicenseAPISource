@@ -33,12 +33,12 @@ public class ProgramManagementController {
 	private IProgramService programDAO;
 	
 	@RequestMapping(value="program",method=RequestMethod.GET)
-	public String getListUser(HttpServletRequest request){
+	public List<Program> getListUser(HttpServletRequest request){
 		//String token = request.getHeader(tokenHeader);
         //String username = jwtTokenUtil.getUsernameFromToken(token);
 		List<Program> programs = programDAO.getListProgram();
-	
-		return Utils.convertObjectToJsonString(programs);
+		return programs;
+		//return Utils.convertObjectToJsonString(programs);
 	}
 	@RequestMapping(value="program/add", method=RequestMethod.POST)
 	public @ResponseBody String insertProgram(@RequestBody Program prog){

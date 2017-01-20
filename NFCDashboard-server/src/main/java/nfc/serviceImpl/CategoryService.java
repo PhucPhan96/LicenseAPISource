@@ -58,8 +58,10 @@ public class CategoryService implements ICategoryService{
 		Transaction trans = session.beginTransaction();
 		Criteria criteria = session.createCriteria(Category.class);		
 		List<Category> list = (List<Category>)criteria.list();
-		
 		trans.commit();
+		for(Category cate: list){
+			System.out.println(cate.getCate_name());
+		}
 		return list;		
 	}
 	public boolean insertCategory(Category cate)
@@ -68,6 +70,8 @@ public class CategoryService implements ICategoryService{
 		Transaction trans = session.beginTransaction();
 		try
 		{
+			if(cate.getCate_img_id() == 0)
+				cate.setCate_img_id(null);
 			session.save(cate);
 			trans.commit();
 			return true;			
@@ -137,7 +141,8 @@ public class CategoryService implements ICategoryService{
 		for(Category cate: lstCategory){
 			CategoryView cateView = new CategoryView();
 			cateView.setCategory(cate);
-			cateView.setAttachFile(fileDAO.getAttachFile(cate.getCate_img_id()));
+			if(cate.getCate_img_id() != null)
+				cateView.setAttachFile(fileDAO.getAttachFile(cate.getCate_img_id()));
 			lstCategoryView.add(cateView);
 		}
 		return lstCategoryView;
