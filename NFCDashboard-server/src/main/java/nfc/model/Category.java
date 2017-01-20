@@ -21,7 +21,7 @@ import javax.persistence.Table;
 public class Category implements Serializable{
 	private int cate_id;
 	private String app_id;
-	private int cate_img_id;
+	private Integer cate_img_id;
 	private String cate_name;
 	private int parent_cate_id;
 	private Date created_date;
@@ -43,11 +43,11 @@ public class Category implements Serializable{
 	public void setApp_id(String app_id) {
 		this.app_id = app_id;
 	}
-	@Column(name="cate_img_id")
-	public int getCate_img_id() {
+	@Column(name="cate_img_id", nullable = true)
+	public Integer getCate_img_id() {
 		return cate_img_id;
 	}
-	public void setCate_img_id(int cate_img_id) {
+	public void setCate_img_id(Integer cate_img_id) {
 		this.cate_img_id = cate_img_id;
 	}
 	@Column(name="cate_name")
