@@ -9,16 +9,16 @@ import javax.persistence.Table;
 @Entity
 @Table(name="fg_groups")
 public class Group {
-	private long group_id;
+	private int group_id;
 	private String app_id;
 	private String group_name;
 	@Id
 	@Column(name="group_id")
 	@GeneratedValue
-	public long getGroup_id() {
+	public int getGroup_id() {
 		return group_id;
 	}
-	public void setGroup_id(long group_id) {
+	public void setGroup_id(int group_id) {
 		this.group_id = group_id;
 	}
 	@Column(name="app_id")

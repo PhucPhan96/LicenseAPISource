@@ -7,6 +7,7 @@ import nfc.service.IGroupService;
 import nfc.serviceImpl.common.Utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,14 +21,16 @@ public class GroupManagementController {
 	private IGroupService groupDAO;
 	
 	@RequestMapping(value="groups",method=RequestMethod.GET)
-	public String getRoles(){
+	public List<Group> getRoles(){
 		List<Group> groups = groupDAO.getListGroup();
-		return Utils.convertObjectToJsonString(groups);
+		return groups;
+		//return Utils.convertObjectToJsonString(groups);
 	}
-	@RequestMapping(value="group/add", method=RequestMethod.POST)
+	@RequestMapping(value="group/add", method=RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE, produces="application/json;charset=UTF-8")
 	public @ResponseBody String insertGroup(@RequestBody Group group){
 		group.setApp_id(Utils.appId);
 		System.out.println("Vao insert");
+		System.out.println("Group " + group.getGroup_name());
 		String data = groupDAO.insertGroup(group) + "";
 		return "{\"result\":\"" + data + "\"}";
 	}

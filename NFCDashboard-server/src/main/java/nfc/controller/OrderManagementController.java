@@ -185,23 +185,26 @@ public class OrderManagementController {
     	}
     }
     @RequestMapping(value="order/pos",method=RequestMethod.GET)
-	public String getListOrderPosView(HttpServletRequest request){
+	public List<OrderView> getListOrderPosView(HttpServletRequest request){
 		String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
         List<OrderView>  lstOrderView = orderDAO.getListOrderViewForPos(username);
-		return Utils.convertObjectToJsonString(lstOrderView);
+        return lstOrderView;
+		//return Utils.convertObjectToJsonString(lstOrderView);
 	}
     @RequestMapping(value="pos/detail/{id}",method=RequestMethod.GET)
-	public String getListOrderPosDetailView(@PathVariable("id") int orderId ,HttpServletRequest request){
+	public PosDetailView getListOrderPosDetailView(@PathVariable("id") int orderId ,HttpServletRequest request){
 		String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
         PosDetailView  posDetailView = posDAO.getPosDetailView(orderId);
-		return Utils.convertObjectToJsonString(posDetailView);
+        return posDetailView;
+		//return Utils.convertObjectToJsonString(posDetailView);
 	}
     @RequestMapping(value="order/search",method=RequestMethod.POST)
-	public @ResponseBody String getListOrderSearch(@RequestBody Map<String,String> data){
+	public @ResponseBody List<OrderView> getListOrderSearch(@RequestBody Map<String,String> data){
     	List<OrderView>  lstOrderView = orderDAO.getListOrderViewSearch(data.get("dateFrom"), data.get("dateTo"));
-		return Utils.convertObjectToJsonString(lstOrderView);
+    	return lstOrderView;
+		//return Utils.convertObjectToJsonString(lstOrderView);
 	}
     @RequestMapping(value="order/delete/{id}", method=RequestMethod.DELETE)
 	public @ResponseBody String deleteRole(@PathVariable("id") int orderId){
@@ -211,6 +214,6 @@ public class OrderManagementController {
     @RequestMapping(value="app/orderCount/{id}", method=RequestMethod.GET)
 	public @ResponseBody String getOrderCount(@PathVariable("id") int supplierId){
 		String data = orderDAO.getOrderCount(supplierId);
-		return data;
+		return "{\"result\":\"" + data + "\"}";
 	}
 }

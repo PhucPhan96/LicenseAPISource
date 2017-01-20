@@ -29,25 +29,30 @@ public class CategoryManagementController {
 	@Autowired
 	private IFileService fileDAO;
 	@RequestMapping(value="category",method=RequestMethod.GET)
-	public String getListCategory(){
+	public List<Category> getListCategory(){
 		List<Category> category = categoryDAO.getListCategory();
-		return Utils.convertObjectToJsonString(category);
+		return category;
+		//return Utils.convertObjectToJsonString(category);
 	} 
 	@RequestMapping(value="category/{type}", method=RequestMethod.GET)
-	public @ResponseBody String getListCategoryFilterType(@PathVariable("type") String type){
+	public @ResponseBody List<Category> getListCategoryFilterType(@PathVariable("type") String type){
 		List<Category> category = categoryDAO.getListCategoryFilterType(type);
-		return Utils.convertObjectToJsonString(category);
+		System.out.println(category.size());
+		return category;
+		//return Utils.convertObjectToJsonString(category);
 	}
 	@RequestMapping(value="app/category/view/{type}", method=RequestMethod.GET)
-	public @ResponseBody String getListCategoryViewFilterType(@PathVariable("type") String type){
+	public @ResponseBody List<CategoryView> getListCategoryViewFilterType(@PathVariable("type") String type){
 		List<CategoryView> categoryView = categoryDAO.getListCategoryView(type);
-		return Utils.convertObjectToJsonString(categoryView);
+		return categoryView;
+		//return Utils.convertObjectToJsonString(categoryView);
 	}
 	@RequestMapping(value="category/add", method=RequestMethod.POST)
 	public @ResponseBody String insertCategory(@RequestBody Category cate){
 		cate.setApp_id(Utils.appId);
 		Date date = new Date();
 		cate.setCreated_date(date);
+		System.out.println(cate.getCate_name());
 		String data = categoryDAO.insertCategory(cate)+"";
 		return "{\"result\":\"" + data + "\"}";
 	}
@@ -62,20 +67,23 @@ public class CategoryManagementController {
 		return "{\"result\":\"" + data + "\"}";
 	}
 	@RequestMapping(value="category/getCate/{id}", method=RequestMethod.GET)
-	public String getCategory(@PathVariable("id") String cateID){
+	public Category getCategory(@PathVariable("id") String cateID){
 		Category category = categoryDAO.getCategory(cateID);
-		return Utils.convertObjectToJsonString(category);
+		return category;
+		//return Utils.convertObjectToJsonString(category);
 	} 
 	@RequestMapping(value="category/getFile/{id}", method=RequestMethod.GET)
-	public String getCategory(@PathVariable("id") int fileId){
+	public AttachFile getCategory(@PathVariable("id") int fileId){
 		System.out.println("FileId " + fileId);
 		AttachFile file = fileDAO.getAttachFile(fileId);
-		return Utils.convertObjectToJsonString(file);
+		return file;
+		//return Utils.convertObjectToJsonString(file);
 	} 
 	@RequestMapping(value="app/product/store/{id}", method=RequestMethod.GET)
-	public String getProductOfStore(@PathVariable("id") int supplierId){
+	public List<SupplierProductView> getProductOfStore(@PathVariable("id") int supplierId){
 		List<SupplierProductView> lstSupplierProductView = categoryDAO.getListProductOfCategory(supplierId);
-		return Utils.convertObjectToJsonString(lstSupplierProductView);
+		return lstSupplierProductView;
+		//return Utils.convertObjectToJsonString(lstSupplierProductView);
 	} 
 
 }

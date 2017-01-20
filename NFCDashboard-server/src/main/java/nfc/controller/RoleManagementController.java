@@ -27,16 +27,17 @@ public class RoleManagementController {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 	@RequestMapping(value="roles",method=RequestMethod.GET)
-	public String getRoles(){
+	public List<Role> getRoles(){
 		List<Role> roles = roleDAO.getListRole();
-		return Utils.convertObjectToJsonString(roles);
+		//return Utils.convertObjectToJsonString(roles);
+		return roles;
 		//return roles;
 	}
 	@RequestMapping(value="role/{id}", method=RequestMethod.GET)
-	public String getRole(@PathVariable("id") String roleId){
-		String roleStr =  Utils.convertObjectToJsonString(roleDAO.getRole(roleId));
-		System.out.println("RoleStr " + roleStr);
-		return roleStr;
+	public Role getRole(@PathVariable("id") String roleId){
+		Role role = roleDAO.getRole(roleId);
+		//System.out.println("RoleStr " + roleStr);
+		return role;
 	}
 	@RequestMapping(value="role/add", method=RequestMethod.POST)
 	public @ResponseBody String insertRole(@RequestBody Role role){
@@ -56,13 +57,14 @@ public class RoleManagementController {
 		return "{\"result\":\"" + data + "\"}";
 	}
 	@RequestMapping(value="roles/permission",method=RequestMethod.GET)
-	public String getRolesOfUser(HttpServletRequest request){
+	public List<Role> getRolesOfUser(HttpServletRequest request){
 		System.out.println("Vao get role of user ");
 		String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
 		List<Role> roles = roleDAO.getListRoleOfUserPermission(username);
 		System.out.println("count "+ roles.size());
-		return Utils.convertObjectToJsonString(roles);
+		return roles;
+		//return Utils.convertObjectToJsonString(roles);
 		//return roles;
 	}
 }
