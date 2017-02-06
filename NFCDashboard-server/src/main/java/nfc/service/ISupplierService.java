@@ -23,7 +23,7 @@ public interface ISupplierService {
 	Address getAddress(int addrId);
 	boolean insertSupplierView(SupplierView supplierView, String username);
 	boolean updateSupplierView(SupplierView supplierView);
-	boolean deleteSupplierView(int supplId);
+	boolean deleteSupplierView(int supplId, String username);
 	List<SupplierUser> getListSupplierUserId(String userId);
 	List<SupplierAppView> getListSupplierViewOfCategory(int categoryId);
 	List<SupplierCategories> getListSupplierCategory(int supplId);

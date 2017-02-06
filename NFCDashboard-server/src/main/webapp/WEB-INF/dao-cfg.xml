@@ -47,4 +47,6 @@
 	 </bean>
 	 <bean id="mailDAO" class="nfc.serviceImpl.MailService">
 	 </bean>
+	 <bean id="boardDAO" class="nfc.serviceImpl.BoardService">
+	 </bean>
 </beans>

@@ -109,12 +109,21 @@ public class CategoryService implements ICategoryService{
 		return cate;
 		
 	}
+	private void deleteReferenceOfCategory(Session session, int cateId, String table)
+	{
+		String deleteQuery = "delete from "+table+" where cate_id = " + cateId;
+		Query query = session.createSQLQuery(deleteQuery);
+	    query.executeUpdate();
+	}
 	public boolean deleteCategory(String cateID) {
 		Category cate = getCategory(cateID);
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
 		try
 		{
+			deleteReferenceOfCategory(session,Integer.parseInt(cateID), "fg_product_categories" );
+			//deleteReferenceOfCategory(session,Integer.parseInt(cateID), "fg_products" );
+			deleteReferenceOfCategory(session,Integer.parseInt(cateID), "fg_supplier_categories" );
 			session.delete(cate);
 			trans.commit();
 			return true;

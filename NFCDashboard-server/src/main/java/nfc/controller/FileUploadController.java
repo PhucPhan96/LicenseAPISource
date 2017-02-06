@@ -37,6 +37,7 @@ public class FileUploadController {
 		AttachFile attachFile = null;
 		try
 		{
+			System.out.println(file.getOriginalFilename().split("\\.")[1]);
 			String name = UUID.randomUUID().toString()+ "." + file.getOriginalFilename().split("\\.")[1]; //file.getOriginalFilename();//request.getParameter("name");
 			/*Integer chunk = 0, chunks = 0;
 			if(null != request.getParameter("chunk") && !request.getParameter("chunk").equals(""))
@@ -109,6 +110,7 @@ public class FileUploadController {
 	}
 	
 	private AttachFile insertImage(String name, int size, String orgName){
+		System.out.println("Name " + name);
 		AttachFile file = new AttachFile();
 		file.setApp_id(Utils.appId);
 		file.setFile_name(name);

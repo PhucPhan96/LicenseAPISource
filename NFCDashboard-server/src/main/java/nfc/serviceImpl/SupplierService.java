@@ -5,6 +5,7 @@ import java.nio.channels.SeekableByteChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +14,10 @@ import javax.transaction.Transactional;
 
 import nfc.model.Address;
 import nfc.model.AttachFile;
+import nfc.model.Board;
 import nfc.model.Category;
 import nfc.model.Code;
+import nfc.model.Order;
 import nfc.model.Product;
 import nfc.model.Role;
 import nfc.model.Supplier;
@@ -29,9 +32,11 @@ import nfc.model.ViewModel.ProductAttachFileView;
 import nfc.model.ViewModel.SupplierAddressView;
 import nfc.model.ViewModel.SupplierAppView;
 import nfc.model.ViewModel.SupplierView;
+import nfc.service.IBoardService;
 import nfc.service.ICategoryService;
 import nfc.service.ICodeService;
 import nfc.service.IFileService;
+import nfc.service.IOrderService;
 import nfc.service.IRoleService;
 import nfc.service.ISupplierService;
 import nfc.service.IUserService;
@@ -43,10 +48,12 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.mysql.jdbc.Util;
+
 import nfc.model.ViewModel.SupplierAttachFileView;
 
 public class SupplierService implements ISupplierService {
@@ -61,7 +68,11 @@ public class SupplierService implements ISupplierService {
 	@Autowired
 	private IFileService fileDAO;
 	@Autowired
+	private IOrderService orderDAO;
+	@Autowired
 	private ICategoryService categoryDAO;
+	@Autowired
+	private IBoardService boardDAO;
 	
 	private SessionFactory sessionFactory;
 	public void setSessionFactory(SessionFactory sessionFactory) {
@@ -228,6 +239,15 @@ public class SupplierService implements ISupplierService {
 			supplUser.setUser_id(user.getUser_id());
 			session.save(supplUser);
 			trans.commit();
+			
+			
+			//insert board
+			Board board = new Board();
+			board.setBoard_name(supplierView.getSupplier().getSupplier_name());
+			board.setCreated_date(new Date());
+			board.setApp_id(Utils.appId);
+			board.setOwner_id(user.getUser_id());
+			boardDAO.insertBoard(board);
 			return true;
 		}
 		catch(Exception ex)
@@ -322,17 +342,33 @@ public class SupplierService implements ISupplierService {
 			return false;
 		}
 	}
-	public boolean deleteSupplierView(int supplId){
+	private void deleteReferenceOfOder(Session session, int orderId, String table)
+	{
+		String deleteQuery = "delete from "+table+" where order_id = " + orderId;
+		Query query = session.createSQLQuery(deleteQuery);
+	    query.executeUpdate();
+	}
+	public boolean deleteSupplierView(int supplId, String username){
+		User user = userDAO.findUserByUserName(username);
+		List<Order> lstOrder = orderDAO.getListOrder(supplId);
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
 		try
 		{
+			/*deleteReferenceOfSupplierFavorite(session, supplId, user.getUser_id(), "fg_favorite_suppliers");
+			for(Order order: lstOrder){
+				deleteReferenceOfOder(session, order.getOrder_id(), "fg_order_details");
+			}*/
+			//deleteReferenceOfSupplier(session, supplId, "fg_orders");
+			//deleteReferenceOfSupplier(session, supplId, "fg_products");
+			deleteReferenceOfSupplier(session, supplId, "fg_favorite_suppliers");
 			deleteReferenceOfSupplier(session, supplId, "fg_supplier_categories");
 			deleteReferenceOfSupplier(session, supplId, "fg_supplier_imgs");
 			deleteReferenceOfSupplier(session, supplId, "fg_supplier_address");
 			deleteReferenceOfSupplier(session, supplId, "fg_supplier_users");
 			deleteReferenceOfSupplier(session, supplId, "fg_supplier_work");
 			deleteReferenceOfSupplier(session, supplId, "fg_suppliers");
+			
 			trans.commit();
 			return true;
 		}
@@ -369,13 +405,13 @@ public class SupplierService implements ISupplierService {
 		// TODO Auto-generated method stub
 		List<SupplierView> lstSupplierView = new ArrayList<SupplierView>();		
 		List<SupplierUser> supplierUsers = getListSupplierUser(username);
-		if(supplierUsers.size()>0){
+		if(username.equals("sysadmin")){
 			Session session = this.sessionFactory.getCurrentSession();
 			Transaction trans = session.beginTransaction();
 			Query query = session.createSQLQuery(
 					"CALL GetListSupplierWorkTree(:managerId)")
 					.addEntity(SupplierWork.class)
-					.setParameter("managerId", supplierUsers.get(0).getSuppl_id());
+					.setParameter("managerId", 0);
 			List<SupplierWork> result = query.list();
 			trans.commit();
 			for(SupplierWork supplWork: result){
@@ -384,6 +420,28 @@ public class SupplierService implements ISupplierService {
 				lstSupplierView.add(supplView);
 			}
 		}
+		else
+		{
+			if(supplierUsers.size()>0){
+				for(SupplierUser suppUse: supplierUsers){
+					Session session = this.sessionFactory.getCurrentSession();
+					Transaction trans = session.beginTransaction();
+					Query query = session.createSQLQuery(
+							"CALL GetListSupplierWorkTree(:managerId)")
+							.addEntity(SupplierWork.class)
+							.setParameter("managerId", suppUse.getSuppl_id());
+					List<SupplierWork> result = query.list();
+					trans.commit();
+					for(SupplierWork supplWork: result){
+						SupplierView supplView = getSupplierView(supplWork.getSuppl_id());
+						supplView.setDirector(getDirectorSuplier(supplWork.getSuppl_id()));
+						lstSupplierView.add(supplView);
+					}
+				}
+				
+			}
+		}
+		
 		return lstSupplierView;
 	}
 	@Override

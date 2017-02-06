@@ -99,9 +99,11 @@ public class SupplierManagementController {
 		return "{\"result\":\"" + data + "\"}";
 	}
 	@RequestMapping(value="supplier/delete/{id}", method=RequestMethod.DELETE)
-	public @ResponseBody String deleteRole(@PathVariable("id") String supplierId){
+	public @ResponseBody String deleteRole(@PathVariable("id") String supplierId, HttpServletRequest request){
 		System.out.println("Vao delete " + supplierId);
-		String data = supplierDAO.deleteSupplierView(Integer.parseInt(supplierId)) + "";
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+		String data = supplierDAO.deleteSupplierView(Integer.parseInt(supplierId), username) + "";
 		return "{\"result\":\"" + data + "\"}";
 	}
 	@RequestMapping(value="app/supplierFavorite/add/{supplierID}/{userID}", method=RequestMethod.POST)
@@ -128,10 +130,10 @@ public class SupplierManagementController {
 	}
 	//getSupplierView2
 	@RequestMapping(value="app/supplier/detail2/{id}", method=RequestMethod.GET)
-	public String getSupplierView2(@PathVariable("id") String supplId, HttpServletRequest request){
+	public SupplierView getSupplierView2(@PathVariable("id") String supplId, HttpServletRequest request){
 		/*String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);*/
-		String supplierView =  Utils.convertObjectToJsonString(supplierDAO.getSupplierView2(Integer.parseInt(supplId)));
+		SupplierView supplierView =  supplierDAO.getSupplierView2(Integer.parseInt(supplId));
 		System.out.println("supplierViewStr" + supplierView);
 		return supplierView;
 		

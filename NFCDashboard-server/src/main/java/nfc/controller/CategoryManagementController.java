@@ -73,11 +73,12 @@ public class CategoryManagementController {
 		//return Utils.convertObjectToJsonString(category);
 	} 
 	@RequestMapping(value="category/getFile/{id}", method=RequestMethod.GET)
-	public AttachFile getCategory(@PathVariable("id") int fileId){
+	public String getCategory(@PathVariable("id") int fileId){
 		System.out.println("FileId " + fileId);
 		AttachFile file = fileDAO.getAttachFile(fileId);
-		return file;
-		//return Utils.convertObjectToJsonString(file);
+		System.out.println(file.getFile_path());
+		//return file;
+		return Utils.convertObjectToJsonString(file);
 	} 
 	@RequestMapping(value="app/product/store/{id}", method=RequestMethod.GET)
 	public List<SupplierProductView> getProductOfStore(@PathVariable("id") int supplierId){
