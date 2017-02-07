@@ -26,8 +26,8 @@ import nfc.service.ISupplierService;
 import nfc.service.IUserService;
 import nfc.service.common.ICommonService;
 import nfc.serviceImpl.common.Utils;
-
 import nfc.model.AttachFile;
+
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Query;
@@ -160,7 +160,7 @@ public class CategoryService implements ICategoryService{
 	private List<Category> getListCategoryFromSupplier(int supplierId){
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
-		String sql = "SELECT * FROM fg_categories c INNER JOIN fg_product_categories pc ON c.cate_id = pc.cate_id INNER JOIN fg_products p ON pc.prod_id = p.prod_id WHERE p.suppl_id = "+supplierId;
+		String sql = "SELECT * FROM fg_categories c INNER JOIN fg_product_categories pc ON c.cate_id = pc.cate_id INNER JOIN fg_products p ON pc.prod_id = p.prod_id WHERE p.suppl_id = "+supplierId + " GROUP BY p.cate_id";
 		SQLQuery query = session.createSQLQuery(sql);
 		query.addEntity(Category.class);
 		List results = query.list();
@@ -184,6 +184,7 @@ public class CategoryService implements ICategoryService{
 		
 		
 		List<Category> categoies = getListCategoryFromSupplier(supplierId);
+		System.out.println(categoies);
 		for(Category category: categoies)
 		{
 			SupplierProductView supplierProductView = new SupplierProductView();

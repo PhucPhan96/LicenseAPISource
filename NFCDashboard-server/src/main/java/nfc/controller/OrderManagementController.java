@@ -102,38 +102,38 @@ public class OrderManagementController {
     MessageHandler webSocketOutboundAdapterCustomer() {
         return new WebSocketOutboundMessageHandler(serverWebSocketContainerCustomer());
     }
-    @Bean
-    IntegrationFlow webSocketFlow() {
-        return f -> {
-            Function<Message , Object> splitter = m -> serverWebSocketContainer()
-                    .getSessions()
-                    .keySet()
-                    .stream()
-                    .map(s -> MessageBuilder.fromMessage(m)
-                            .setHeader(SimpMessageHeaderAccessor.SESSION_ID_HEADER, s)
-                            .build())
-                    .collect(Collectors.toList());
-            f.split( Message.class, splitter)
-                    .channel(c -> c.executor(Executors.newCachedThreadPool()))
-                    .handle(webSocketOutboundAdapter());
-        };
-    }
-    @Bean
-    IntegrationFlow webSocketFlowCustomer() {
-        return f -> {
-            Function<Message , Object> splitter = m -> serverWebSocketContainerCustomer()
-                    .getSessions()
-                    .keySet()
-                    .stream()
-                   .map(s -> MessageBuilder.fromMessage(m)
-                           .setHeader(SimpMessageHeaderAccessor.SESSION_ID_HEADER, s)
-                            .build())
-                    .collect(Collectors.toList());
-            f.split( Message.class, splitter)
-                    .channel(c -> c.executor(Executors.newCachedThreadPool()))
-                    .handle(webSocketOutboundAdapterCustomer());
-        };
-    }
+//    @Bean
+//    IntegrationFlow webSocketFlow() {
+//        return f -> {
+//            Function<Message , Object> splitter = m -> serverWebSocketContainer()
+//                    .getSessions()
+//                    .keySet()
+//                    .stream()
+//                    .map(s -> MessageBuilder.fromMessage(m)
+//                            .setHeader(SimpMessageHeaderAccessor.SESSION_ID_HEADER, s)
+//                            .build())
+//                    .collect(Collectors.toList());
+//            f.split( Message.class, splitter)
+//                    .channel(c -> c.executor(Executors.newCachedThreadPool()))
+//                    .handle(webSocketOutboundAdapter());
+//        };
+//    }
+//    @Bean
+//    IntegrationFlow webSocketFlowCustomer() {
+//        return f -> {
+//            Function<Message , Object> splitter = m -> serverWebSocketContainerCustomer()
+//                    .getSessions()
+//                    .keySet()
+//                    .stream()
+//                   .map(s -> MessageBuilder.fromMessage(m)
+//                           .setHeader(SimpMessageHeaderAccessor.SESSION_ID_HEADER, s)
+//                            .build())
+//                    .collect(Collectors.toList());
+//            f.split( Message.class, splitter)
+//                    .channel(c -> c.executor(Executors.newCachedThreadPool()))
+//                    .handle(webSocketOutboundAdapterCustomer());
+//        };
+//    }
     @RequestMapping(value="/order/customer", method = RequestMethod.POST)
     public void send(@RequestBody OrderView orderView) {
     	try{                                                                                                                
