@@ -109,4 +109,25 @@ public class AccountController {
     public String getSha1(@PathVariable("id") String password) {
     	return Utils.BCryptPasswordEncoder(Utils.Sha1(password));
     }
+    @RequestMapping(value = "/app/user/forgotPasword", method = RequestMethod.POST)
+    public ResponseEntity<?> forgotPasword(@RequestBody User user) {
+    	String body = userDAO.forgotPassword(user);
+    	System.out.println("Vao ham forgotPassword");
+    	if(body.contains(":"))
+    	{	
+    		String username = body.split(":")[0];
+    		String password = body.split(":")[1];
+    		final Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            username,
+                            password
+                    )
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            final UserDetails userDetails = userDetailsService.loadUserByUsername(body.split(":")[0]);
+            final String token = jwtTokenUtil.generateToken(userDetails);
+            return ResponseEntity.ok(new JwtAuthenticationResponse(token));
+    	}
+        return ResponseEntity.ok(new JwtAuthenticationResponse(body));
+    }
 }
