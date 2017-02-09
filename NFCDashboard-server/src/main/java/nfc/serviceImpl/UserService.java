@@ -435,4 +435,55 @@ public class UserService implements IUserService {
 		}
 		return "fail";
 	}
+// Forgot Password - LanAnh
+	public boolean updateUserForgotPassword(User user){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		try
+		{
+			session.update(user);
+			trans.commit();
+			
+			return true;	
+			
+		}
+		catch(Exception ex)
+		{
+			System.out.println("Error " + ex.getMessage());
+			trans.rollback();
+			return false;
+		}
+	}
+	public User getUserForgotPassword (String email){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(User.class);
+		criteria.add(Restrictions.eq("email", email));
+		User user =  (User) criteria.uniqueResult(); 
+		trans.commit();
+		System.out.println("Vao Ham getUserForgotPassword");
+		return user;
+	}
+	public String forgotPassword (User user){
+		User  userExist = getUserForgotPassword(user.getEmail());
+		System.out.println("getUserForgotPassword " + userExist);
+		if(userExist!=null){
+			String passwordRandom = Utils.randomPassword(8);
+			System.out.println("Mail User " + user.getEmail());
+			mailDAO.sendSimpleMail("nguyenthailananh@gmail.com", user.getEmail(), "Verify", "New Password for NFC Account: " + passwordRandom);			
+			userExist.setPassword(Utils.Sha1(passwordRandom));
+			if(updateUserForgotPassword(userExist))
+			{System.out.println("passwordRandom " + passwordRandom);
+				return "success";
+			}
+			else{
+				return "fail";
+			}
+			
+		}else{
+			return "notExist";			
+		}		
+	}
+
 }
+
