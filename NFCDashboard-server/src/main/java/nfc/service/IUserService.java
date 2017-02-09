@@ -22,4 +22,9 @@ public interface IUserService {
 	boolean updateUserRegister(UserRegister userRegist);
 	UserRegister getUserRegister(String email);
 	String saveUserRegister(UserRegister userRegist);
+	//ForgotPassword - LanAnh
+	boolean updateUserForgotPassword(User user);
+	User getUserForgotPassword (String email);
+	String forgotPassword (User user);
+	
 }
