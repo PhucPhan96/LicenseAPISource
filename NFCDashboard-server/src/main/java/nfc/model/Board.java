@@ -15,6 +15,7 @@ public class Board {
 	private String owner_id; 
 	private String board_name; 
 	private Date created_date;
+	private String owner_name;
 	@Id
 	@GeneratedValue
 	public int getBoard_id() {
@@ -46,5 +47,12 @@ public class Board {
 	}
 	public void setCreated_date(Date created_date) {
 		this.created_date = created_date;
+	}
+	@javax.persistence.Transient
+	public String getOwner_name() {
+		return owner_name;
+	}
+	public void setOwner_name(String owner_name) {
+		this.owner_name = owner_name;
 	}
 }

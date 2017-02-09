@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import nfc.model.AttachFile;
@@ -41,4 +42,16 @@ public class BoardManagementController {
 		System.out.println("count is: " + threads.size());
 		return threads;
 	} 
+	@RequestMapping(value="board/thread/delete/{id}", method=RequestMethod.DELETE)
+	public @ResponseBody String deleteThread(@PathVariable("id") String threadId){
+		System.out.println("Vao delete " + threadId);
+		String data =boardDAO.deleteThread(threadId) + "";
+		return "{\"result\":\"" + data + "\"}";
+	}
+	@RequestMapping(value="board//delete/{id}", method=RequestMethod.DELETE)
+	public @ResponseBody String deleteBoard(@PathVariable("id") int boardId){
+		System.out.println("Vao delete " + boardId);
+		String data =boardDAO.deleteBoard(boardId) + "";
+		return "{\"result\":\"" + data + "\"}";
+	}
 }

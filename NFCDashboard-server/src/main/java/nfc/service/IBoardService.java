@@ -9,4 +9,6 @@ public interface IBoardService {
 	boolean insertBoard(Board board);
 	List<Board> getListBoard(String userName);
 	List<Thread> getListThread(int board_id);
+	boolean deleteThread(String threadId);
+	boolean deleteBoard(int boardId);
 }
