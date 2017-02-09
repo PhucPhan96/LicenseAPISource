@@ -11,6 +11,7 @@ import javax.persistence.Table;
 @Table(name="fg_supplier_work")
 public class SupplierWork {
 	private int suppl_id;
+	private int board_id;
 	private boolean is_active;
 	private String wd_start_hm;
 	private String wd_end_hm;
@@ -162,5 +163,11 @@ public class SupplierWork {
 	}
 	public void setManage_suppl_id(int manage_suppl_id) {
 		this.manage_suppl_id = manage_suppl_id;
+	}@Column(name="board_id")
+	public int getBoard_id() {
+		return board_id;
+	}
+	public void setBoard_id(int board_id) {
+		this.board_id = board_id;
 	}	
 }

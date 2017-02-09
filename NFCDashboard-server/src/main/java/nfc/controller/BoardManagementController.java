@@ -41,4 +41,23 @@ public class BoardManagementController {
 		System.out.println("count is: " + threads.size());
 		return threads;
 	} 
+	@RequestMapping(value="app/board/thread/{id}", method=RequestMethod.GET)
+	public List<Thread> getThread(@PathVariable("id") int board_id){
+		System.out.println("boardId is: " + board_id);	
+		List<Thread> threads = boardDAO.getListThreadFromBoardId(board_id);
+		System.out.println("threads is: " + threads);	
+		return threads;
+	}
+	@RequestMapping(value="app/board/threadsmall/{id}", method=RequestMethod.GET)
+	public List<Thread> getThreadSmall(@PathVariable("id") int thread_id){
+		System.out.println("thread_id is: " + thread_id);	
+		List<Thread> threads = boardDAO.getListThreadSmall(thread_id);
+		return threads;
+	}
+	@RequestMapping(value="app/board/{id}", method=RequestMethod.GET)
+	public List<Board> getBoard(@PathVariable("id") int boardId){
+		System.out.println("boardId is: " + boardId);	
+		List<Board> threads = boardDAO.getListBoards(boardId);
+		return threads;
+	}
 }

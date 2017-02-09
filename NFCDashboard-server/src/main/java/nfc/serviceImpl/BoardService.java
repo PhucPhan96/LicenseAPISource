@@ -6,6 +6,8 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,7 +22,7 @@ public class BoardService implements IBoardService{
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
-	@Override
+	//@Override
 	public boolean insertBoard(Board board) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
@@ -64,10 +66,43 @@ public class BoardService implements IBoardService{
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
 		Criteria criteria = session.createCriteria(Thread.class);
-		//criteria.add(Restrictions.eq("board_id",board_id));
+		criteria.add(Restrictions.eq("board_id",board_id));
 		List<Thread> list = (List<Thread>) criteria.list();
 		trans.commit();
 		return list;
 	}
-
+	public List<Thread> getListThreadSmall(int thread_id)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(Thread.class);
+		criteria.add(Restrictions.eq("parent_thread_id",thread_id));
+		List<Thread> list = (List<Thread>) criteria.list();
+		trans.commit();
+		return list;
+	}
+	public List<Thread> getListThreadFromBoardId(int board_id)
+	{
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();		
+		Criteria criteria = session.createCriteria(Thread.class);
+		Criterion boardId = Restrictions.eq("board_id", board_id);
+		Criterion parentId = Restrictions.eq("parent_thread_id", 0);
+		LogicalExpression orExp = Restrictions.and(boardId, parentId);
+		criteria.add(orExp);
+		List<Thread> list = (List<Thread>) criteria.list();
+		trans.commit();
+		return list;
+	}
+	public List<Board> getListBoards(int boardId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(Board.class);
+		criteria.add(Restrictions.eq("board_id",boardId));
+		List<Board> list = (List<Board>) criteria.list();
+		trans.commit();
+		return list;
+	}
 }
