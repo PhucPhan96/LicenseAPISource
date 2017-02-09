@@ -6,6 +6,7 @@ import java.util.List;
 import nfc.model.Address;
 import nfc.model.AttachFile;
 import nfc.model.Category;
+import nfc.model.Code;
 import nfc.model.Role;
 import nfc.model.Supplier;
 import nfc.model.SupplierAddress;
@@ -16,12 +17,12 @@ public class SupplierView {
 	private Supplier supplier = new Supplier();
 	private SupplierWork supplierWork = new SupplierWork();
 	private List<AttachFile> images = new ArrayList<AttachFile>();
-	
 	private List<Category> categories = new ArrayList<Category>();
 	private List<SupplierAddressView> lstSupplAddressView = new ArrayList<SupplierAddressView>();
 	private User director = new User();
 	private List<SupplierAttachFileView> lstAttachFileView;
-//	private String img_path;
+	private Code code = new Code();
+	//	private String img_path;
 	public User getDirector() {
 		return director;
 	}
@@ -78,5 +79,11 @@ public class SupplierView {
 	}
 	public void setLstAttachFileView(List<SupplierAttachFileView> lstAttachFileView) {
 		this.lstAttachFileView = lstAttachFileView;
+	}
+	public Code getCode() {
+		return code;
+	}
+	public void setCode(Code code) {
+		this.code = code;
 	}
 }

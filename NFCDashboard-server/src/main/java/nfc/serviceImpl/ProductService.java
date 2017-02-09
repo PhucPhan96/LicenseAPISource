@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import nfc.model.AttachFile;
 import nfc.model.Code;
 import nfc.model.Product;
+import nfc.model.ProductAdd;
 import nfc.model.ProductCategory;
 import nfc.model.ProductImage;
 import nfc.model.ProductOptional;
@@ -101,6 +102,7 @@ public class ProductService implements IProductService{
 	        //deleteCategoryProduct(session, product.getProd_id());
 	        insertProductCategory(session, productView.getProduct());
 	        insertProductImage(session, productView);
+	        insertProductAdd(session, productView);
 			trans.commit();
 			return true;
 		}
@@ -110,6 +112,13 @@ public class ProductService implements IProductService{
 			trans.rollback();
 			return false;
 		}
+	}
+	private void insertProductAdd(Session session, ProductView productView){
+		for(ProductAdd productAdd : productView.getLstProductAdd())
+        {
+			productAdd.setProd_id(productView.getProduct().getProd_id());
+        	session.save(productAdd);
+        }
 	}
 	public List<Product> getProduct(String prodId){
 		Session session = this.sessionFactory.getCurrentSession();
@@ -150,6 +159,8 @@ public class ProductService implements IProductService{
 			insertProductCategory(session, productView.getProduct());
 			deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_prod_imgs");
 			insertProductImage(session, productView);
+			deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_prod_addition");
+			insertProductAdd(session, productView);
 			trans.commit();
 			return true;
 		}
@@ -173,6 +184,7 @@ public class ProductService implements IProductService{
 				}*/
 				deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_prod_imgs");
 				deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_product_categories");
+				deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_prod_addition");
 				deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_products");
 				//session.delete(product);
 				
@@ -195,6 +207,15 @@ public class ProductService implements IProductService{
 		trans.commit();
 		return productImages;
 	}
+	public List<ProductAdd> getListProductAdd(int productId){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(ProductAdd.class);
+		criteria.add(Restrictions.eq("prod_id",productId));
+		List<ProductAdd>  productAdds = (List<ProductAdd>) criteria.list();
+		trans.commit();
+		return productAdds;
+	}
 	private void deleteReferenceOfProduct(Session session, int productId, String table)
 	{
 		String deleteQuery = "delete from "+table+" where prod_id = " + productId;
@@ -214,6 +235,7 @@ public class ProductService implements IProductService{
 			lstProdAttachView.add(proAttachView);
 		}
 		prodView.setLstAttachFileView(lstProdAttachView);
+		prodView.setLstProductAdd(getListProductAdd(productId));
 		return prodView;
 	}
 	public List<ProductView> getListProductView(int supplId){

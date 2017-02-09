@@ -18,7 +18,7 @@ public class SupplierUser {
 	private int suppl_id;
 	@Id
 	private String user_id; 
-	private Boolean is_director;
+	private Byte is_director;
 	@Column(name="app_id")
 	public String getApp_id() {
 		return app_id;
@@ -41,10 +41,10 @@ public class SupplierUser {
 		this.user_id = user_id;
 	}
 	@Column(name="is_director", nullable=true)
-	public Boolean isIs_director() {
+	public Byte isIs_director() {
 		return is_director;
 	}
-	public void setIs_director(Boolean is_director) {
+	public void setIs_director(Byte is_director) {
 		this.is_director = is_director;
 	}
 }

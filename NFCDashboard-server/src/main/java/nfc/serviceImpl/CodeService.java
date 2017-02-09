@@ -26,5 +26,15 @@ public class CodeService implements ICodeService{
 		trans.commit();
 		return list;
 	}
+	public Code getCode(String groupCode, String subCode){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(Code.class);
+		criteria.add(Restrictions.eq("group_code", groupCode));
+		criteria.add(Restrictions.eq("sub_code", subCode));
+		Code code = (Code) criteria.uniqueResult();
+		trans.commit();
+		return code;
+	}
 	
 }

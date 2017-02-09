@@ -32,4 +32,5 @@ public interface ISupplierService {
 	SupplierFavorite isSupplierFavorite(String userId);
 	boolean deleteSupplierFavorite(int supplId, String userId);
 	SupplierView getSupplierView2(int supplI);
+	SupplierUser checkUserIsStore(String username);
 }

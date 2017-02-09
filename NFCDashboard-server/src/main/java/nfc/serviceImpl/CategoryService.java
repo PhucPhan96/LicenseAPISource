@@ -15,6 +15,7 @@ import nfc.model.Category;
 import nfc.model.Code;
 import nfc.model.Product;
 import nfc.model.SupplierCategories;
+import nfc.model.SupplierWork;
 import nfc.model.User;
 import nfc.model.ViewModel.CategoryView;
 import nfc.model.ViewModel.SupplierProductView;
@@ -50,19 +51,29 @@ public class CategoryService implements ICategoryService{
 	private ICategoryService categoryDAO;
 	@Autowired
 	private IProductService productDAO;
+	@Autowired
+	private IUserService userDAO;
+	
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
-	public List<Category> getListCategory() {
+	public List<Category> getListCategory(String username) {
+		User user = userDAO.findUserByUserName(username);
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
-		Criteria criteria = session.createCriteria(Category.class);		
-		List<Category> list = (List<Category>)criteria.list();
-		trans.commit();
-		for(Category cate: list){
-			System.out.println(cate.getCate_name());
+		List<Category> result;
+		try{
+			Query query = session.createSQLQuery(
+					"CALL GetListCategory(:userid)")
+					.addEntity(Category.class)
+					.setParameter("userid", user.getUser_id());
+			result = query.list();
 		}
-		return list;		
+		catch(Exception ex){
+			result = new ArrayList<Category>();
+		}
+		trans.commit();
+		return result;		
 	}
 	public boolean insertCategory(Category cate)
 	{

@@ -39,7 +39,7 @@ public class UserManagementController {
 	public List<User> getListUser(HttpServletRequest request){
 		String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
-		List<User> users = userDAO.getListUser();
+		List<User> users = userDAO.getListUserPermissionStore(username);
 		//User user = userDAO.findUserByUserName(username);
 		return users;
 		//return Utils.convertObjectToJsonString(users);
