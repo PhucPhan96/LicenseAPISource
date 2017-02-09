@@ -40,5 +40,12 @@ public class FileService implements IFileService{
 		trans.commit();
 		return attachFile;
 	}
+	public AttachFile getAttachFileWithSession(int fileId,Session session) {
+		session = this.sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(AttachFile.class);
+		criteria.add(Restrictions.eq("file_id", fileId));
+		AttachFile attachFile = (AttachFile) criteria.uniqueResult();
+		return attachFile;
+	}
 
 }

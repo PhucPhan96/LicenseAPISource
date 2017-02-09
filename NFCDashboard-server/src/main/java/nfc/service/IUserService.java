@@ -9,6 +9,7 @@ import nfc.model.UserRole;
 
 public interface IUserService {
 	List<User> getListUser();
+	List<User> getListUserPermissionStore(String username);
 	boolean updateUser(User user);
 	boolean insertUser(User user);
 	boolean deleteUser(String userId);

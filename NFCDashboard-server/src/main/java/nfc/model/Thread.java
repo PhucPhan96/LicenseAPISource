@@ -1,6 +1,8 @@
 package nfc.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,6 +21,7 @@ public class Thread {
 	private int board_id;
 	private Date write_date;
 	private int review_rank5;
+	private List<AttachFile> attachFile = new ArrayList<AttachFile>();
 	@Id
 	@Column(name="thread_id")
 	public int getThread_id() {
@@ -82,6 +85,13 @@ public class Thread {
 	}
 	public void setReview_rank5(int review_rank5) {
 		this.review_rank5 = review_rank5;
+	}
+	@javax.persistence.Transient
+	public List<AttachFile> getAttachFile() {
+		return attachFile;
+	}
+	public void setAttachFile(List<AttachFile> attachFile) {
+		this.attachFile = attachFile;
 	}
 	
 }

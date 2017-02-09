@@ -233,14 +233,14 @@ public class SupplierService implements ISupplierService {
 			}*/
 			
 			//insert supplier user
-			SupplierUser supplUser = new SupplierUser();
+			/*SupplierUser supplUser = new SupplierUser();
 			supplUser.setApp_id(Utils.appId);
 			supplUser.setSuppl_id(supplIdDesc);
 			supplUser.setUser_id(user.getUser_id());
 			session.save(supplUser);
+			
+			*/
 			trans.commit();
-			
-			
 			//insert board
 			Board board = new Board();
 			board.setBoard_name(supplierView.getSupplier().getSupplier_name());
@@ -417,6 +417,7 @@ public class SupplierService implements ISupplierService {
 			for(SupplierWork supplWork: result){
 				SupplierView supplView = getSupplierView(supplWork.getSuppl_id());
 				supplView.setDirector(getDirectorSuplier(supplWork.getSuppl_id()));
+				supplView.setCode(codeDAO.getCode("0001", supplWork.getSuppl_rank()));
 				lstSupplierView.add(supplView);
 			}
 		}
@@ -435,6 +436,7 @@ public class SupplierService implements ISupplierService {
 					for(SupplierWork supplWork: result){
 						SupplierView supplView = getSupplierView(supplWork.getSuppl_id());
 						supplView.setDirector(getDirectorSuplier(supplWork.getSuppl_id()));
+						supplView.setCode(codeDAO.getCode("0001", supplWork.getSuppl_rank()));
 						lstSupplierView.add(supplView);
 					}
 				}
@@ -617,5 +619,15 @@ public class SupplierService implements ISupplierService {
 		//supplierView.setSupplierManage(getSupplier(supplId + ""));
 		return supplierView;
 	}
-
+	public SupplierUser checkUserIsStore(String username){
+		User user = userDAO.findUserByUserName(username);
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Query query = session.createSQLQuery(
+				"select su.* from fg_supplier_users su inner join fg_user_roles ur on su.user_id=ur.user_id inner join fg_roles r on ur.role_id=r.role_id where r.role_name='Store' and su.user_id='"+user.getUser_id()+"' limit 1 ")
+				.addEntity(SupplierUser.class);
+		SupplierUser supplierUser = (SupplierUser) query.uniqueResult();
+		trans.commit();
+		return supplierUser;
+	}
 }
