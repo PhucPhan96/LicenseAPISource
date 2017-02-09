@@ -3,20 +3,25 @@ package nfc.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
+
+import nfc.model.PKModel.CodePK;
 
 @Entity
 @Table(name="fg_codes")
+@IdClass(CodePK.class)
 public class Code {
+	@Id
 	private String group_code;
+	@Id
 	private String sub_code;
 	private String code_name;
 	private String code_desc;
 	private String code_opt1;
 	private String code_opt2;
 	private String code_opt3;
-	private boolean code_use;
-	@Id
+	private Byte code_use;
 	@Column(name="group_code")
 	public String getGroup_code() {
 		return group_code;
@@ -66,11 +71,11 @@ public class Code {
 	public void setCode_opt3(String code_opt3) {
 		this.code_opt3 = code_opt3;
 	}
-	@Column(name="code_use")
-	public boolean isCode_use() {
+	@Column(name="code_use", nullable=true)
+	public Byte isCode_use() {
 		return code_use;
 	}
-	public void setCode_use(boolean code_use) {
+	public void setCode_use(Byte code_use) {
 		this.code_use = code_use;
 	}
 }

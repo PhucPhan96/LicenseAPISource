@@ -3,10 +3,13 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nfc.model.Code;
 import nfc.model.Supplier;
 import nfc.model.SupplierFavorite;
+import nfc.model.SupplierUser;
 import nfc.model.ViewModel.SupplierAppView;
 import nfc.model.ViewModel.SupplierView;
+import nfc.service.ICodeService;
 import nfc.service.ISupplierService;
 import nfc.serviceImpl.Security.JwtTokenUtil;
 import nfc.serviceImpl.common.Utils;
@@ -24,6 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class SupplierManagementController {
 	@Autowired
 	private ISupplierService supplierDAO;
+	@Autowired
+	private ICodeService codeDAO;
 	@Value("Authorization")
     private String tokenHeader;
 
@@ -136,6 +141,22 @@ public class SupplierManagementController {
 		SupplierView supplierView =  supplierDAO.getSupplierView2(Integer.parseInt(supplId));
 		System.out.println("supplierViewStr" + supplierView);
 		return supplierView;
-		
 	}
+	@RequestMapping(value="supplier/store", method=RequestMethod.GET)
+	public SupplierUser checkUserIsStore(HttpServletRequest request){
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        SupplierUser supplierUser =  supplierDAO.checkUserIsStore(username);
+        if(supplierUser == null)
+        {
+        	return new SupplierUser();
+        }
+		return supplierUser;
+	}
+	@RequestMapping(value="supplier/code", method=RequestMethod.GET)
+	public List<Code> getCodeRankSupplier(){
+		List<Code> codes = codeDAO.getListCode("0001");
+		return codes;
+	}
+	
 }

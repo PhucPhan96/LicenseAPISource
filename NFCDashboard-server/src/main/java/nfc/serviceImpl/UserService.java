@@ -63,6 +63,24 @@ public class UserService implements IUserService {
 		System.out.println("count:" + list.size());
 		return list;		
 	}
+	public List<User> getListUserPermissionStore(String username){
+		User user = findUserByUserName(username);
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		List<User> result;
+		try{
+			Query query = session.createSQLQuery(
+					"CALL GetListUser(:userid)")
+					.addEntity(User.class)
+					.setParameter("userid", user.getUser_id());
+			result = query.list();
+		}
+		catch(Exception ex){
+			result = new ArrayList<User>();
+		}
+		trans.commit();
+		return result;	
+	}
 	public boolean updateUser(User user){	
 		System.out.println("vao dc update");
 		Session session = this.sessionFactory.getCurrentSession();

@@ -29,6 +29,9 @@ public class SupplierWork {
 	private int owner_suppl_id;
 	private int manage_suppl_id;
 	private String suppl_role;
+	private String suppl_rank;
+	private int board_id;
+	
 	@Id
 	@Column(name="suppl_id")
 	public int getSuppl_id() {
@@ -163,4 +166,18 @@ public class SupplierWork {
 	public void setManage_suppl_id(int manage_suppl_id) {
 		this.manage_suppl_id = manage_suppl_id;
 	}	
+	@Column(name="suppl_rank")
+	public String getSuppl_rank() {
+		return suppl_rank;
+	}
+	public void setSuppl_rank(String suppl_rank) {
+		this.suppl_rank = suppl_rank;
+	}
+	@Column(name="board_id")
+	public int getBoard_id() {
+		return board_id;
+	}
+	public void setBoard_id(int board_id) {
+		this.board_id = board_id;
+	}
 }

@@ -7,7 +7,7 @@ import nfc.model.ViewModel.CategoryView;
 import nfc.model.ViewModel.SupplierProductView;
 
 public interface ICategoryService {
-	List<Category> getListCategory();
+	List<Category> getListCategory(String username);
 	List<Category> getListCategoryFilterType(String type);
 	boolean insertCategory(Category cate);
 	boolean updateCategory(Category cate);

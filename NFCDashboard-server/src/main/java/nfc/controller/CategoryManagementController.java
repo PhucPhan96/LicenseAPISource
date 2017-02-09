@@ -7,6 +7,7 @@ import nfc.model.ViewModel.CategoryView;
 import nfc.model.ViewModel.SupplierProductView;
 import nfc.service.ICategoryService;
 import nfc.service.IFileService;
+import nfc.serviceImpl.Security.JwtTokenUtil;
 import nfc.serviceImpl.common.Utils;
 
 import java.text.DateFormat;
@@ -14,7 +15,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,9 +32,16 @@ public class CategoryManagementController {
 	private ICategoryService categoryDAO;
 	@Autowired
 	private IFileService fileDAO;
+	@Value("Authorization")
+    private String tokenHeader;
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+    
 	@RequestMapping(value="category",method=RequestMethod.GET)
-	public List<Category> getListCategory(){
-		List<Category> category = categoryDAO.getListCategory();
+	public List<Category> getListCategory(HttpServletRequest request){
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+		List<Category> category = categoryDAO.getListCategory(username);
 		return category;
 		//return Utils.convertObjectToJsonString(category);
 	} 
