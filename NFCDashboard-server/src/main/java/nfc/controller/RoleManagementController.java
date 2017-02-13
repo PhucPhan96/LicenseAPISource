@@ -62,7 +62,7 @@ public class RoleManagementController {
 		String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
 		List<Role> roles = roleDAO.getListRoleOfUserPermission(username);
-		System.out.println("count "+ roles.size());
+		System.out.println("count role la "+ roles.size());
 		return roles;
 		//return Utils.convertObjectToJsonString(roles);
 		//return roles;

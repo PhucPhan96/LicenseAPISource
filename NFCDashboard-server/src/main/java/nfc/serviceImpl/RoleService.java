@@ -129,6 +129,8 @@ public class RoleService implements IRoleService {
 	public List<Role> getListRoleOfUserPermission(String username){
 		User user = userDAO.findUserByUserName(username);
 		List<Role> userRoles = getListRoleByUserId(user.getUser_id());
+		System.out.println("get user: "+ user.getUser_id());
+		System.out.println("userrole: "+ userRoles.size());
 		if(containsRoleName(userRoles,"SysAdmin")!=null)
 		{
 			return getRoleOfUserPermission(new String[]{"SysAdmin"});
