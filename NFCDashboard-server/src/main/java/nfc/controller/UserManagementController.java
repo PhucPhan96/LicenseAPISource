@@ -82,6 +82,12 @@ public class UserManagementController {
 		return users;
 		//return Utils.convertObjectToJsonString(users);
 	}
+	@RequestMapping(value="app/user/{id}",method=RequestMethod.GET)
+	public User getUserApp(@PathVariable("id") String userId){
+		User users = userDAO.getUser(userId);	
+		return users;
+		//return Utils.convertObjectToJsonString(users);
+	}
 	@RequestMapping(value="user/add", method=RequestMethod.POST)
 	public @ResponseBody String insertUser(@RequestBody User user){	
 		user.setApp_id(Utils.appId);
