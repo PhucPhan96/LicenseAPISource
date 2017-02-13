@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,6 +19,8 @@ import nfc.service.IBoardService;
 import nfc.serviceImpl.Security.JwtTokenUtil;
 import nfc.serviceImpl.common.Utils;
 import nfc.model.Thread;
+import nfc.model.ViewModel.BoardView;
+import nfc.model.ViewModel.ProductView;
 
 @RestController
 public class BoardManagementController {
@@ -73,4 +76,16 @@ public class BoardManagementController {
 		List<Board> threads = boardDAO.getListBoards(boardId);
 		return threads;
 	}
+	@RequestMapping(value="app/boardview/{id}", method=RequestMethod.GET)
+	public BoardView getBoardView(@PathVariable("id") int boardId){
+		System.out.println("boardId is: " + boardId);	
+		BoardView threads = boardDAO.getBoardView(boardId);// .getListBoards(boardId);
+		return threads;
+	}
+	@RequestMapping(value="app/thread/add", method=RequestMethod.POST)
+	public @ResponseBody String insertThread(@RequestBody Thread thread){
+		String data = boardDAO.insertThread(thread) + "";// .insertProductView(productView) + "";
+		return "{\"result\":\"" + data + "\"}";
+	}
+	
 }

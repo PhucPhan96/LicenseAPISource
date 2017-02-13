@@ -15,12 +15,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import nfc.model.AttachFile;
 import nfc.model.Board;
+import nfc.model.Category;
 import nfc.model.Role;
+import nfc.model.SupplierAddress;
+import nfc.model.SupplierCategories;
+import nfc.model.SupplierImage;
 import nfc.model.User;
 import nfc.model.Thread;
 import nfc.model.ThreadImg;
 import nfc.service.IBoardService;
 import nfc.service.IFileService;
+import nfc.model.ViewModel.SupplierAddressView;
+import nfc.model.ViewModel.SupplierView;
+import nfc.model.ViewModel.BoardView;
+import nfc.model.ViewModel.ThreadView;
 
 public class BoardService implements IBoardService{
 	@Autowired
@@ -39,6 +47,24 @@ public class BoardService implements IBoardService{
 			/*if(cate.getCate_img_id() == 0)
 				cate.setCate_img_id(null);*/
 			session.save(board);
+			trans.commit();
+			return true;			
+		}
+		catch(Exception ex)
+		{
+			System.out.println("Error " + ex.getMessage());
+			trans.rollback();
+			return false;
+		}
+	}
+	public boolean insertThread(Thread thread) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		try
+		{
+			/*if(cate.getCate_img_id() == 0)
+				cate.setCate_img_id(null);*/
+			session.save(thread);
 			trans.commit();
 			return true;			
 		}
@@ -187,4 +213,45 @@ public class BoardService implements IBoardService{
 		trans.commit();
 		return list;
 	}
+	
+	public Board getBoard(int boardId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(Board.class);
+		criteria.add(Restrictions.eq("board_id",boardId));
+		Board list = (Board) criteria.uniqueResult();
+		trans.commit();
+		return list;
+	}
+	
+	public List<ThreadImg> getListThreadImg(int threadId){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();		
+		Criteria criteria = session.createCriteria(ThreadImg.class);
+		criteria.add(Restrictions.eq("thread_id",threadId));
+		List<ThreadImg> list = (List<ThreadImg>) criteria.list();
+		trans.commit();
+		return list;		
+	}
+	
+	public BoardView getBoardView (int boardId){
+		BoardView boardView = new BoardView();
+		boardView.setBoard(getBoard(boardId));
+		List<Thread> listThreads = getListThreadFromBoardId(boardId);
+		List<ThreadView> listThreadView = new ArrayList<ThreadView>();
+		for( Thread thread: listThreads){
+			System.out.println("thread_id is: " + thread.getThread_id());	
+			List<ThreadImg> listThreadImg = getListThreadImg(thread.getThread_id());
+			List<AttachFile> supplAttachFiles = new ArrayList<AttachFile>();
+			for( ThreadImg threadImg: listThreadImg){
+				System.out.println("img_id is: " + threadImg.getImg_id());
+				supplAttachFiles.add(fileDAO.getAttachFile(threadImg.getImg_id()));
+			}
+			thread.setAttachFile(supplAttachFiles);
+		}
+		boardView.setThread(listThreads);
+		return boardView;
+	}
+
 }
