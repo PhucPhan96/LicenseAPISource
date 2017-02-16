@@ -488,7 +488,7 @@ public class UserService implements IUserService {
 		if(userExist!=null){
 			String passwordRandom = Utils.randomPassword(8);
 			System.out.println("Mail User " + user.getEmail());
-			mailDAO.sendSimpleMail("nguyenthailananh@gmail.com", user.getEmail(), "Verify", "New Password for NFC Account: " + passwordRandom);			
+			mailDAO.sendSimpleMail("kjncunn@gmail.com", user.getEmail(), "Verify", "New Password for NFC Account: " + passwordRandom);			
 			userExist.setPassword(Utils.Sha1(passwordRandom));
 			if(updateUserForgotPassword(userExist))
 			{System.out.println("passwordRandom " + passwordRandom);
