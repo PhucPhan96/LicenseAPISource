@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import nfc.model.Category;
 import nfc.model.Program;
+import nfc.model.ProgramRole;
+import nfc.model.ViewModel.ProgramRoleSubmit;
 import nfc.service.IProgramService;
 import nfc.serviceImpl.Security.JwtTokenUtil;
 import nfc.serviceImpl.common.Utils;
@@ -33,10 +35,10 @@ public class ProgramManagementController {
 	private IProgramService programDAO;
 	
 	@RequestMapping(value="program",method=RequestMethod.GET)
-	public List<Program> getListUser(HttpServletRequest request){
-		//String token = request.getHeader(tokenHeader);
-        //String username = jwtTokenUtil.getUsernameFromToken(token);
-		List<Program> programs = programDAO.getListProgram();
+	public List<Program> getListProgram(HttpServletRequest request){
+		String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+		List<Program> programs = programDAO.getListProgram(username);
 		return programs;
 		//return Utils.convertObjectToJsonString(programs);
 	}
@@ -57,6 +59,26 @@ public class ProgramManagementController {
 	@RequestMapping(value="program/edit", method=RequestMethod.POST)
 	public @ResponseBody String editProgram(@RequestBody Program prog){
 		String data = programDAO.editProgram(prog)+"";
+		return "{\"result\":\"" + data + "\"}";
+	}
+	@RequestMapping(value="programfull",method=RequestMethod.GET)
+	public List<Program> getListProgramFull(HttpServletRequest request){		
+		List<Program> programs = programDAO.getListProgramFull();
+		return programs;
+	}
+	@RequestMapping(value="programRole",method=RequestMethod.POST)
+	public List<ProgramRole> getListProgramRolebyRoleId(@RequestBody int roleId){
+
+		List<ProgramRole> programs = programDAO.getListProgramRolebyRoleId(roleId);
+		return programs;
+		//return Utils.convertObjectToJsonString(programs);
+	}
+	@RequestMapping(value="SaveProgramRole",method=RequestMethod.POST)
+	public @ResponseBody String SaveProgRole(@RequestBody ProgramRoleSubmit ProgRole){
+		System.out.println("-------vao save -----------------: ");
+		System.out.println("roleid is: "+ProgRole.getRole_id());
+		System.out.println("count progrolw is: "+ProgRole.getListProgRole().size());
+		String data =programDAO.SaveProgRole(ProgRole)+"";
 		return "{\"result\":\"" + data + "\"}";
 	}
 }
