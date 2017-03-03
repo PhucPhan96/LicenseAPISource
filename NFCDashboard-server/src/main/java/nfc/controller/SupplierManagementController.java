@@ -158,5 +158,21 @@ public class SupplierManagementController {
 		List<Code> codes = codeDAO.getListCode("0001");
 		return codes;
 	}
+	//Get List Favorite Store for User
+		@RequestMapping(value = "app/supplierFavoriteByUser/{userID}", method = RequestMethod.GET)	
+		public @ResponseBody List<Supplier> getListSupplierFavoriteByUser(@PathVariable("userID") String userID) {
+			System.out.println("run getListSupplierFavoriteByUser");
+			List<Supplier> listSuplier = supplierDAO.getListSupplierFavoriteByUser(userID);
+			return listSuplier;
+		}
+		// Delete Favorite Store
+		@RequestMapping(value = "app/deleteSupplierFavorite/{supplId}", method = RequestMethod.DELETE)
+		public String deleteFavoriteSupplier(@PathVariable("supplId") int supplId) {
+			System.out.println("Vao delete " + supplId);		
+			String data = supplierDAO.deleteStoreFavorite(supplId);
+			System.out.println("result " + data);
+			return "{\"result\":\"" + data + "\"}";
+				
+		}
 	
 }

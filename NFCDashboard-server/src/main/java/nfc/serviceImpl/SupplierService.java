@@ -45,6 +45,7 @@ import nfc.serviceImpl.common.Utils;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -455,7 +456,6 @@ public class SupplierService implements ISupplierService {
 		
 		return lstSupplierView;
 	}
-	@Override
 	public Supplier getSupplierFromUser(String username) {
 		List<SupplierUser> lstSupplierUser = getListSupplierUser(username);
 		int supplierId = 0;
@@ -639,4 +639,52 @@ public class SupplierService implements ISupplierService {
 		trans.commit();
 		return supplierUser;
 	}
+	// Get list favorite store for user
+	
+		public List<Supplier> getListSupplierFavoriteByUser(String userID){
+			List<Supplier> results = new ArrayList<Supplier>();
+			//Get supplierID
+			Session session = this.sessionFactory.getCurrentSession();			
+			Transaction trans = session.beginTransaction();
+			String sql = "SELECT f.suppl_id FROM fg_favorite_suppliers f WHERE f.user_id = '"+ userID +"'";		
+			SQLQuery query = session.createSQLQuery(sql);
+			List<Object[]> entities = query.list();
+			System.out.println("show entities " + entities);
+			//Get supplier
+		        for (Object entity : entities) {	        	
+		        	session = this.sessionFactory.openSession();
+		        	System.out.println(" " + entity);	                   
+		            String sql3 = "SELECT * FROM fg_suppliers s WHERE s.suppl_id='"+ entity +"'"; 
+		            System.out.println(sql3);
+		            SQLQuery query3 = session.createSQLQuery(sql3);	
+		            query3.addEntity(Supplier.class);	           
+		    		results.add((Supplier)query3.uniqueResult());
+		    		System.out.println("show result"+results);  		
+		        }	
+	        trans.commit();	
+	        System.out.println("show result count:"+results.size());
+	        return results;			
+		}
+		//Delete favorite store
+		public void deleteFavoriteStore(Session session, int suppl_id)
+		{
+			String deleteQuery = "delete from fg_favorite_suppliers where suppl_id = " + suppl_id;
+			Query query = session.createSQLQuery(deleteQuery);
+		    query.executeUpdate();
+		}
+		public String deleteStoreFavorite(int supplId){
+			Session session = this.sessionFactory.getCurrentSession();
+			Transaction trans = session.beginTransaction();
+			try
+			{
+				deleteFavoriteStore(session, supplId);
+				trans.commit();
+				return "true";
+			}
+			catch(Exception ex)
+			{
+				trans.rollback();
+				return "false";
+			} 
+		}
 }
