@@ -1,8 +1,6 @@
 package nfc.service;
 import java.util.List;
 
-import org.hibernate.Session;
-
 import nfc.model.Address;
 import nfc.model.Supplier;
 import nfc.model.SupplierCategories;
@@ -35,5 +33,4 @@ public interface ISupplierService {
 	boolean deleteSupplierFavorite(int supplId, String userId);
 	SupplierView getSupplierView2(int supplI);
 	SupplierUser checkUserIsStore(String username);
-	List<Supplier> getListSuppIdByBoardId(Integer boardId,Session session);
 }

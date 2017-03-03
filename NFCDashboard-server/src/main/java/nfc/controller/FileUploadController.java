@@ -30,7 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileUploadController {
 	@Autowired
 	private IFileService fileDAO;
-	private static final int BUFFER_SIZE = 100 * 1024;
+	private static final int BUFFER_SIZE = 10 * 1024 * 1024;
 	@ResponseBody
 	@RequestMapping(value="/file/upload", method=RequestMethod.POST)
 	public AttachFile upload(@RequestParam MultipartFile file, HttpServletRequest request, HttpSession session){
@@ -38,7 +38,9 @@ public class FileUploadController {
 		try
 		{
 			System.out.println(file.getOriginalFilename().split("\\.")[1]);
-			String name = UUID.randomUUID().toString()+ "." + file.getOriginalFilename().split("\\.")[1]; //file.getOriginalFilename();//request.getParameter("name");
+			String[] lstFileName = file.getOriginalFilename().split("\\.");
+			System.out.println(lstFileName[lstFileName.length-1]);
+			String name = UUID.randomUUID().toString()+ "." + lstFileName[lstFileName.length-1]; //file.getOriginalFilename();//request.getParameter("name");
 			/*Integer chunk = 0, chunks = 0;
 			if(null != request.getParameter("chunk") && !request.getParameter("chunk").equals(""))
 			{

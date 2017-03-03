@@ -36,11 +36,7 @@ public class ProgramService implements IProgramService {
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
 		
-		String sql = "SELECT * FROM fg_programs WHERE program_id IN (SELECT distinct program_id FROM fg_program_role WHERE role_id IN "
-				+ "(SELECT role_id FROM fg_user_roles WHERE user_id IN(SELECT user_id  FROM fg_users WHERE user_name  ='"+username+"'))) "
-				+ "and use_yn='Yes' UNION SELECT * FROM fg_programs WHERE parent_prog_id !='0' and use_yn='Yes' and parent_prog_id IN"
-				+ " (SELECT program_id FROM fg_programs WHERE program_id IN (SELECT distinct program_id FROM fg_program_role WHERE role_id IN"
-				+ "(SELECT role_id FROM fg_user_roles WHERE user_id IN(SELECT user_id  FROM fg_users WHERE user_name  ='"+username+"'))) and use_yn='Yes')";
+		String sql = "SELECT * FROM fg_programs WHERE program_id IN (SELECT distinct program_id FROM fg_program_role WHERE role_id IN  (SELECT role_id FROM fg_user_roles WHERE user_id IN(SELECT user_id  FROM fg_users WHERE user_name  ='"+username+"'))) and use_yn='Yes'";
 		SQLQuery query = session.createSQLQuery(sql);
 		query.addEntity(Program.class);
 		List<Program> list = query.list();			

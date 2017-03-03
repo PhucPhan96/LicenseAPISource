@@ -101,10 +101,13 @@ public class SupplierService implements ISupplierService {
 		supplierView.setSupplierWork(getSupplierWork(supplId));
 		//get image of supplier
 		List<SupplierImage> supplImgs = getListSupplierImage(supplId);
-		List<AttachFile> supplAttachFiles = new ArrayList<AttachFile>();
+		List<SupplierAttachFileView> supplAttachFiles = new ArrayList<SupplierAttachFileView>();
 		for(SupplierImage supImg: supplImgs)
 		{
-			supplAttachFiles.add(fileDAO.getAttachFile(supImg.getImg_id()));
+			SupplierAttachFileView supplierAttachView = new SupplierAttachFileView();
+			supplierAttachView.setAttachFile(fileDAO.getAttachFile(supImg.getImg_id()));
+			supplierAttachView.setImageType(supImg.getImg_type());
+			supplAttachFiles.add(supplierAttachView);
 		}
 		supplierView.setImages(supplAttachFiles);
 		//get categories of supplier
@@ -176,8 +179,19 @@ public class SupplierService implements ISupplierService {
 		trans.commit();
 		return role;
 	}
+	public int insertBoard(String supplierName, String ownerId){
+		Board board = new Board();
+		board.setBoard_name(supplierName);
+		board.setCreated_date(new Date());
+		board.setApp_id(Utils.appId);
+		board.setOwner_id(ownerId);
+		boardDAO.insertBoard(board);
+		return board.getBoard_id();
+	}
 	public boolean insertSupplierView(SupplierView supplierView, String username){
+		int boardIdDesc = 0;
 		User user = userDAO.findUserByUserName(username);
+		boardIdDesc =insertBoard(supplierView.getSupplier().getSupplier_name(), user.getUser_id());
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
 		try
@@ -191,6 +205,7 @@ public class SupplierService implements ISupplierService {
 	        }
 	        //save supplierWork
 			supplierView.getSupplierWork().setSuppl_id(supplIdDesc);
+			supplierView.getSupplierWork().setBoard_id(boardIdDesc);
 			session.save(supplierView.getSupplierWork());
 			
 			//save supplier address
@@ -241,13 +256,6 @@ public class SupplierService implements ISupplierService {
 			
 			*/
 			trans.commit();
-			//insert board
-			Board board = new Board();
-			board.setBoard_name(supplierView.getSupplier().getSupplier_name());
-			board.setCreated_date(new Date());
-			board.setApp_id(Utils.appId);
-			board.setOwner_id(user.getUser_id());
-			boardDAO.insertBoard(board);
 			return true;
 		}
 		catch(Exception ex)
@@ -271,12 +279,13 @@ public class SupplierService implements ISupplierService {
 			session.save(supplCate);
 		}
 	}
-	private void insertSupplierImage(List<AttachFile> lstAttachFile, int supplIdDesc, Session session){
-		for(AttachFile attFile: lstAttachFile)
+	private void insertSupplierImage(List<SupplierAttachFileView> lstAttachFile, int supplIdDesc, Session session){
+		for(SupplierAttachFileView attFile: lstAttachFile)
 		{
 			SupplierImage supplImg = new SupplierImage();
-			supplImg.setImg_id(attFile.getFile_id());
-			supplImg.setImg_name(attFile.getFile_name());
+			supplImg.setImg_id(attFile.getAttachFile().getFile_id());
+			supplImg.setImg_name(attFile.getAttachFile().getFile_name());
+			supplImg.setImg_type(attFile.getImageType());
 			supplImg.setSuppl_id(supplIdDesc);
 			session.save(supplImg);
 		}
@@ -629,11 +638,5 @@ public class SupplierService implements ISupplierService {
 		SupplierUser supplierUser = (SupplierUser) query.uniqueResult();
 		trans.commit();
 		return supplierUser;
-	}
-	public List<Supplier> getListSuppIdByBoardId(Integer boardId,Session session) {
-		List<Supplier> result=new ArrayList<Supplier>();
-		Query query = session.createSQLQuery("SELECT * FROM fg_suppliers WHERE suppl_id IN (SELECT suppl_id FROM fg_supplier_work WHERE board_id=9)").addEntity(Supplier.class);
-		result = query.list();
-		return result;
 	}
 }

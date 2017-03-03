@@ -72,7 +72,7 @@ public class Code {
 		this.code_opt3 = code_opt3;
 	}
 	@Column(name="code_use", nullable=true)
-	public Byte isCode_use() {
+	public Byte getCode_use() {
 		return code_use;
 	}
 	public void setCode_use(Byte code_use) {

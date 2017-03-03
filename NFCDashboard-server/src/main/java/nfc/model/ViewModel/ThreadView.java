@@ -1,19 +1,31 @@
 package nfc.model.ViewModel;
-import nfc.model.Thread;
+
+import java.util.List;
+
+import nfc.model.AttachFile;
+import nfc.model.ThreadModel;
+import nfc.model.User;
 
 public class ThreadView {
-	private Thread thread = new Thread();
-	private Thread threadSmall;
-	public Thread getThread() {
+	private ThreadModel thread;
+	private String username;
+	private List<AttachFile> lstAttachFile;
+	public ThreadModel getThread() {
 		return thread;
 	}
-	public void setThread(Thread thread) {
+	public void setThread(ThreadModel thread) {
 		this.thread = thread;
 	}
-	public Thread getThreadSmall() {
-		return threadSmall;
+	public String getUsername() {
+		return username;
 	}
-	public void setThreadSmall(Thread threadSmall) {
-		this.threadSmall = threadSmall;
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public List<AttachFile> getLstAttachFile() {
+		return lstAttachFile;
+	}
+	public void setLstAttachFile(List<AttachFile> lstAttachFile) {
+		this.lstAttachFile = lstAttachFile;
 	}
 }

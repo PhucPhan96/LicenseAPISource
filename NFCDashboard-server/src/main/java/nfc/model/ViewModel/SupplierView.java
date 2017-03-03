@@ -16,7 +16,7 @@ import nfc.model.User;
 public class SupplierView {
 	private Supplier supplier = new Supplier();
 	private SupplierWork supplierWork = new SupplierWork();
-	private List<AttachFile> images = new ArrayList<AttachFile>();
+	private List<SupplierAttachFileView> images = new ArrayList<SupplierAttachFileView>();
 	private List<Category> categories = new ArrayList<Category>();
 	private List<SupplierAddressView> lstSupplAddressView = new ArrayList<SupplierAddressView>();
 	private User director = new User();
@@ -43,10 +43,10 @@ public class SupplierView {
 	public void setSupplierWork(SupplierWork supplierWork) {
 		this.supplierWork = supplierWork;
 	}
-	public List<AttachFile> getImages() {
+	public List<SupplierAttachFileView> getImages() {
 		return images;
 	}
-	public void setImages(List<AttachFile> images) {
+	public void setImages(List<SupplierAttachFileView> images) {
 		this.images = images;
 	}
 	public List<Category> getCategories() {

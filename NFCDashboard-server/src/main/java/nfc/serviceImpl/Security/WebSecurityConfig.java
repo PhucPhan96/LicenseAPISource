@@ -77,6 +77,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
             .antMatchers("/notify/**").permitAll()
             .antMatchers("/customer/**").permitAll()
             .antMatchers("/receiveGateway/**").permitAll()
+            .antMatchers("/receiveGatewayTest/**").permitAll()
+            
             .antMatchers("/order/**").permitAll()
             .antMatchers("/auth/**").permitAll()
             .antMatchers("/app/**").permitAll()

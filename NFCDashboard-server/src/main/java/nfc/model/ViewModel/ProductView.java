@@ -10,6 +10,13 @@ public class ProductView {
 	private Product product;
 	private List<ProductAttachFileView> lstAttachFileView;
 	private List<ProductAdd> lstProductAdd;
+	private List<Product> lstProductOption;
+	public List<Product> getLstProductOption() {
+		return lstProductOption;
+	}
+	public void setLstProductOption(List<Product> lstProductOption) {
+		this.lstProductOption = lstProductOption;
+	}
 	public List<ProductAdd> getLstProductAdd() {
 		return lstProductAdd;
 	}

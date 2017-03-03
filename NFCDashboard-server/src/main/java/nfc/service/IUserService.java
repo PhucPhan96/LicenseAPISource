@@ -26,5 +26,6 @@ public interface IUserService {
 	boolean updateUserForgotPassword(User user);
 	User getUserForgotPassword (String email);
 	String forgotPassword (User user);
+	boolean insertUserLogin(String username);
 	
 }

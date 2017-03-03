@@ -53,7 +53,7 @@ public class UserManagementController {
 		return users;
 		//return Utils.convertObjectToJsonString(users);
 	}
-	@RequestMapping(value="userOne",method=RequestMethod.GET)
+	@RequestMapping(value="app/userOne",method=RequestMethod.GET)
 	   	public JSONObject getUser(HttpServletRequest request){
 		String token = request.getHeader(tokenHeader);
 	    String username = jwtTokenUtil.getUsernameFromToken(token);

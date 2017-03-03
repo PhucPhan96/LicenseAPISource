@@ -10,12 +10,14 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nfc.model.Code;
 import nfc.model.Group;
 import nfc.model.Order;
 import nfc.model.OrderDetail;
 import nfc.model.ViewModel.OrderView;
 import nfc.model.ViewModel.PosDetailView;
 import nfc.model.ViewModel.SupplierView;
+import nfc.service.ICodeService;
 import nfc.service.IOrderService;
 import nfc.service.IPosService;
 import nfc.serviceImpl.Security.JwtTokenUtil;
@@ -73,6 +75,8 @@ public class OrderManagementController {
     IOrderService orderDAO;
     @Autowired
     IPosService posDAO;
+    @Autowired
+	private ICodeService codeDAO;
     @Bean
 	public ServerWebSocketContainer serverWebSocketContainer() {
 		return new ServerWebSocketContainer("/notify").setAllowedOrigins("*").withSockJs();
@@ -102,73 +106,49 @@ public class OrderManagementController {
     MessageHandler webSocketOutboundAdapterCustomer() {
         return new WebSocketOutboundMessageHandler(serverWebSocketContainerCustomer());
     }
-//    @Bean
-//    IntegrationFlow webSocketFlow() {
-//        return f -> {
-//            Function<Message , Object> splitter = m -> serverWebSocketContainer()
-//                    .getSessions()
-//                    .keySet()
-//                    .stream()
-//                    .map(s -> MessageBuilder.fromMessage(m)
-//                            .setHeader(SimpMessageHeaderAccessor.SESSION_ID_HEADER, s)
-//                            .build())
-//                    .collect(Collectors.toList());
-//            f.split( Message.class, splitter)
-//                    .channel(c -> c.executor(Executors.newCachedThreadPool()))
-//                    .handle(webSocketOutboundAdapter());
-//        };
-//    }
-//    @Bean
-//    IntegrationFlow webSocketFlowCustomer() {
-//        return f -> {
-//            Function<Message , Object> splitter = m -> serverWebSocketContainerCustomer()
-//                    .getSessions()
-//                    .keySet()
-//                    .stream()
-//                   .map(s -> MessageBuilder.fromMessage(m)
-//                           .setHeader(SimpMessageHeaderAccessor.SESSION_ID_HEADER, s)
-//                            .build())
-//                    .collect(Collectors.toList());
-//            f.split( Message.class, splitter)
-//                    .channel(c -> c.executor(Executors.newCachedThreadPool()))
-//                    .handle(webSocketOutboundAdapterCustomer());
-//        };
-//    }
+    @Bean
+    IntegrationFlow webSocketFlow() {
+        return f -> {
+            Function<Message , Object> splitter = m -> serverWebSocketContainer()
+                    .getSessions()
+                    .keySet()
+                    .stream()
+                    .map(s -> MessageBuilder.fromMessage(m)
+                            .setHeader(SimpMessageHeaderAccessor.SESSION_ID_HEADER, s)
+                            .build())
+                    .collect(Collectors.toList());
+            f.split( Message.class, splitter)
+                    .channel(c -> c.executor(Executors.newCachedThreadPool()))
+                    .handle(webSocketOutboundAdapter());
+        };
+    }
+    @Bean
+    IntegrationFlow webSocketFlowCustomer() {
+        return f -> {
+            Function<Message , Object> splitter = m -> serverWebSocketContainerCustomer()
+                    .getSessions()
+                    .keySet()
+                    .stream()
+                   .map(s -> MessageBuilder.fromMessage(m)
+                           .setHeader(SimpMessageHeaderAccessor.SESSION_ID_HEADER, s)
+                            .build())
+                    .collect(Collectors.toList());
+            f.split( Message.class, splitter)
+                    .channel(c -> c.executor(Executors.newCachedThreadPool()))
+                    .handle(webSocketOutboundAdapterCustomer());
+        };
+    }
     @RequestMapping(value="/order/customer", method = RequestMethod.POST)
     public void send(@RequestBody OrderView orderView) {
-    	try{                                                                                                                
-    		/*String token = request.getHeader(tokenHeader);
-            String username = jwtTokenUtil.getUsernameFromToken(token);
-            java.util.Date date = new java.util.Date();
-    		Date dateSql = new Date(date.getYear(), date.getMonth(), date.getDate());
-            OrderView orderView = new OrderView();
-            orderView.setCustomer_name("Kekekeke");
-            orderView.getOrder().setUser_id("e56f5a26-2272-410d-9713-4e4a54093d88");
-            orderView.getOrder().setOrder_status("new");
-            orderView.getOrder().setSuppl_id(18);
-            orderView.getOrder().setApp_id(Utils.appId);
-            orderView.getOrder().setDeliver_amt(BigDecimal.valueOf(0));
-            orderView.getOrder().setDeliver_date(dateSql);
-            orderView.getOrder().setDisc_amt(BigDecimal.valueOf(0));
-            orderView.getOrder().setDisc_rate(BigDecimal.valueOf(0));
-            orderView.getOrder().setOrder_amt(BigDecimal.valueOf(0));
-            orderView.getOrder().setOrder_date(dateSql);
-            orderView.getOrder().setProd_amt(BigDecimal.valueOf(0));
-            orderView.getOrder().setRequired_date(dateSql);
-            orderView.getOrder().setTax_amt(BigDecimal.valueOf(0));
-            System.out.println("chuan bi vao request");*/
-            //System.out.println(requestGateway);
-            
+    	try{ 
         	requestGateway.echo(orderView);
+        	//return "{\"result\":\"true\"}";
     	}
     	catch(Exception ex)
     	{
-    		
+    		System.out.println("Error " + ex.getMessage());
+    		//return "{\"result\":\"false\"}";
     	}
-    	
-    	//requestGateway.echo(name);
-	    //return null;
-        //requestChannel().send(MessageBuilder.withPayload(name).build());
     }
     @RequestMapping( value = "/receiveGateway", method = RequestMethod.POST )
     public @ResponseBody void testGateway(@RequestBody String data )
@@ -190,7 +170,6 @@ public class OrderManagementController {
         String username = jwtTokenUtil.getUsernameFromToken(token);
         List<OrderView>  lstOrderView = orderDAO.getListOrderViewForPos(username);
         return lstOrderView;
-		//return Utils.convertObjectToJsonString(lstOrderView);
 	}
     @RequestMapping(value="pos/detail/{id}",method=RequestMethod.GET)
 	public PosDetailView getListOrderPosDetailView(@PathVariable("id") int orderId ,HttpServletRequest request){
@@ -198,13 +177,11 @@ public class OrderManagementController {
         String username = jwtTokenUtil.getUsernameFromToken(token);
         PosDetailView  posDetailView = posDAO.getPosDetailView(orderId);
         return posDetailView;
-		//return Utils.convertObjectToJsonString(posDetailView);
 	}
     @RequestMapping(value="order/search",method=RequestMethod.POST)
 	public @ResponseBody List<OrderView> getListOrderSearch(@RequestBody Map<String,String> data){
     	List<OrderView>  lstOrderView = orderDAO.getListOrderViewSearch(data.get("dateFrom"), data.get("dateTo"));
     	return lstOrderView;
-		//return Utils.convertObjectToJsonString(lstOrderView);
 	}
     @RequestMapping(value="order/delete/{id}", method=RequestMethod.DELETE)
 	public @ResponseBody String deleteRole(@PathVariable("id") int orderId){

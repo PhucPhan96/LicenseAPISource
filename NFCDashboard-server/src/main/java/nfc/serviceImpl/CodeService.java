@@ -1,15 +1,15 @@
 package nfc.serviceImpl;
 
 import java.util.List;
-
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
 import nfc.model.Code;
-import nfc.model.Group;
+import nfc.model.Role;
 import nfc.service.ICodeService;
 
 public class CodeService implements ICodeService{
@@ -36,5 +36,60 @@ public class CodeService implements ICodeService{
 		trans.commit();
 		return code;
 	}
-	
+	public boolean insertCode(Code code){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		try
+		{
+			session.save(code);
+			trans.commit();
+			return true;
+		}
+		catch(Exception ex)
+		{
+			System.out.println("Error " + ex.getMessage());
+			trans.rollback();
+			return false;
+		}
+	}
+	public List<Code> getAllCode(){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(Code.class);
+		List<Code> list = (List<Code>) criteria.list();
+		trans.commit();
+		return list;
+	}
+	public boolean deleteCode(String groupCode, String subCode){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		try
+		{
+			String deleteQuery = "delete from fg_codes where group_code = " + "'" + groupCode + "'" + " and sub_code = " + "'" + subCode +"'" ;
+			Query query = session.createSQLQuery(deleteQuery);
+		    query.executeUpdate();
+			trans.commit();
+			return true;
+		}
+		catch(Exception ex)
+		{
+			trans.rollback();
+			return false;
+		} 
+	}
+	public boolean updateCode(Code code){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		try
+		{
+			session.update(code);
+			trans.commit();
+			return true;
+		}
+		catch(Exception ex)
+		{
+			trans.rollback();
+			return false;
+		} 
+	}
 }

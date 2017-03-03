@@ -27,6 +27,7 @@ import nfc.model.ProductImage;
 import nfc.model.ProductOptional;
 import nfc.model.Role;
 import nfc.model.Supplier;
+import nfc.model.SupplierUser;
 import nfc.model.ViewModel.ProductAttachFileView;
 import nfc.model.ViewModel.ProductView;
 import nfc.service.IFileService;
@@ -103,6 +104,7 @@ public class ProductService implements IProductService{
 	        insertProductCategory(session, productView.getProduct());
 	        insertProductImage(session, productView);
 	        insertProductAdd(session, productView);
+	        insertProductOption(session, productView);
 			trans.commit();
 			return true;
 		}
@@ -118,6 +120,16 @@ public class ProductService implements IProductService{
         {
 			productAdd.setProd_id(productView.getProduct().getProd_id());
         	session.save(productAdd);
+        }
+	}
+	private void insertProductOption(Session session, ProductView productView){
+		for(Product product : productView.getLstProductOption())
+        {
+			ProductOptional prodOption = new ProductOptional();
+			prodOption.setProd_id(productView.getProduct().getProd_id());
+			prodOption.setOption_prod_id(product.getProd_id());
+			prodOption.setIs_optional(true);
+        	session.save(prodOption);
         }
 	}
 	public List<Product> getProduct(String prodId){
@@ -161,6 +173,8 @@ public class ProductService implements IProductService{
 			insertProductImage(session, productView);
 			deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_prod_addition");
 			insertProductAdd(session, productView);
+			deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_prod_optional");
+			insertProductOption(session, productView);
 			trans.commit();
 			return true;
 		}
@@ -185,6 +199,7 @@ public class ProductService implements IProductService{
 				deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_prod_imgs");
 				deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_product_categories");
 				deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_prod_addition");
+				deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_prod_optional");
 				deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_products");
 				//session.delete(product);
 				
@@ -216,6 +231,16 @@ public class ProductService implements IProductService{
 		trans.commit();
 		return productAdds;
 	}
+	public List<Product> getListProductOption(int productId){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Query query = session.createSQLQuery(
+				"select p.* from fg_products p inner join fg_prod_optional po on p.prod_id=po.option_prod_id where po.prod_id="+productId)
+				.addEntity(Product.class);
+		List<Product>  productOps = (List<Product>) query.list();
+		trans.commit();
+		return productOps;
+	}
 	private void deleteReferenceOfProduct(Session session, int productId, String table)
 	{
 		String deleteQuery = "delete from "+table+" where prod_id = " + productId;
@@ -236,6 +261,7 @@ public class ProductService implements IProductService{
 		}
 		prodView.setLstAttachFileView(lstProdAttachView);
 		prodView.setLstProductAdd(getListProductAdd(productId));
+		prodView.setLstProductOption(getListProductOption(productId));
 		return prodView;
 	}
 	public List<ProductView> getListProductView(int supplId){

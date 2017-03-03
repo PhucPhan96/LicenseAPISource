@@ -19,7 +19,6 @@ import nfc.service.IBoardService;
 import nfc.serviceImpl.Security.JwtTokenUtil;
 import nfc.serviceImpl.common.Utils;
 import nfc.model.Thread;
-import nfc.model.User;
 import nfc.model.ViewModel.BoardView;
 import nfc.model.ViewModel.ProductView;
 
@@ -86,21 +85,6 @@ public class BoardManagementController {
 	@RequestMapping(value="app/thread/add", method=RequestMethod.POST)
 	public @ResponseBody String insertThread(@RequestBody Thread thread){
 		String data = boardDAO.insertThread(thread) + "";// .insertProductView(productView) + "";
-		return "{\"result\":\"" + data + "\"}";
-	}
-	@RequestMapping(value="board/edit/{id}", method=RequestMethod.GET)
-	public Board getBoardEdit(@PathVariable("id") int boardId,HttpServletRequest request){
-		System.out.println("boardId is: " + boardId);	
-		String token = request.getHeader(tokenHeader);
-        String username = jwtTokenUtil.getUsernameFromToken(token);
-		//Board board = boardDAO.getBoard(boardId);getBoardViewWithId
-		Board board = boardDAO.getBoardViewWithId(boardId, username);
-		return board;
-	}
-	@RequestMapping(value="board/edit/update", method=RequestMethod.PUT)
-	public @ResponseBody String updateBoard(@RequestBody Board board){
-		System.out.println("vao duoc update board");
-		String data = boardDAO.updateBoard(board)+"";
 		return "{\"result\":\"" + data + "\"}";
 	}
 	

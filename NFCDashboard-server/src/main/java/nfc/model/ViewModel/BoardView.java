@@ -4,7 +4,6 @@ import java.util.List;
 
 import nfc.model.Board;
 import nfc.model.Thread;
-import nfc.model.ViewModel.ThreadView;
 import nfc.model.ThreadImg;
 import nfc.model.AttachFile;
 

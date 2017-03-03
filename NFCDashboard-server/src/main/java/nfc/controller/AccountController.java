@@ -66,7 +66,7 @@ public class AccountController {
         // Reload password post-security so we can generate token
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         final String token = jwtTokenUtil.generateToken(userDetails);
-        
+        //userDAO.insertUserLogin( authenticationRequest.getUsername());
         // Return the token
         return ResponseEntity.ok(new JwtAuthenticationResponse(token));
     }

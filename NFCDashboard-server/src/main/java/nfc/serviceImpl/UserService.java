@@ -32,6 +32,7 @@ import nfc.model.SupplierAddress;
 import nfc.model.SupplierUser;
 import nfc.model.User;
 import nfc.model.UserAddress;
+import nfc.model.UserLogin;
 import nfc.model.UserRegister;
 import nfc.model.UserRole;
 import nfc.model.ViewModel.SupplierAddressView;
@@ -125,7 +126,7 @@ public class UserService implements IUserService {
 		Transaction trans = session.beginTransaction();
 		try
 		{
-			user.setPassword(Utils.BCryptPasswordEncoder(user.getPassword()));
+			//user.setPassword(Utils.BCryptPasswordEncoder(user.getPassword()));
 			session.save(user);
 			insertUserRole(session, user);
 			insertUserSupplier(session,user);
@@ -501,6 +502,27 @@ public class UserService implements IUserService {
 		}else{
 			return "notExist";			
 		}		
+	}
+	public boolean insertUserLogin(String username){
+		User user = findUserByUserName(username);
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		try
+		{
+			UserLogin userLogin = new UserLogin();
+			userLogin.setUser_id(user.getUser_id());
+			userLogin.setApp_id(Utils.appId);
+			userLogin.setLogin_date(new java.util.Date());
+			session.save(userLogin);
+			trans.commit();
+			return true;
+		}
+		catch(Exception ex)
+		{
+			System.out.println("Error " + ex.getMessage());
+			trans.rollback();
+			return false;
+		}
 	}
 
 }

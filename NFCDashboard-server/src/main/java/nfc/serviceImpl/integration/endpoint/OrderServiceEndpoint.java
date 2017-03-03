@@ -31,7 +31,7 @@ public class OrderServiceEndpoint {
 		orderDAO.updateOrderView(orderView);
 		return orderView;
 	}
-	public MessageHandler splitter() {
+	/*public MessageHandler splitter() {
 		
 		DefaultMessageSplitter splitter = new DefaultMessageSplitter();
 		splitter.setOutputChannelName("headerEnricherChannel");
@@ -40,5 +40,5 @@ public class OrderServiceEndpoint {
 	public MessageHandler webSocketOutboundAdapter() {
 		System.out.println("Vao socket");
 		return new WebSocketOutboundMessageHandler(serverWebSocketContainer);
-	}
+	}*/
 }

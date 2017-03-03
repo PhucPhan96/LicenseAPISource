@@ -28,10 +28,15 @@ public class SMSController {
 	}
 	@RequestMapping(value="sms/send",method=RequestMethod.GET)
 	public String getListOrderPosView(){
-		sendEmail();
-		return "ok";
+		/*if(sendEmail())
+			return "ok";
+		else
+			return "false";*/
+		return sendEmail();
 	}
-	public void sendEmail(){
-		mailDAO.sendSimpleMail("kjncunn@gmail.com", "kimduy.mlcm@gmail.com", "hello", "check register from NFC");
+	public String sendEmail(){
+		//return mailDAO.sendSimpleMail("kjncunn@gmail.com", "kimduy.mlcm@gmail.com", "hello", "check register from NFC");
+		return mailDAO.sendSimpleMailStr("kjncunn@gmail.com", "kimduy.mlcm@gmail.com", "hello", "check register from NFC");
+		
 	}
 }

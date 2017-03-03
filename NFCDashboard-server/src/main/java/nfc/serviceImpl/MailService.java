@@ -27,4 +27,20 @@ public class MailService implements IMailService{
 			return false;
 		}
 	}
+	public String sendSimpleMailStr(String from, String to, String subject, String msg){
+		try{
+			System.out.println(mailSender);
+			SimpleMailMessage message = new SimpleMailMessage();
+			message.setFrom(from);
+			message.setTo(to);
+			message.setSubject(subject);
+			message.setText(msg);
+			mailSender.send(message);
+			return "ok";
+		}
+		catch(Exception ex)
+		{
+			return ex.getMessage();
+		}
+	}
 }

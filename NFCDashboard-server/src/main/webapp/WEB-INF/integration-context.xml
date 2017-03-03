@@ -22,6 +22,8 @@
                                  http://www.springframework.org/schema/integration/websocket
     							 http://www.springframework.org/schema/integration/websocket/spring-integration-websocket-4.3.xsd
     							 http://www.springframework.org/schema/integration/http http://www.springframework.org/schema/integration/http/spring-integration-http-4.3.xsd
+    							 http://www.springframework.org/schema/integration/stream
+  									http://www.springframework.org/schema/integration/stream/spring-integration-stream-4.3.xsd
     							 http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
     							 http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
@@ -31,16 +33,6 @@
 	<channel id="requestChannel"/>
 	<router input-channel="requestChannel" method="routeOrder" ref="orderRouter"/>
 	<beans:bean class="nfc.serviceImpl.integration.endpoint.OrderRouter" id="orderRouter"/>
-    <!-- <transformer id="transJsontoOrder" input-channel="requestChannel" method="tranJsonToOrder" ref="transformOrder" output-channel="orders"/>
-	<beans:bean id="transformOrder" class="nfc.serviceImpl.integration.endpoint.TransJsonToOrder"/>
-	
-    <channel id="orders"/>
-    <service-activator input-channel="orders" ref="orderService" method="saveOrder" output-channel="posUpdate" />
-    <beans:bean id="orderService" class="nfc.serviceImpl.integration.endpoint.OrderServiceEndpoint"/>
-    <channel id="posUpdate">
-    </channel>
-    <transformer id="orderToJson" input-channel="posUpdate" method="tranOrderToJson" ref="transformOrder" output-channel="prepareSendToStore"/> -->
-    
     <channel id="newOrder"></channel>
     <channel id="paidOrder"></channel>
     <!-- <service-activator input-channel="requetChannel" ref="orderService" method="saveOrder" output-channel="prepareSendToStore" /> -->
@@ -54,13 +46,32 @@
    	<channel id="transformerOrderChannel" >
     </channel>
     <int-http:outbound-gateway id="trafficGateway"
+	    url="http://localhost:1234/NFCDashboard-server/receiveGateway"
+	    request-channel="transformerOrderChannel"
+	    http-method="POST"
+	    expected-response-type="java.lang.String">
+	</int-http:outbound-gateway>
+    <!-- <beans:bean id="communicationService" class="nfc.serviceImpl.integration.endpoint.CommunicationServiceEndpoint"/>
+    <service-activator input-channel="transformerOrderChannel" ref="communicationService" method="sendOrderToSocket">
+    </service-activator> -->
+    <!-- <int-http:outbound-gateway id="trafficGateway"
+	    url="http://foodgo.thlsoft.com/NFCDashboard-server/receiveGateway1111"
+	    request-channel="oubputChannel"
+	    http-method="POST"
+	    expected-response-type="java.lang.String">
+	</int-http:outbound-gateway> -->
+    <!-- <inbound-channel-adapter channel="transformerOrderChannel" auto-startup="false"></inbound-channel-adapter> -->
+    <!-- <outbound-channel-adapter ></outbound-channel-adapter>
+    <stream:stdout-channel-adapter id="transformerOrderChannel"/>
+    <poller id="poller" default="true" fixed-rate="1"/> -->
+<!--     <int-http:outbound-gateway id="trafficGateway"
 	    url="http://foodgo.thlsoft.com/NFCDashboard-server/receiveGateway"
 	    request-channel="transformerOrderChannel"
 	    http-method="POST"
 	    expected-response-type="java.lang.String">
-	    <!-- <int-http:uri-variable name="data" expression="payload"/> -->
+	    <int-http:uri-variable name="data" expression="payload"/>
 	</int-http:outbound-gateway>
-	
+ -->	
 	 <!-- <beans:bean id="webSocketSessionsMessageSourceBean" class="nfc.serviceImpl.integration.endpoint.WebSocketSessionsMessageSource"></beans:bean>
 	 <inbound-channel-adapter ref="webSocketSessionsMessageSourceBean" method="webSocketSessionsMessageSource" channel="prepareSendToStore">
 	 	<poller fixed-delay="1000" max-messages-per-poll="1"></poller>
