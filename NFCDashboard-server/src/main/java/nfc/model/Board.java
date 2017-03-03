@@ -1,6 +1,8 @@
 package nfc.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,6 +18,7 @@ public class Board {
 	private String board_name; 
 	private Date created_date;
 	private String owner_name;
+	private List<String>  suppl_name = new ArrayList<String>();
 	@Id
 	@GeneratedValue
 	public int getBoard_id() {
@@ -54,5 +57,12 @@ public class Board {
 	}
 	public void setOwner_name(String owner_name) {
 		this.owner_name = owner_name;
+	}
+	@javax.persistence.Transient
+	public List<String> getSuppl_name() {
+		return suppl_name;
+	}
+	public void setSuppl_name(List<String> suppl_name) {
+		this.suppl_name = suppl_name;
 	}
 }

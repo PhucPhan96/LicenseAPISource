@@ -17,4 +17,7 @@ public interface IBoardService {
 	List<Thread> getListThreadSmall(int thread_id);
 	boolean insertThread(Thread thread);
 	BoardView getBoardView (int boardId);
+	Board getBoard(int boardId);
+	boolean updateBoard(Board board);
+	Board getBoardViewWithId(int boardId,String userName);
 }

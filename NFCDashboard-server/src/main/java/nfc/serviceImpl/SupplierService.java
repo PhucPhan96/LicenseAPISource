@@ -630,4 +630,10 @@ public class SupplierService implements ISupplierService {
 		trans.commit();
 		return supplierUser;
 	}
+	public List<Supplier> getListSuppIdByBoardId(Integer boardId,Session session) {
+		List<Supplier> result=new ArrayList<Supplier>();
+		Query query = session.createSQLQuery("SELECT * FROM fg_suppliers WHERE suppl_id IN (SELECT suppl_id FROM fg_supplier_work WHERE board_id=9)").addEntity(Supplier.class);
+		result = query.list();
+		return result;
+	}
 }

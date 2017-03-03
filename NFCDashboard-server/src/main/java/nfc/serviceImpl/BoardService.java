@@ -1,5 +1,6 @@
 package nfc.serviceImpl;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,24 +18,31 @@ import nfc.model.AttachFile;
 import nfc.model.Board;
 import nfc.model.Category;
 import nfc.model.Role;
+import nfc.model.Supplier;
 import nfc.model.SupplierAddress;
 import nfc.model.SupplierCategories;
 import nfc.model.SupplierImage;
 import nfc.model.User;
+import nfc.model.UserAddress;
 import nfc.model.Thread;
 import nfc.model.ThreadImg;
 import nfc.service.IBoardService;
 import nfc.service.IFileService;
+import nfc.service.ISupplierService;
+import nfc.serviceImpl.common.Utils;
 import nfc.model.ViewModel.SupplierAddressView;
 import nfc.model.ViewModel.SupplierView;
 import nfc.model.ViewModel.BoardView;
 import nfc.model.ViewModel.ThreadView;
+import nfc.model.ViewModel.UserAddressView;
 
 public class BoardService implements IBoardService{
 	@Autowired
 	private SessionFactory sessionFactory;
 	@Autowired
 	private IFileService fileDAO;
+	@Autowired
+	private ISupplierService supplDAO;
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
@@ -252,6 +260,40 @@ public class BoardService implements IBoardService{
 		}
 		boardView.setThread(listThreads);
 		return boardView;
+	}
+	public boolean updateBoard(Board board){	
+		System.out.println("vao dc update");
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		try
+		{
+			session.update(board);					
+			trans.commit();
+			return true;			
+		}
+		catch(Exception ex)
+		{
+			trans.rollback();
+			return false;
+		}
+	}
+	public Board getBoardViewWithId(int boardId,String userName)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(Board.class);
+		criteria.add(Restrictions.eq("board_id",boardId));
+		Board board = (Board) criteria.uniqueResult();
+		board.setOwner_name(userName);
+		List<Supplier> listSupp = supplDAO.getListSuppIdByBoardId(board.getBoard_id(), session);
+		List<String> listSuppl_name = new ArrayList<String>();
+		for(Supplier suppl:listSupp)
+		{
+			listSuppl_name.add(suppl.getSupplier_name());
+		}
+		board.setSuppl_name(listSuppl_name);
+		trans.commit();
+		return board;
 	}
 
 }
