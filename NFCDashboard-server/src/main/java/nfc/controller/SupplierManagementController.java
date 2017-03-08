@@ -1,4 +1,5 @@
 package nfc.controller;
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -7,6 +8,7 @@ import nfc.model.Code;
 import nfc.model.Supplier;
 import nfc.model.SupplierFavorite;
 import nfc.model.SupplierUser;
+import nfc.model.ViewModel.BillHistory;
 import nfc.model.ViewModel.SupplierAppView;
 import nfc.model.ViewModel.SupplierView;
 import nfc.service.ICodeService;
@@ -30,149 +32,186 @@ public class SupplierManagementController {
 	@Autowired
 	private ICodeService codeDAO;
 	@Value("Authorization")
-    private String tokenHeader;
+	private String tokenHeader;
 
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+	@Autowired
+	private JwtTokenUtil jwtTokenUtil;
 
-	@RequestMapping(value="supplier",method=RequestMethod.GET)
-	public List<Supplier> getSupplier(){
+	@RequestMapping(value = "supplier", method = RequestMethod.GET)
+	public List<Supplier> getSupplier() {
 		List<Supplier> supplier = supplierDAO.getListSupplier();
 		return supplier;
-		//return Utils.convertObjectToJsonString(supplier);
+		// return Utils.convertObjectToJsonString(supplier);
 	}
-	@RequestMapping(value="supplier/view",method=RequestMethod.GET)
-	public List<SupplierView> getListSupplierView(HttpServletRequest request){
+
+	@RequestMapping(value = "supplier/view", method = RequestMethod.GET)
+	public List<SupplierView> getListSupplierView(HttpServletRequest request) {
 		String token = request.getHeader(tokenHeader);
-        String username = jwtTokenUtil.getUsernameFromToken(token);
+		String username = jwtTokenUtil.getUsernameFromToken(token);
 		List<SupplierView> lstSupplierView = supplierDAO.getListSupplierView(username);
 		System.out.println(Utils.convertObjectToJsonString(lstSupplierView));
 		return lstSupplierView;
-		//return Utils.convertObjectToJsonString(lstSupplierView);
+		// return Utils.convertObjectToJsonString(lstSupplierView);
 	}
-	@RequestMapping(value="app/supplier/{id}",method=RequestMethod.GET)
-	public List<SupplierAppView> getListSupplierViewOfCategory(@PathVariable("id") int categoryId){
+
+	@RequestMapping(value = "app/supplier/{id}", method = RequestMethod.GET)
+	public List<SupplierAppView> getListSupplierViewOfCategory(@PathVariable("id") int categoryId) {
 		List<SupplierAppView> lstSupplierView = supplierDAO.getListSupplierViewOfCategory(categoryId);
 		return lstSupplierView;
-		//return Utils.convertObjectToJsonString(lstSupplierView);
+		// return Utils.convertObjectToJsonString(lstSupplierView);
 	}
-	
-	@RequestMapping(value="supplier/user",method=RequestMethod.GET)
-	public Supplier getListSupplierUser(HttpServletRequest request){
+
+	@RequestMapping(value = "supplier/user", method = RequestMethod.GET)
+	public Supplier getListSupplierUser(HttpServletRequest request) {
 		String token = request.getHeader(tokenHeader);
-        String username = jwtTokenUtil.getUsernameFromToken(token);
+		String username = jwtTokenUtil.getUsernameFromToken(token);
 		Supplier supplier = supplierDAO.getSupplierFromUser(username);
 		return supplier;
-		//return Utils.convertObjectToJsonString(supplier);
+		// return Utils.convertObjectToJsonString(supplier);
 	}
-	@RequestMapping(value="supplier/{id}", method=RequestMethod.GET)
-	public Supplier getSupplier(@PathVariable("id") String supplId){
-		Supplier supplier =  supplierDAO.getSupplier(supplId);
-		//System.out.println("SupplierStr " + supplierStr);
+
+	@RequestMapping(value = "supplier/{id}", method = RequestMethod.GET)
+	public Supplier getSupplier(@PathVariable("id") String supplId) {
+		Supplier supplier = supplierDAO.getSupplier(supplId);
+		// System.out.println("SupplierStr " + supplierStr);
 		return supplier;
 	}
-	@RequestMapping(value="app/supplierFavorite/{id}", method=RequestMethod.GET)
-	public @ResponseBody String getSupplierFavorite(@PathVariable("id") int supplId){
-		String supplierFavorite =  supplierDAO.getSupplierFavorite(supplId);
+
+	@RequestMapping(value = "app/supplierFavorite/{id}", method = RequestMethod.GET)
+	public @ResponseBody String getSupplierFavorite(@PathVariable("id") int supplId) {
+		String supplierFavorite = supplierDAO.getSupplierFavorite(supplId);
 		return "{\"result\":\"" + supplierFavorite + "\"}";
 	}
 
-	//get supplier view
-	@RequestMapping(value="supplier/detail/{id}", method=RequestMethod.GET)
-	public SupplierView getSupplierView(@PathVariable("id") String supplId, HttpServletRequest request){
-		/*String token = request.getHeader(tokenHeader);
-        String username = jwtTokenUtil.getUsernameFromToken(token);*/
-		SupplierView supplierView =  supplierDAO.getSupplierView(Integer.parseInt(supplId));
+	// get supplier view
+	@RequestMapping(value = "supplier/detail/{id}", method = RequestMethod.GET)
+	public SupplierView getSupplierView(@PathVariable("id") String supplId, HttpServletRequest request) {
+		/*
+		 * String token = request.getHeader(tokenHeader); String username =
+		 * jwtTokenUtil.getUsernameFromToken(token);
+		 */
+		SupplierView supplierView = supplierDAO.getSupplierView(Integer.parseInt(supplId));
 		System.out.println("supplierViewStr" + supplierView);
 		return supplierView;
-		
+
 	}
-	@RequestMapping(value="supplier/add", method=RequestMethod.POST)
-	public @ResponseBody String insertSupplier(@RequestBody SupplierView supplierView, HttpServletRequest request){
-		//System.out.println("Vao Inser supplier ne " + supplierView.getSupplier().getApp_id());
-		//System.out.println("Image size " + supplierView.getImages().size());
+
+	@RequestMapping(value = "supplier/add", method = RequestMethod.POST)
+	public @ResponseBody String insertSupplier(@RequestBody SupplierView supplierView, HttpServletRequest request) {
+		// System.out.println("Vao Inser supplier ne " +
+		// supplierView.getSupplier().getApp_id());
+		// System.out.println("Image size " + supplierView.getImages().size());
 		String token = request.getHeader(tokenHeader);
-        String username = jwtTokenUtil.getUsernameFromToken(token);
+		String username = jwtTokenUtil.getUsernameFromToken(token);
 		String data = supplierDAO.insertSupplierView(supplierView, username) + "";
 		return "{\"result\":\"" + data + "\"}";
 	}
-	@RequestMapping(value="supplier/edit", method=RequestMethod.PUT)
-	public @ResponseBody String updateSupplier(@RequestBody SupplierView supplierView){
-		//System.out.println("Vao Inser supplier ne " + supplierView.getSupplier().getApp_id());
-		//System.out.println("Image size " + supplierView.getImages().size());
+
+	@RequestMapping(value = "supplier/edit", method = RequestMethod.PUT)
+	public @ResponseBody String updateSupplier(@RequestBody SupplierView supplierView) {
+		// System.out.println("Vao Inser supplier ne " +
+		// supplierView.getSupplier().getApp_id());
+		// System.out.println("Image size " + supplierView.getImages().size());
 		String data = supplierDAO.updateSupplierView(supplierView) + "";
 		return "{\"result\":\"" + data + "\"}";
 	}
-	@RequestMapping(value="supplier/delete/{id}", method=RequestMethod.DELETE)
-	public @ResponseBody String deleteRole(@PathVariable("id") String supplierId, HttpServletRequest request){
+
+	@RequestMapping(value = "supplier/delete/{id}", method = RequestMethod.DELETE)
+	public @ResponseBody String deleteRole(@PathVariable("id") String supplierId, HttpServletRequest request) {
 		System.out.println("Vao delete " + supplierId);
 		String token = request.getHeader(tokenHeader);
-        String username = jwtTokenUtil.getUsernameFromToken(token);
+		String username = jwtTokenUtil.getUsernameFromToken(token);
 		String data = supplierDAO.deleteSupplierView(Integer.parseInt(supplierId), username) + "";
 		return "{\"result\":\"" + data + "\"}";
 	}
-	@RequestMapping(value="app/supplierFavorite/add/{supplierID}/{userID}", method=RequestMethod.POST)
-	public @ResponseBody String insertSupplierFavorite(@PathVariable("supplierID") int supplierId, @PathVariable("userID") String userId){
-		//System.out.println("Vao Inser supplier ne " + supplierView.getSupplier().getApp_id());
-		//System.out.println("Image size " + supplierView.getImages().size());
-//		String token = request.getHeader(tokenHeader);
-//        String username = jwtTokenUtil.getUsernameFromToken(token);
+
+	@RequestMapping(value = "app/supplierFavorite/add/{supplierID}/{userID}", method = RequestMethod.POST)
+	public @ResponseBody String insertSupplierFavorite(@PathVariable("supplierID") int supplierId,
+			@PathVariable("userID") String userId) {
+		// System.out.println("Vao Inser supplier ne " +
+		// supplierView.getSupplier().getApp_id());
+		// System.out.println("Image size " + supplierView.getImages().size());
+		// String token = request.getHeader(tokenHeader);
+		// String username = jwtTokenUtil.getUsernameFromToken(token);
 		String data = supplierDAO.insertSupplierFavorite(supplierId, userId) + "";
 		return "{\"result\":\"" + data + "\"}";
 	}
-	@RequestMapping(value="app/isSupplierFavorite/{id}", method=RequestMethod.GET)
-	public SupplierFavorite isSupplierFavorite(@PathVariable("id") String userId){
-		SupplierFavorite supplierFavorite =  supplierDAO.isSupplierFavorite(userId);
-		//System.out.println("SupplierStr " + supplierStr);
+
+	@RequestMapping(value = "app/isSupplierFavorite/{id}", method = RequestMethod.GET)
+	public SupplierFavorite isSupplierFavorite(@PathVariable("id") String userId) {
+		SupplierFavorite supplierFavorite = supplierDAO.isSupplierFavorite(userId);
+		// System.out.println("SupplierStr " + supplierStr);
 		return supplierFavorite;
 	}
-	@RequestMapping(value="app/deleteSupplierFavorite/{supplierID}/{userID}", method=RequestMethod.POST)
-	public String deleteSupplierFavorite(@PathVariable("supplierID") int supplId, @PathVariable("userID") String userId){
+
+	@RequestMapping(value = "app/deleteSupplierFavorite/{supplierID}/{userID}", method = RequestMethod.POST)
+	public String deleteSupplierFavorite(@PathVariable("supplierID") int supplId,
+			@PathVariable("userID") String userId) {
 		System.out.println("Vao delete " + supplId);
 		System.out.println("Vao delete " + userId);
 		String data = supplierDAO.deleteSupplierFavorite(supplId, userId) + "";
 		return "{\"result\":\"" + data + "\"}";
 	}
-	//getSupplierView2
-	@RequestMapping(value="app/supplier/detail2/{id}", method=RequestMethod.GET)
-	public SupplierView getSupplierView2(@PathVariable("id") String supplId, HttpServletRequest request){
-		/*String token = request.getHeader(tokenHeader);
-        String username = jwtTokenUtil.getUsernameFromToken(token);*/
-		SupplierView supplierView =  supplierDAO.getSupplierView2(Integer.parseInt(supplId));
+
+	// getSupplierView2
+	@RequestMapping(value = "app/supplier/detail2/{id}", method = RequestMethod.GET)
+	public SupplierView getSupplierView2(@PathVariable("id") String supplId, HttpServletRequest request) {
+		/*
+		 * String token = request.getHeader(tokenHeader); String username =
+		 * jwtTokenUtil.getUsernameFromToken(token);
+		 */
+		SupplierView supplierView = supplierDAO.getSupplierView2(Integer.parseInt(supplId));
 		System.out.println("supplierViewStr" + supplierView);
 		return supplierView;
 	}
-	@RequestMapping(value="supplier/store", method=RequestMethod.GET)
-	public SupplierUser checkUserIsStore(HttpServletRequest request){
+
+	@RequestMapping(value = "supplier/store", method = RequestMethod.GET)
+	public SupplierUser checkUserIsStore(HttpServletRequest request) {
 		String token = request.getHeader(tokenHeader);
-        String username = jwtTokenUtil.getUsernameFromToken(token);
-        SupplierUser supplierUser =  supplierDAO.checkUserIsStore(username);
-        if(supplierUser == null)
-        {
-        	return new SupplierUser();
-        }
+		String username = jwtTokenUtil.getUsernameFromToken(token);
+		SupplierUser supplierUser = supplierDAO.checkUserIsStore(username);
+		if (supplierUser == null) {
+			return new SupplierUser();
+		}
 		return supplierUser;
 	}
-	@RequestMapping(value="supplier/code", method=RequestMethod.GET)
-	public List<Code> getCodeRankSupplier(){
+
+	@RequestMapping(value = "supplier/code", method = RequestMethod.GET)
+	public List<Code> getCodeRankSupplier() {
 		List<Code> codes = codeDAO.getListCode("0001");
 		return codes;
 	}
-	//Get List Favorite Store for User
-		@RequestMapping(value = "app/supplierFavoriteByUser/{userID}", method = RequestMethod.GET)	
-		public @ResponseBody List<Supplier> getListSupplierFavoriteByUser(@PathVariable("userID") String userID) {
-			System.out.println("run getListSupplierFavoriteByUser");
-			List<Supplier> listSuplier = supplierDAO.getListSupplierFavoriteByUser(userID);
-			return listSuplier;
+
+	// Get List Favorite Store for User
+	@RequestMapping(value = "app/supplierFavoriteByUser/{userID}", method = RequestMethod.GET)
+	public @ResponseBody List<Supplier> getListSupplierFavoriteByUser(@PathVariable("userID") String userID) {
+		System.out.println("run getListSupplierFavoriteByUser");
+		List<Supplier> listSuplier = supplierDAO.getListSupplierFavoriteByUser(userID);
+		return listSuplier;
+	}
+
+	// Delete Favorite Store
+	@RequestMapping(value = "app/deleteSupplierFavorite/{supplId}", method = RequestMethod.DELETE)
+	public String deleteFavoriteSupplier(@PathVariable("supplId") int supplId) {
+		System.out.println("Vao delete " + supplId);
+		String data = supplierDAO.deleteStoreFavorite(supplId);
+		System.out.println("result " + data);
+		return "{\"result\":\"" + data + "\"}";
+
+	}
+	//Get List Bill History
+	@RequestMapping(value = "app/billHistory/{userID}", method = RequestMethod.GET)
+	public @ResponseBody List<BillHistory> getListBillHistory(@PathVariable("userID") String userID) {
+		System.out.println("run getListBillHistory");
+		List<BillHistory> listBillHistory = supplierDAO.getListBillHistory(userID);
+		return listBillHistory;
+	}
+	//Get List Search Bill History
+		@RequestMapping(value = "app/searchBillHistory/{userID}/{dateFrom}/{dateTo}", method = RequestMethod.GET)
+		public @ResponseBody List<BillHistory> getListSearchBillHistory (@PathVariable("userID") String userID,@PathVariable("dateFrom") String dateFrom,@PathVariable("dateTo") String dateTo) {
+			System.out.println("run getListSearchBillHistory");
+			List<BillHistory> listBillHistory = supplierDAO.getListSearchBillHistory(userID, dateFrom, dateTo);
+			System.out.println("show listBillHistory"+listBillHistory.size());
+			return listBillHistory;
 		}
-		// Delete Favorite Store
-		@RequestMapping(value = "app/deleteSupplierFavorite/{supplId}", method = RequestMethod.DELETE)
-		public String deleteFavoriteSupplier(@PathVariable("supplId") int supplId) {
-			System.out.println("Vao delete " + supplId);		
-			String data = supplierDAO.deleteStoreFavorite(supplId);
-			System.out.println("result " + data);
-			return "{\"result\":\"" + data + "\"}";
-				
-		}
-	
 }

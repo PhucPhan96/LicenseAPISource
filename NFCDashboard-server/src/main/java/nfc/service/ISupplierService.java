@@ -10,6 +10,7 @@ import nfc.model.SupplierImage;
 import nfc.model.SupplierUser;
 import nfc.model.SupplierWork;
 import nfc.model.SupplierFavorite;
+import nfc.model.ViewModel.BillHistory;
 import nfc.model.ViewModel.SupplierAppView;
 import nfc.model.ViewModel.SupplierView;
 
@@ -38,4 +39,6 @@ public interface ISupplierService {
 	List<Supplier> getListSupplierFavoriteByUser(String userID);
 	void deleteFavoriteStore(Session session, int suppl_id);
 	String deleteStoreFavorite(int supplId);
+	List<BillHistory> getListBillHistory (String userID);
+	List<BillHistory> getListSearchBillHistory(String userID, String dateFrom, String dateTo);
 }
