@@ -685,7 +685,7 @@ public class SupplierService implements ISupplierService {
 	public List<BillHistory> getListSearchBillHistory(String userID, String dateFrom, String dateTo){
 		Session session = this.sessionFactory.getCurrentSession();
 		 Transaction trans = session.beginTransaction();
-		 String sql = "SELECT o.order_id, o.order_date, o.deliver_date,	 o.order_status, o.prod_amt, o.app_id,od.prod_id,od.prod_qty,prod_name,s.suppl_id, s.supplier_name,p.unit_price FROM fg_orders o  INNER JOIN fg_order_details od ON o.order_id = od.order_id INNER JOIN	fg_products p ON od.prod_id = p.prod_id INNER JOIN fg_suppliers s ON	o.suppl_id = s.suppl_id WHERE o.user_id = '"+ userID +"' AND o.order_date >= '"+dateFrom+"' AND o.order_date<='"+dateTo+"'";
+		 String sql = "SELECT o.order_id, o.order_date, o.deliver_date,	 o.order_status, o.prod_amt, o.app_id,od.prod_id,od.prod_qty,prod_name,s.suppl_id, s.supplier_name,p.unit_price FROM fg_orders o  INNER JOIN fg_order_details od ON o.order_id = od.order_id INNER JOIN	fg_products p ON od.prod_id = p.prod_id INNER JOIN fg_suppliers s ON	o.suppl_id = s.suppl_id WHERE o.user_id = '"+ userID +"' AND o.order_date >= '"+dateFrom+"' AND o.order_date<='"+dateTo+"' ORDER BY o.order_date";
 		 SQLQuery query = session.createSQLQuery(sql);
 		 List<BillHistory> results = query.list();
 		 query.addEntity(BillHistory.class);

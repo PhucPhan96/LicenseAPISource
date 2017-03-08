@@ -211,7 +211,7 @@ public class SupplierManagementController {
 		public @ResponseBody List<BillHistory> getListSearchBillHistory (@PathVariable("userID") String userID,@PathVariable("dateFrom") String dateFrom,@PathVariable("dateTo") String dateTo) {
 			System.out.println("run getListSearchBillHistory");
 			List<BillHistory> listBillHistory = supplierDAO.getListSearchBillHistory(userID, dateFrom, dateTo);
-			System.out.println("show listBillHistory"+listBillHistory.size());
+			System.out.println("show list search BillHistory"+listBillHistory.size());
 			return listBillHistory;
 		}
 }
