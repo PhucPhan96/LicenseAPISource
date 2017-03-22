@@ -2,6 +2,8 @@ package nfc.service;
 
 import java.util.List;
 
+import org.hibernate.Session;
+
 import nfc.model.User;
 import nfc.model.UserAddress;
 import nfc.model.UserRegister;
@@ -27,5 +29,5 @@ public interface IUserService {
 	User getUserForgotPassword (String email);
 	String forgotPassword (User user);
 	boolean insertUserLogin(String username);
-	
+	public boolean insertUserFb(User user);
 }

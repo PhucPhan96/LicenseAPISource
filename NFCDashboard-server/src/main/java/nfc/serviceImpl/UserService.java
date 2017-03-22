@@ -174,6 +174,47 @@ public class UserService implements IUserService {
 		}
 		
 	}
+	public boolean insertUserFb(User user){
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		try{
+			User userfb = new User();
+			userfb.setUser_id(user.getUser_id());
+			userfb.setApp_id(user.getApp_id());
+			userfb.setUser_name(user.getUser_name());
+			userfb.setUser_alias(user.getUser_alias());
+			userfb.setFirst_name(user.getFirst_name());
+			userfb.setMiddle_name(user.getMiddle_name());
+			userfb.setLast_name(user.getLast_name());
+			userfb.setEnglish_name(user.getEnglish_name());
+			userfb.setIs_anonymous(user.getIs_anonymous());
+			userfb.setPassword(user.getPassword());
+			userfb.setPassword_salt(user.getPassword_salt());
+			userfb.setIs_lockedout(user.getIs_lockedout());
+			userfb.setIs_registered(user.getIs_registered());
+			userfb.setCreated_date(user.getCreated_date());
+			userfb.setLast_act_date(user.getLast_act_date());
+			userfb.setLast_login_date(user.getLast_login_date());
+			userfb.setLast_password_changed_date(user.getLast_password_changed_date());
+			userfb.setLast_locked_date(user.getLast_locked_date());
+			userfb.setFailed_password_count(user.getFailed_password_count());
+			userfb.setPassword_expired_date(user.getPassword_expired_date());
+			userfb.setMobile_no(user.getMobile_no());
+			userfb.setPhone_no(user.getPhone_no());
+			userfb.setIdcard_no(user.getIdcard_no());
+			userfb.setSex_type(user.getSex_type());
+			userfb.setRegistered_date(user.getRegistered_date());
+			userfb.setIs_active(user.getIs_active());				
+			userfb.setEmail(user.getEmail());
+			session.save(userfb);
+			trans.commit();
+			return true;
+		}
+		catch(Exception ex){
+			trans.rollback();
+			return false;
+		}
+	}
 	private void insertUserSupplier(Session session, User user)
 	{
 		SupplierUser userSuppl = new SupplierUser();

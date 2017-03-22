@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import nfc.model.Category;
 import nfc.model.User;
 import nfc.service.IUserService;
+import nfc.serviceImpl.Security.JwtAuthenticationResponse;
 import nfc.serviceImpl.Security.JwtTokenUtil;
 import nfc.serviceImpl.common.Utils;
 
@@ -17,6 +18,9 @@ import java.util.UUID;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +38,8 @@ public class UserManagementController {
     private JwtTokenUtil jwtTokenUtil;
 	@Autowired
 	private IUserService userDAO;
+	@Autowired
+    private UserDetailsService userDetailsService;
 	
 	@RequestMapping(value="user",method=RequestMethod.GET)
 	public List<User> getListUser(HttpServletRequest request){
@@ -102,6 +108,44 @@ public class UserManagementController {
 		String data = userDAO.insertUser(user)+"";
 		//String data = "";
 		return "{\"result\":\"" + data + "\"}";
+	}
+	@RequestMapping(value="app/user/addUserFB", method=RequestMethod.POST)
+	public @ResponseBody  String insertUserFacebook(@RequestBody User user){	
+		user.setApp_id(Utils.appId);
+		UUID uuid = UUID.randomUUID();
+		String randomUUID = uuid.toString();
+		user.setUser_id(randomUUID);
+		Date date = new Date();
+		user.setCreated_date(date);
+		System.out.println("vao insert");
+		//System.out.println(user.getLstRoles().size());
+		
+		boolean data = userDAO.insertUserFb(user);
+		System.out.println(data);
+		if(data){
+			final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUser_name());
+            final String token = jwtTokenUtil.generateToken(userDetails);
+            System.out.println(token);
+            return "{\"result\":\"" + token + "\"}";
+		} else {
+			//data = "false";
+			String data1 = userDAO.insertUserFb(user)+"";
+			return "{\"result\":\"" + data1 + "\"}";
+		}		
+	}
+	@RequestMapping(value="app/user/checkUserFB/{id}",method=RequestMethod.GET)
+	public String checkUserFacebook(@PathVariable("id") String username){
+		User users = userDAO.findUserByUserName(username);// .getUser(userId);	
+		System.out.println(users.getUser_name());
+		if(users.getUser_name().equals(username)){
+			final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            final String token = jwtTokenUtil.generateToken(userDetails);
+			return "{\"result\":\"" + token + "\"}";
+		} else {
+			String data = "false";
+			return "{\"result\":\"" + data + "\"}";
+		}
+		//return Utils.convertObjectToJsonString(users);
 	}
 	@RequestMapping(value="user/delete/{id}", method=RequestMethod.DELETE)
 	public @ResponseBody String deleteUser(@PathVariable("id") String userId){
