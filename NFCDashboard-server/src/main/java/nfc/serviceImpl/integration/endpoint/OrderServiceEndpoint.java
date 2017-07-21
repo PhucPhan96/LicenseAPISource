@@ -20,15 +20,15 @@ import com.mysql.jdbc.Statement;
 public class OrderServiceEndpoint {
 	@Autowired
 	private IOrderService orderDAO;
-	@Autowired
-	ServerWebSocketContainer serverWebSocketContainer;
+//	@Autowired
+//	ServerWebSocketContainer serverWebSocketContainer;
 	public OrderView saveOrder(OrderView orderView)
 	{
-		orderDAO.insertOrderView(orderView);
+		//orderDAO.insertOrderView(orderView);
 		return orderView;
 	}
 	public OrderView updateOrder(OrderView orderView){
-		orderDAO.updateOrderView(orderView);
+		//orderDAO.updateOrderView(orderView);
 		return orderView;
 	}
 	/*public MessageHandler splitter() {

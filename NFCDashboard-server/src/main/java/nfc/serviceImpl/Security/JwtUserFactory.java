@@ -36,7 +36,6 @@ public class JwtUserFactory {
     	Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
         // Build user's authorities
         for (Role role : authorities) {
-        	System.out.println("Role" + role.getRole_name());
             setAuths.add(new SimpleGrantedAuthority(role.getRole_name()));
         }
         List<GrantedAuthority> Result = new ArrayList<GrantedAuthority>(setAuths);

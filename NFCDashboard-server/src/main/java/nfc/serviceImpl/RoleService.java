@@ -131,9 +131,9 @@ public class RoleService implements IRoleService {
 		List<Role> userRoles = getListRoleByUserId(user.getUser_id());
 		System.out.println("get user: "+ user.getUser_id());
 		System.out.println("userrole: "+ userRoles.size());
-		if(containsRoleName(userRoles,"SysAdmin")!=null)
+		if(containsRoleName(userRoles,"SuperAdmin")!=null)
 		{
-			return getRoleOfUserPermission(new String[]{"SysAdmin"});
+			return getRoleOfUserPermission(new String[]{"SuperAdmin"});
 		}
 		else if(containsRoleName(userRoles,"WholeSale")!=null)
 		{
@@ -147,10 +147,10 @@ public class RoleService implements IRoleService {
 		{
 			return getRoleOfUserPermission(new String[]{"SysAdmin", "WholeSale", "Headquarter", "Branch"});
 		}
-		else if(containsRoleName(userRoles,"Dealer")!=null)
-		{
-			return getRoleOfUserPermission(new String[]{"SysAdmin", "WholeSale", "Headquarter", "Branch", "Dealer"});
-		}
+//		else if(containsRoleName(userRoles,"Dealer")!=null)
+//		{
+//			return getRoleOfUserPermission(new String[]{"SysAdmin", "WholeSale", "Headquarter", "Branch", "Dealer"});
+//		}
 		else
 		{
 			return new ArrayList<Role>();

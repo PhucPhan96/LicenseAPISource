@@ -14,6 +14,7 @@ public class Role {
 	private String role_name;
 	private boolean is_fixed;
 	private String role_desc;
+        private int parent_id;
 	@Id
 	@Column(name="role_id")
 	@GeneratedValue
@@ -51,5 +52,16 @@ public class Role {
 	public void setRole_desc(String role_desc) {
 		this.role_desc = role_desc;
 	}
+        
+        @Column(name="parent_id")
+        public int getParent_id() {
+            return parent_id;
+        }
+
+        public void setParent_id(int parent_id) {
+            this.parent_id = parent_id;
+        }
+        
+        
 	
 }

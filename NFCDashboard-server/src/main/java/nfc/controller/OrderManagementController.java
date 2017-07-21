@@ -21,8 +21,10 @@ import nfc.service.ICodeService;
 import nfc.service.IOrderService;
 import nfc.service.IPosService;
 import nfc.serviceImpl.Security.JwtTokenUtil;
+import nfc.serviceImpl.common.SocketIntegrationService;
 import nfc.serviceImpl.common.Utils;
 import nfc.serviceImpl.integration.RequestGateway;
+import nfc.socket.DataQueue;
 
 import org.hibernate.annotations.common.reflection.java.generics.TypeEnvironmentFactory;
 import org.json.simple.JSONObject;
@@ -44,6 +46,7 @@ import org.springframework.integration.dsl.support.Function;
 import org.springframework.integration.splitter.DefaultMessageSplitter;
 import org.springframework.integration.websocket.IntegrationWebSocketContainer;
 import org.springframework.integration.websocket.ServerWebSocketContainer;
+import org.springframework.integration.websocket.WebSocketListener;
 import org.springframework.integration.websocket.outbound.WebSocketOutboundMessageHandler;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -60,137 +63,230 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.WebSocketHandler;
+import org.springframework.web.socket.WebSocketMessage;
+import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
+import org.springframework.web.socket.config.annotation.ServletWebSocketHandlerRegistry;
+import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistration;
+import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+
+
 @RestController
-@Configuration
-@ComponentScan
-@EnableIntegration
+//@Configuration
+//@ComponentScan
+//@EnableIntegration
 public class OrderManagementController {
-	@Value("Authorization")
+    
+    @Value("Authorization")
     private String tokenHeader;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
     @Autowired
-	RequestGateway requestGateway;
+    RequestGateway requestGateway;
     @Autowired
     IOrderService orderDAO;
     @Autowired
     IPosService posDAO;
     @Autowired
-	private ICodeService codeDAO;
-    @Bean
-	public ServerWebSocketContainer serverWebSocketContainer() {
-		return new ServerWebSocketContainer("/notify").setAllowedOrigins("*").withSockJs();
-		//return new ServerWebSocketContainer.SockJsServiceOptions().setHeartbeatTime(60_000)
-	}
-    @Bean(name = "webSocketFlow.input")
-    MessageChannel sendToStore() {
-        return new DirectChannel();
-    }
+    private ICodeService codeDAO;
+//    @Autowired 
+//    private SocketIntegrationService integrationService;    
+//    public OrderManagementController(){
+//        new DataQueue();
+//    }
     
-    @Bean
-   	public ServerWebSocketContainer serverWebSocketContainerCustomer() {
-   		return new ServerWebSocketContainer("/customer").setAllowedOrigins("*").withSockJs();
-   		//return new ServerWebSocketContainer.SockJsServiceOptions().setHeartbeatTime(60_000)
-   	}
-    @Bean(name = "webSocketFlowCustomer.input")
-    MessageChannel sendToCustomer() {
-        return new DirectChannel();
-    }
-    MessageChannel prepareSendToStore;
-    @Bean
-    MessageHandler webSocketOutboundAdapter() {
-        return new WebSocketOutboundMessageHandler(serverWebSocketContainer());
-    }
+//    @Bean
+//    public ServerWebSocketContainer serverWebSocketContainer() {
+//            return new ServerWebSocketContainer("/notify").setAllowedOrigins("*").withSockJs();
+//            //return new ServerWebSocketContainer.SockJsServiceOptions().setHeartbeatTime(60_000)
+//    }
+//    
+//    @Bean(name = "webSocketFlow.input")
+//    MessageChannel sendToStore() {
+//        return new DirectChannel();
+//    }
+//    
+//    @Bean
+//    public ServerWebSocketContainer serverWebSocketContainerCustomer() {
+//            return new ServerWebSocketContainer("/customer").setAllowedOrigins("*").withSockJs();
+//            //return new ServerWebSocketContainer.SockJsServiceOptions().setHeartbeatTime(60_000)
+//    }
+//        
+//    @Bean(name = "webSocketFlowCustomer.input")
+//    MessageChannel sendToCustomer() {
+//        return new DirectChannel();
+//    }
+//    
+//    MessageChannel prepareSendToStore;
+//    @Bean
+//    MessageHandler webSocketOutboundAdapter() {
+//        return new WebSocketOutboundMessageHandler(serverWebSocketContainer());
+//    }
+//    
+//    @Bean
+//    MessageHandler webSocketOutboundAdapterCustomer() {
+//        return new WebSocketOutboundMessageHandler(serverWebSocketContainerCustomer());
+//    }
+//    
+//    @Bean
+//    IntegrationFlow webSocketFlow() {
+//        return f -> {
+//            Function<Message , Object> splitter = m -> serverWebSocketContainer()
+//                    .getSessions()
+//                    .keySet()
+//                    .stream()
+//                    .map(s -> MessageBuilder.fromMessage(m)
+//                            .setHeader(SimpMessageHeaderAccessor.SESSION_ID_HEADER, s)
+//                            .build())
+//                    .collect(Collectors.toList());
+//            f.split( Message.class, splitter)
+//                    .channel(c -> c.executor(Executors.newCachedThreadPool()))
+//                    .handle(webSocketOutboundAdapter());
+//        };
+//    }
+//    
+//    @Bean
+//    IntegrationFlow webSocketFlowCustomer() {
+//        return f -> {
+//            Function<Message , Object> splitter = m -> serverWebSocketContainerCustomer()
+//                    .getSessions()
+//                    .keySet()
+//                    .stream()
+//                   .map(s -> MessageBuilder.fromMessage(m)
+//                             .setHeader(SimpMessageHeaderAccessor.SESSION_ID_HEADER, s)
+//                            .build())
+//                    .collect(Collectors.toList());
+//            f.split( Message.class, splitter)
+//                    .channel(c -> c.executor(Executors.newCachedThreadPool()))
+//                    .handle(webSocketOutboundAdapterCustomer());
+//        };
+//    }
     
-    @Bean
-    MessageHandler webSocketOutboundAdapterCustomer() {
-        return new WebSocketOutboundMessageHandler(serverWebSocketContainerCustomer());
-    }
-    @Bean
-    IntegrationFlow webSocketFlow() {
-        return f -> {
-            Function<Message , Object> splitter = m -> serverWebSocketContainer()
-                    .getSessions()
-                    .keySet()
-                    .stream()
-                    .map(s -> MessageBuilder.fromMessage(m)
-                            .setHeader(SimpMessageHeaderAccessor.SESSION_ID_HEADER, s)
-                            .build())
-                    .collect(Collectors.toList());
-            f.split( Message.class, splitter)
-                    .channel(c -> c.executor(Executors.newCachedThreadPool()))
-                    .handle(webSocketOutboundAdapter());
-        };
-    }
-    @Bean
-    IntegrationFlow webSocketFlowCustomer() {
-        return f -> {
-            Function<Message , Object> splitter = m -> serverWebSocketContainerCustomer()
-                    .getSessions()
-                    .keySet()
-                    .stream()
-                   .map(s -> MessageBuilder.fromMessage(m)
-                           .setHeader(SimpMessageHeaderAccessor.SESSION_ID_HEADER, s)
-                            .build())
-                    .collect(Collectors.toList());
-            f.split( Message.class, splitter)
-                    .channel(c -> c.executor(Executors.newCachedThreadPool()))
-                    .handle(webSocketOutboundAdapterCustomer());
-        };
-    }
     @RequestMapping(value="/order/customer", method = RequestMethod.POST)
     public void send(@RequestBody OrderView orderView) {
     	try{ 
-        	requestGateway.echo(orderView);
-        	//return "{\"result\":\"true\"}";
+            requestGateway.echo(orderView);
+            //return "{\"result\":\"true\"}";
     	}
     	catch(Exception ex)
     	{
-    		System.out.println("Error " + ex.getMessage());
-    		//return "{\"result\":\"false\"}";
+            System.out.println("Error " + ex.getMessage());
+            //return "{\"result\":\"false\"}";
     	}
     }
+    
     @RequestMapping( value = "/receiveGateway", method = RequestMethod.POST )
     public @ResponseBody void testGateway(@RequestBody String data )
     {
     	try{
-    		System.out.println("data" + data);
-    		sendToStore().send(MessageBuilder.withPayload(data).build());
-    		JSONObject jsonObject = Utils.convertStringToJsonObject(data);
-    		JSONObject order = (JSONObject) jsonObject.get("order");
-    		sendToCustomer().send(MessageBuilder.withPayload(order.get("user_id")).build());
+            System.out.println("data" + data);
+//            integrationService.sendToStore().send(MessageBuilder.withPayload(data).build());
+//            JSONObject jsonObject = Utils.convertStringToJsonObject(data);
+//            JSONObject order = (JSONObject) jsonObject.get("order");
+//            integrationService.sendToCustomer().send(MessageBuilder.withPayload(order.get("user_id")).build());
     	}
     	catch(Exception ex){
-    		System.out.println("vao nay ne");
+            System.out.println("vao nay ne");
     	}
     }
+    
     @RequestMapping(value="order/pos",method=RequestMethod.GET)
 	public List<OrderView> getListOrderPosView(HttpServletRequest request){
-		String token = request.getHeader(tokenHeader);
+        String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
         List<OrderView>  lstOrderView = orderDAO.getListOrderViewForPos(username);
         return lstOrderView;
-	}
+    }
+        
     @RequestMapping(value="pos/detail/{id}",method=RequestMethod.GET)
 	public PosDetailView getListOrderPosDetailView(@PathVariable("id") int orderId ,HttpServletRequest request){
 		String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
         PosDetailView  posDetailView = posDAO.getPosDetailView(orderId);
         return posDetailView;
-	}
+    }
+        
     @RequestMapping(value="order/search",method=RequestMethod.POST)
 	public @ResponseBody List<OrderView> getListOrderSearch(@RequestBody Map<String,String> data){
     	List<OrderView>  lstOrderView = orderDAO.getListOrderViewSearch(data.get("dateFrom"), data.get("dateTo"));
     	return lstOrderView;
-	}
+    }
+        
     @RequestMapping(value="order/delete/{id}", method=RequestMethod.DELETE)
-	public @ResponseBody String deleteRole(@PathVariable("id") int orderId){
-		String data = orderDAO.deleteOrderView(orderId) + "";
-		return "{\"result\":\"" + data + "\"}";
-	}
+    public @ResponseBody String deleteRole(@PathVariable("id") int orderId){
+        String data = orderDAO.deleteOrderView(orderId) + "";
+        return "{\"result\":\"" + data + "\"}";
+    }
+    
     @RequestMapping(value="app/orderCount/{id}", method=RequestMethod.GET)
-	public @ResponseBody String getOrderCount(@PathVariable("id") int supplierId){
-		String data = orderDAO.getOrderCount(supplierId);
-		return "{\"result\":\"" + data + "\"}";
-	}
+    public @ResponseBody String getOrderCount(@PathVariable("id") int supplierId){
+        String data = orderDAO.getOrderCount(supplierId);
+        return "{\"result\":\"" + data + "\"}";
+    }
+    
+    @RequestMapping(value="/app/getSocketKey", method=RequestMethod.GET)
+    public @ResponseBody String getSocketKey(){
+        //serverWebSocketContainer().
+//        for(String key: integrationService.serverWebSocketContainer().getSessions().keySet()){
+//            System.err.println("Key " + key);
+//        }       
+        
+        return "OKIE";
+        
+    }
+    
+//    @MessageMapping("/greeting")
+//    public String handle(String greeting) {
+//        return "[" + getTimestamp() + ": " + greeting;
+//    }
+    
+    
+//    @Bean
+//    public String socketServerListener() {
+////        serverWebSocketContainer().registerWebSocketHandlers(new WebSocketHandlerRegistry() {
+////            @Override
+////            public WebSocketHandlerRegistration addHandler(WebSocketHandler wsh, String... strings) {
+////                System.err.println("socket register day");
+////
+//////                for(String str: strings){
+//////                    System.err.println("maybe key ne " + str);
+//////                }
+////                //return 
+////                //return null;
+////                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+////            }
+////        });
+//        serverWebSocketContainer().setMessageListener(new WebSocketListener() {
+//            @Override
+//            public void onMessage(WebSocketSession wss, WebSocketMessage<?> wsm) throws Exception {
+//                System.err.println("on socket message");
+//                System.err.println("WebSocketSession " + wss.toString());
+//                System.err.println("socket message " + wsm.toString());
+//                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//            }
+//
+//            @Override
+//            public void afterSessionStarted(WebSocketSession wss) throws Exception {
+//                
+//                System.err.println("afterSessionStarted " + wss.toString());
+//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//            }
+//
+//            @Override
+//            public void afterSessionEnded(WebSocketSession wss, CloseStatus cs) throws Exception {
+//                System.err.println("afterSessionEnded " + cs.toString());
+//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//            }
+//
+//            @Override
+//            public List<String> getSubProtocols() {
+//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//            }
+//
+//        });
+//        return "";
+//    }
+    
 }

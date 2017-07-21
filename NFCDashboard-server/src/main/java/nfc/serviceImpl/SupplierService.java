@@ -693,4 +693,14 @@ public class SupplierService implements ISupplierService {
 		 System.out.println("show result count:" + results.size());
 		 return results;
 	}
+        
+        public List<Supplier> getListSupplierManage(String roleName){
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            List<Supplier> suppliers = session.createSQLQuery("").addEntity(Supplier.class).list();
+            trans.commit();
+            return suppliers;
+            
+        }
+        
 }
