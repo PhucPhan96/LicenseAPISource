@@ -694,13 +694,112 @@ public class SupplierService implements ISupplierService {
 		 return results;
 	}
         
-        public List<Supplier> getListSupplierManage(String roleName){
+        public List<Supplier> getListSupplierManage(int roleId){
             Session session = this.sessionFactory.getCurrentSession();
             Transaction trans = session.beginTransaction();
-            List<Supplier> suppliers = session.createSQLQuery("").addEntity(Supplier.class).list();
-            trans.commit();
+            List<Supplier> suppliers = new ArrayList<>();
+            try{
+                suppliers = session.createSQLQuery("select * from fg_roles where role_id = (select parent_id from fg_roles where role_id = "+roleId+") limit 1;").addEntity(Supplier.class).list();
+                trans.commit();
+            }
+            catch(Exception ex){
+                trans.rollback();
+            }
             return suppliers;
             
         }
         
+        public List<Supplier> getListSupplierFromRoles(String roleJoin){
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            List<Supplier> suppliers = new ArrayList<>();
+            try{
+                suppliers = session.createSQLQuery("select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id where find_in_set(sw.suppl_role, '" + roleJoin + "')").addEntity(Supplier.class).list();
+                trans.commit();            
+            }
+            catch(Exception ex){
+                trans.rollback();
+            }
+            return suppliers;
+        }
+        
+        public List<SupplierWork> getListSupplierWorkOfManager(int supplierId){
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            List<SupplierWork> suppliers = new ArrayList<>();
+            try{
+                suppliers = session.createSQLQuery("select * from fg_supplier_work where manage_suppl_id =" + supplierId).addEntity(SupplierWork.class).list();
+                trans.commit();            
+            }
+            catch(Exception ex){
+                trans.rollback();
+            }
+            return suppliers;
+        }
+        
+        public List<SupplierWork> getListSupplierWorkOfRole(int roleId){
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            List<SupplierWork> suppliers = new ArrayList<>();
+            try{
+                suppliers = session.createSQLQuery("select * from fg_supplier_work where suppl_role = " + roleId).addEntity(SupplierWork.class).list();
+                trans.commit();            
+            }
+            catch(Exception ex){
+                trans.rollback();
+            }
+            return suppliers;
+        }
+        
+        public List<SupplierView> getListSupplierViewOfManage(int supplierId){
+            List<SupplierView> lstSupplierView = new ArrayList<SupplierView>();
+            List<SupplierWork> supplierWorks = getListSupplierWorkOfManager(supplierId);
+            for (SupplierWork supplierWork : supplierWorks) {
+                    SupplierView supplView = getSupplierView(supplierWork.getSuppl_id());
+                    supplView.setDirector(getDirectorSuplier(supplierWork.getSuppl_id()));
+                    supplView.setCode(codeDAO.getCode("0001", supplierWork.getSuppl_rank()));
+                    lstSupplierView.add(supplView);
+            }
+            return lstSupplierView;
+        }
+        
+        public List<SupplierView> getListSupplierViewOfRole(int roleId){
+            List<SupplierView> lstSupplierView = new ArrayList<SupplierView>();
+            List<SupplierWork> supplierWorks = getListSupplierWorkOfRole(roleId);
+            for (SupplierWork supplierWork : supplierWorks) {
+                    SupplierView supplView = getSupplierView(supplierWork.getSuppl_id());
+                    supplView.setDirector(getDirectorSuplier(supplierWork.getSuppl_id()));
+                    supplView.setCode(codeDAO.getCode("0001", supplierWork.getSuppl_rank()));
+                    lstSupplierView.add(supplView);
+            }
+            return lstSupplierView;
+        }
+        
+        public List<Supplier> getListSupplierOfManage(int supplierId){
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            List<Supplier> suppliers = new ArrayList<>();
+            try{
+                suppliers = session.createSQLQuery("select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id where manage_suppl_id = " + supplierId).addEntity(Supplier.class).list();
+                trans.commit();            
+            }
+            catch(Exception ex){
+                trans.rollback();
+            }
+            return suppliers;
+        }
+        
+        public List<Supplier> getListSupplierOfRole(int roleId){
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            List<Supplier> suppliers = new ArrayList<>();
+            try{
+                suppliers = session.createSQLQuery("select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id where suppl_role = " + roleId).addEntity(Supplier.class).list();
+                trans.commit();            
+            }
+            catch(Exception ex){
+                trans.rollback();
+            }
+            return suppliers;
+        }
 }

@@ -64,13 +64,15 @@ public class User {
 	public void setUser_name(String user_name) {
 		this.user_name = user_name;
 	}
-	@Column(name="user_name")
-	public String luser_name() {
-		return luser_name;
-	}
-	public void setLuser_name(String luser_name) {
-		this.luser_name = luser_name;
-	}
+        @Column(name="luser_name")
+        public String getLuser_name() {
+            return luser_name;
+        }
+
+        public void setLuser_name(String luser_name) {
+            this.luser_name = luser_name;
+        }
+        
 	@Column(name="user_alias")
 	public String getUser_alias() {
 		return user_alias;

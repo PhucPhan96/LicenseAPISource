@@ -43,17 +43,27 @@ public class UserManagementController {
 	
 	@RequestMapping(value="user",method=RequestMethod.GET)
 	public List<User> getListUser(HttpServletRequest request){
-		String token = request.getHeader(tokenHeader);
-        String username = jwtTokenUtil.getUsernameFromToken(token);
-		List<User> users = userDAO.getListUserPermissionStore(username);
-		//User user = userDAO.findUserByUserName(username);
-		return users;
-		//return Utils.convertObjectToJsonString(users);
+            String token = request.getHeader(tokenHeader);
+            String username = jwtTokenUtil.getUsernameFromToken(token);
+            List<User> users = userDAO.getListUserPermissionStore(username);
+            return users;
 	}
+        @RequestMapping(value="user/all",method=RequestMethod.GET)
+	public List<User> getAllUser(){
+            List<User> users = userDAO.getListUser();
+            return users;
+	}
+        
+        @RequestMapping(value="/users/role/{id}",method=RequestMethod.GET)
+	public List<User> getListUserOfRole(@PathVariable("id") int roleId){
+            List<User> users = userDAO.getListUserOfRole(roleId);	
+            return users; 
+	}
+        
 	@RequestMapping(value="app/user",method=RequestMethod.GET)
 	public List<User> getListUserApp(HttpServletRequest request){
 		String token = request.getHeader(tokenHeader);
-        String username = jwtTokenUtil.getUsernameFromToken(token);
+                String username = jwtTokenUtil.getUsernameFromToken(token);
 		List<User> users = userDAO.getListUser();
 		//User user = userDAO.findUserByUserName(username);
 		return users;
@@ -86,13 +96,20 @@ public class UserManagementController {
 	public User getUser(@PathVariable("id") String userId){
 		User users = userDAO.getUser(userId);	
 		return users;
-		//return Utils.convertObjectToJsonString(users);
 	}
+        
+        @RequestMapping(value="user/find/{id}",method=RequestMethod.GET)
+	public User getUserByUsername(@PathVariable("id") String username){
+		User user = userDAO.findUserByUserName(username);
+                if(user == null)
+                    return new User();
+		return user;
+	}
+        
 	@RequestMapping(value="app/user/{id}",method=RequestMethod.GET)
 	public User getUserApp(@PathVariable("id") String userId){
 		User users = userDAO.getUser(userId);	
 		return users;
-		//return Utils.convertObjectToJsonString(users);
 	}
 	@RequestMapping(value="user/add", method=RequestMethod.POST)
 	public @ResponseBody String insertUser(@RequestBody User user){	
@@ -145,7 +162,6 @@ public class UserManagementController {
 			String data = "false";
 			return "{\"result\":\"" + data + "\"}";
 		}
-		//return Utils.convertObjectToJsonString(users);
 	}
 	@RequestMapping(value="user/delete/{id}", method=RequestMethod.DELETE)
 	public @ResponseBody String deleteUser(@PathVariable("id") String userId){
