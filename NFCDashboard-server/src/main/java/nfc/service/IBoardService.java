@@ -8,6 +8,7 @@ import nfc.model.ViewModel.BoardView;
 
 public interface IBoardService {
 	boolean insertBoard(Board board);
+        boolean updateBoard(Board board);
 	List<Board> getListBoard(String userName);
 	List<Thread> getListThread(int board_id);
 	boolean deleteThread(String threadId);
@@ -17,4 +18,5 @@ public interface IBoardService {
 	List<Thread> getListThreadSmall(int thread_id);
 	boolean insertThread(Thread thread);
 	BoardView getBoardView (int boardId);
+        Board getBoard(int boardId);
 }

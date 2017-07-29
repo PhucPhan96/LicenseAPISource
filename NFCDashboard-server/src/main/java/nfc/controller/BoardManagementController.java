@@ -32,12 +32,23 @@ public class BoardManagementController {
     private JwtTokenUtil jwtTokenUtil;
 	@RequestMapping(value="board",method=RequestMethod.GET)
 	public List<Board> getBoards(HttpServletRequest request){
-		String token = request.getHeader(tokenHeader);
-        String username = jwtTokenUtil.getUsernameFromToken(token);
-		System.out.println("vao board:"+ username);
-		List<Board> boards = boardDAO.getListBoard(username);
-		return boards;
+            String token = request.getHeader(tokenHeader);
+            String username = jwtTokenUtil.getUsernameFromToken(token);
+            List<Board> boards = boardDAO.getListBoard(username);
+            return boards;
 	}
+        
+        @RequestMapping(value="board/edit/{boardId}",method=RequestMethod.GET)
+	public Board getBoard(@PathVariable("boardId") int board_id){
+            return boardDAO.getBoard(board_id);
+	}
+        
+        @RequestMapping(value="board/edit/update", method=RequestMethod.PUT)
+	public @ResponseBody String editRole(@RequestBody Board board){
+		String data = boardDAO.updateBoard(board) + "";
+		return "{\"result\":\"" + data + "\"}";
+	}
+        
 	@RequestMapping(value="board/thread/{id}", method=RequestMethod.GET)
 	public List<Thread> getCategory(@PathVariable("id") int board_id){
 		System.out.println("boardId is: " + board_id);	
@@ -51,7 +62,7 @@ public class BoardManagementController {
 		String data =boardDAO.deleteThread(threadId) + "";
 		return "{\"result\":\"" + data + "\"}";
 	}
-	@RequestMapping(value="board//delete/{id}", method=RequestMethod.DELETE)
+	@RequestMapping(value="board/delete/{id}", method=RequestMethod.DELETE)
 	public @ResponseBody String deleteBoard(@PathVariable("id") int boardId){
 		System.out.println("Vao delete " + boardId);
 		String data =boardDAO.deleteBoard(boardId) + "";
@@ -71,7 +82,7 @@ public class BoardManagementController {
 		return threads;
 	}
 	@RequestMapping(value="app/board/{id}", method=RequestMethod.GET)
-	public List<Board> getBoard(@PathVariable("id") int boardId){
+	public List<Board> getListBoardForApp(@PathVariable("id") int boardId){
 		System.out.println("boardId is: " + boardId);	
 		List<Board> threads = boardDAO.getListBoards(boardId);
 		return threads;
