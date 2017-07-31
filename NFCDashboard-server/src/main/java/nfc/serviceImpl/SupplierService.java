@@ -205,75 +205,79 @@ public class SupplierService implements ISupplierService {
 		int boardIdDesc = 0;
 		User user = userDAO.findUserByUserName(username);
 		boardIdDesc = insertBoard(supplierView.getSupplier().getSupplier_name(), user.getUser_id());
-		Session session = this.sessionFactory.getCurrentSession();
-		Transaction trans = session.beginTransaction();
-		try {
-			// save supplier
-			int supplIdDesc = 0;
-			supplierView.getSupplier().setApp_id(Utils.appId);
-			Serializable ser = session.save(supplierView.getSupplier());
-			if (ser != null) {
-				supplIdDesc = (Integer) ser;
-			}
-			// save supplierWork
-			supplierView.getSupplierWork().setSuppl_id(supplIdDesc);
-			supplierView.getSupplierWork().setBoard_id(boardIdDesc);
-			session.save(supplierView.getSupplierWork());
+                if(boardIdDesc > 0){
+                    Session session = this.sessionFactory.getCurrentSession();
+                    Transaction trans = session.beginTransaction();
+                    try {
+                        // save supplier
+                        int supplIdDesc = 0;
+                        supplierView.getSupplier().setApp_id(Utils.appId);
+                        Serializable ser = session.save(supplierView.getSupplier());
+                        if (ser != null) {
+                                supplIdDesc = (Integer) ser;
+                        }
+                        // save supplierWork
+                        supplierView.getSupplierWork().setSuppl_id(supplIdDesc);
+                        supplierView.getSupplierWork().setBoard_id(boardIdDesc);
+                        session.save(supplierView.getSupplierWork());
 
-			// save supplier address
-			for (SupplierAddressView addrView : supplierView.getLstSupplAddressView()) {
-				int addressIdDesc = 0;
-				addrView.getAddressOfSuppl().setApp_id(Utils.appId);
-				Serializable serAdd = session.save(addrView.getAddressOfSuppl());
-				if (serAdd != null) {
-					addressIdDesc = (Integer) serAdd;
-				}
-				session.save(addrView.getAddressOfSuppl());
-				SupplierAddress supplAddr = new SupplierAddress();
-				supplAddr.setAddr_id(addressIdDesc);
-				supplAddr.setApp_id(Utils.appId);
-				supplAddr.setSuppl_id(supplIdDesc);
-				supplAddr.setIs_deliver(addrView.isIs_deliver());
-				supplAddr.setIs_main(addrView.isIs_main());
-				session.save(supplAddr);
-			}
-			// save supplier category
-			insertSupplierCategory(supplierView.getCategories(), supplIdDesc, session);
-			/*
-			 * for(Category category: supplierView.getCategories()) {
-			 * SupplierCategories supplCate = new SupplierCategories();
-			 * supplCate.setCate_id(category.getCate_id());
-			 * supplCate.setCate_name(category.getCate_name());
-			 * supplCate.setSuppl_id(supplIdDesc); session.save(supplCate); }
-			 */
-			// save supplier image
-			insertSupplierImage(supplierView.getImages(), supplIdDesc, session);
-			/*
-			 * for(AttachFile attFile: supplierView.getImages()) { SupplierImage
-			 * supplImg = new SupplierImage();
-			 * supplImg.setImg_id(attFile.getFile_id());
-			 * supplImg.setImg_name(attFile.getFile_name());
-			 * supplImg.setSuppl_id(supplIdDesc); session.save(supplImg); }
-			 */
+                        // save supplier address
+                        for (SupplierAddressView addrView : supplierView.getLstSupplAddressView()) {
+                                int addressIdDesc = 0;
+                                addrView.getAddressOfSuppl().setApp_id(Utils.appId);
+                                Serializable serAdd = session.save(addrView.getAddressOfSuppl());
+                                if (serAdd != null) {
+                                        addressIdDesc = (Integer) serAdd;
+                                }
+                                session.save(addrView.getAddressOfSuppl());
+                                SupplierAddress supplAddr = new SupplierAddress();
+                                supplAddr.setAddr_id(addressIdDesc);
+                                supplAddr.setApp_id(Utils.appId);
+                                supplAddr.setSuppl_id(supplIdDesc);
+                                supplAddr.setIs_deliver(addrView.isIs_deliver());
+                                supplAddr.setIs_main(addrView.isIs_main());
+                                session.save(supplAddr);
+                        }
+                        // save supplier category
+                        insertSupplierCategory(supplierView.getCategories(), supplIdDesc, session);
+                        /*
+                         * for(Category category: supplierView.getCategories()) {
+                         * SupplierCategories supplCate = new SupplierCategories();
+                         * supplCate.setCate_id(category.getCate_id());
+                         * supplCate.setCate_name(category.getCate_name());
+                         * supplCate.setSuppl_id(supplIdDesc); session.save(supplCate); }
+                         */
+                        // save supplier image
+                        insertSupplierImage(supplierView.getImages(), supplIdDesc, session);
+                        /*
+                         * for(AttachFile attFile: supplierView.getImages()) { SupplierImage
+                         * supplImg = new SupplierImage();
+                         * supplImg.setImg_id(attFile.getFile_id());
+                         * supplImg.setImg_name(attFile.getFile_name());
+                         * supplImg.setSuppl_id(supplIdDesc); session.save(supplImg); }
+                         */
 
-			// insert supplier user
-			/*
-			 * SupplierUser supplUser = new SupplierUser();
-			 * supplUser.setApp_id(Utils.appId);
-			 * supplUser.setSuppl_id(supplIdDesc);
-			 * supplUser.setUser_id(user.getUser_id()); session.save(supplUser);
-			 * 
-			 */
-			trans.commit();
-			return true;
-		} catch (Exception ex) {
-			System.out.println("Error " + ex.getMessage());
-			trans.rollback();
-			return false;
-		} finally {
-			if (session.isOpen())
-				session.close();
-		}
+                        // insert supplier user
+                        /*
+                         * SupplierUser supplUser = new SupplierUser();
+                         * supplUser.setApp_id(Utils.appId);
+                         * supplUser.setSuppl_id(supplIdDesc);
+                         * supplUser.setUser_id(user.getUser_id()); session.save(supplUser);
+                         * 
+                         */
+                        trans.commit();
+                        return true;
+                    } catch (Exception ex) {
+                            System.out.println("Error " + ex.getMessage());
+                            trans.rollback();
+                            return false;
+                    } finally {
+                            if (session.isOpen())
+                                    session.close();
+                    }
+                }
+                return false;
+		
 	}
 
 	private void insertSupplierCategory(List<Category> lstCategory, int supplIdDesc, Session session) {
@@ -357,6 +361,7 @@ public class SupplierService implements ISupplierService {
 	public boolean deleteSupplierView(int supplId, String username) {
 		User user = userDAO.findUserByUserName(username);
 		List<Order> lstOrder = orderDAO.getListOrder(supplId);
+                boardDAO.deleteBoard(getSupplierWork(supplId).getBoard_id()) ;
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
 		try {
@@ -693,4 +698,113 @@ public class SupplierService implements ISupplierService {
 		 System.out.println("show result count:" + results.size());
 		 return results;
 	}
+        
+        public List<Supplier> getListSupplierManage(int roleId){
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            List<Supplier> suppliers = new ArrayList<>();
+            try{
+                suppliers = session.createSQLQuery("select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id where sw.suppl_role = (select parent_id from fg_roles where role_id = "+roleId+");").addEntity(Supplier.class).list();
+                trans.commit();
+            }
+            catch(Exception ex){
+                trans.rollback();
+            }
+            return suppliers;
+            
+        }
+        
+        public List<Supplier> getListSupplierFromRoles(String roleJoin){
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            List<Supplier> suppliers = new ArrayList<>();
+            try{
+                suppliers = session.createSQLQuery("select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id where find_in_set(sw.suppl_role, '" + roleJoin + "')").addEntity(Supplier.class).list();
+                trans.commit();            
+            }
+            catch(Exception ex){
+                trans.rollback();
+            }
+            return suppliers;
+        }
+        
+        public List<SupplierWork> getListSupplierWorkOfManager(int supplierId){
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            List<SupplierWork> suppliers = new ArrayList<>();
+            try{
+                suppliers = session.createSQLQuery("select * from fg_supplier_work where manage_suppl_id =" + supplierId).addEntity(SupplierWork.class).list();
+                trans.commit();            
+            }
+            catch(Exception ex){
+                trans.rollback();
+            }
+            return suppliers;
+        }
+        
+        public List<SupplierWork> getListSupplierWorkOfRole(int roleId){
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            List<SupplierWork> suppliers = new ArrayList<>();
+            try{
+                suppliers = session.createSQLQuery("select * from fg_supplier_work where suppl_role = " + roleId).addEntity(SupplierWork.class).list();
+                trans.commit();            
+            }
+            catch(Exception ex){
+                trans.rollback();
+            }
+            return suppliers;
+        }
+        
+        public List<SupplierView> getListSupplierViewOfManage(int supplierId){
+            List<SupplierView> lstSupplierView = new ArrayList<SupplierView>();
+            List<SupplierWork> supplierWorks = getListSupplierWorkOfManager(supplierId);
+            for (SupplierWork supplierWork : supplierWorks) {
+                    SupplierView supplView = getSupplierView(supplierWork.getSuppl_id());
+                    supplView.setDirector(getDirectorSuplier(supplierWork.getSuppl_id()));
+                    supplView.setCode(codeDAO.getCode("0001", supplierWork.getSuppl_rank()));
+                    lstSupplierView.add(supplView);
+            }
+            return lstSupplierView;
+        }
+        
+        public List<SupplierView> getListSupplierViewOfRole(int roleId){
+            List<SupplierView> lstSupplierView = new ArrayList<SupplierView>();
+            List<SupplierWork> supplierWorks = getListSupplierWorkOfRole(roleId);
+            for (SupplierWork supplierWork : supplierWorks) {
+                    SupplierView supplView = getSupplierView(supplierWork.getSuppl_id());
+                    supplView.setDirector(getDirectorSuplier(supplierWork.getSuppl_id()));
+                    supplView.setCode(codeDAO.getCode("0001", supplierWork.getSuppl_rank()));
+                    lstSupplierView.add(supplView);
+            }
+            return lstSupplierView;
+        }
+        
+        public List<Supplier> getListSupplierOfManage(int supplierId){
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            List<Supplier> suppliers = new ArrayList<>();
+            try{
+                suppliers = session.createSQLQuery("select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id where manage_suppl_id = " + supplierId).addEntity(Supplier.class).list();
+                trans.commit();            
+            }
+            catch(Exception ex){
+                trans.rollback();
+            }
+            return suppliers;
+        }
+        
+        public List<Supplier> getListSupplierOfRole(int roleId){
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            List<Supplier> suppliers = new ArrayList<>();
+            try{
+                suppliers = session.createSQLQuery("select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id where suppl_role = " + roleId).addEntity(Supplier.class).list();
+                trans.commit();            
+            }
+            catch(Exception ex){
+                trans.rollback();
+            }
+            return suppliers;
+        }
 }

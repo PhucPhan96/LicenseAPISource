@@ -75,6 +75,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
             // allow anonymous resource requests
             .antMatchers("/file/upload/**").permitAll()
             .antMatchers("/notify/**").permitAll()
+            .antMatchers("/nfc/**").permitAll()
             .antMatchers("/customer/**").permitAll()
             .antMatchers("/receiveGateway/**").permitAll()
             .antMatchers("/receiveGatewayTest/**").permitAll()

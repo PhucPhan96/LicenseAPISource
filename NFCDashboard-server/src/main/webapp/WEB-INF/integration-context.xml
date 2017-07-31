@@ -14,18 +14,18 @@
                                  http://www.springframework.org/schema/context
                                  http://www.springframework.org/schema/context/spring-context.xsd
                                  http://www.springframework.org/schema/websocket
-								 http://www.springframework.org/schema/websocket/spring-websocke.xsd
+                                 http://www.springframework.org/schema/websocket/spring-websocke.xsd
                                  http://www.springframework.org/schema/integration
                                  http://www.springframework.org/schema/integration/spring-integration-4.3.xsd
                                  http://www.springframework.org/schema/integration/stream
                                  http://www.springframework.org/schema/integration/stream/spring-integration-stream-4.3.xsd
                                  http://www.springframework.org/schema/integration/websocket
-    							 http://www.springframework.org/schema/integration/websocket/spring-integration-websocket-4.3.xsd
-    							 http://www.springframework.org/schema/integration/http http://www.springframework.org/schema/integration/http/spring-integration-http-4.3.xsd
-    							 http://www.springframework.org/schema/integration/stream
-  									http://www.springframework.org/schema/integration/stream/spring-integration-stream-4.3.xsd
-    							 http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
-    							 http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+                                 http://www.springframework.org/schema/integration/websocket/spring-integration-websocket-4.3.xsd
+                                 http://www.springframework.org/schema/integration/http http://www.springframework.org/schema/integration/http/spring-integration-http-4.3.xsd
+                                 http://www.springframework.org/schema/integration/stream
+                                 http://www.springframework.org/schema/integration/stream/spring-integration-stream-4.3.xsd
+                                 http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
+                                 http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
     <gateway id="requestGateway" 
 	             service-interface="nfc.serviceImpl.integration.RequestGateway"/>
@@ -41,7 +41,12 @@
     <beans:bean id="orderService" class="nfc.serviceImpl.integration.endpoint.OrderServiceEndpoint"/>
     <channel id="prepareSendToStore" >
     </channel>
-    <beans:bean id="transformOrder" class="nfc.serviceImpl.integration.endpoint.TransformOrder"/>
+     
+     
+     
+    <outbound-channel-adapter channel="prepareSendToStore" ref="storeEndpoint" method="processMessage"/> 
+     
+<!--    <beans:bean id="transformOrder" class="nfc.serviceImpl.integration.endpoint.TransformOrder"/>
     <transformer input-channel="prepareSendToStore" ref="transformOrder" method="tranOrderToJson" output-channel="transformerOrderChannel" ></transformer>
    	<channel id="transformerOrderChannel" >
     </channel>
@@ -50,7 +55,11 @@
 	    request-channel="transformerOrderChannel"
 	    http-method="POST"
 	    expected-response-type="java.lang.String">
-	</int-http:outbound-gateway>
+	</int-http:outbound-gateway>-->
+        
+     
+        
+        
     <!-- <beans:bean id="communicationService" class="nfc.serviceImpl.integration.endpoint.CommunicationServiceEndpoint"/>
     <service-activator input-channel="transformerOrderChannel" ref="communicationService" method="sendOrderToSocket">
     </service-activator> -->

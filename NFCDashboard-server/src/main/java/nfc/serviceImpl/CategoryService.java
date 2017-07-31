@@ -57,24 +57,27 @@ public class CategoryService implements ICategoryService{
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
+        
 	public List<Category> getListCategory(String username) {
 		User user = userDAO.findUserByUserName(username);
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
 		List<Category> result;
 		try{
-			Query query = session.createSQLQuery(
-					"CALL GetListCategory(:userid)")
-					.addEntity(Category.class)
-					.setParameter("userid", user.getUser_id());
-			result = query.list();
+                    Query query = session.createSQLQuery(
+                                    "CALL GetListCategory(:userid)")
+                                    .addEntity(Category.class)
+                                    .setParameter("userid", user.getUser_id());
+                    result = query.list();
+                    trans.commit();
 		}
 		catch(Exception ex){
-			result = new ArrayList<Category>();
+                    trans.rollback();
+                    result = new ArrayList<Category>();
 		}
-		trans.commit();
 		return result;		
 	}
+        
 	public boolean insertCategory(Category cate)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
@@ -94,6 +97,7 @@ public class CategoryService implements ICategoryService{
 			return false;
 		}
 	}
+        
 	public boolean updateCategory(Category cate)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
@@ -110,51 +114,70 @@ public class CategoryService implements ICategoryService{
 			return false;
 		}
 	}
+        
 	public Category getCategory(String cateID) {
-		Session session = this.sessionFactory.getCurrentSession();
-		Transaction trans = session.beginTransaction();
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            try{
 		Criteria criteria = session.createCriteria(Category.class);
 		criteria.add(Restrictions.eq("cate_id", Integer.parseInt(cateID)));
 		Category cate = (Category)criteria.uniqueResult();
 		trans.commit();
 		return cate;
+            }
+            catch(Exception ex){
+                trans.rollback();
+            }
+            return new Category();
 		
 	}
+        
 	private void deleteReferenceOfCategory(Session session, int cateId, String table)
 	{
-		String deleteQuery = "delete from "+table+" where cate_id = " + cateId;
-		Query query = session.createSQLQuery(deleteQuery);
+            String deleteQuery = "delete from "+table+" where cate_id = " + cateId;
+            Query query = session.createSQLQuery(deleteQuery);
 	    query.executeUpdate();
 	}
+        
 	public boolean deleteCategory(String cateID) {
-		Category cate = getCategory(cateID);
-		Session session = this.sessionFactory.getCurrentSession();
-		Transaction trans = session.beginTransaction();
-		try
-		{
-			deleteReferenceOfCategory(session,Integer.parseInt(cateID), "fg_product_categories" );
-			//deleteReferenceOfCategory(session,Integer.parseInt(cateID), "fg_products" );
-			deleteReferenceOfCategory(session,Integer.parseInt(cateID), "fg_supplier_categories" );
-			session.delete(cate);
-			trans.commit();
-			return true;
-		}
-		catch (Exception e) {
-			// TODO: handle exception
-			trans.rollback();
-			return false;
-		}
+            Category cate = getCategory(cateID);
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            try
+            {
+                deleteReferenceOfCategory(session,Integer.parseInt(cateID), "fg_product_categories" );
+                //deleteReferenceOfCategory(session,Integer.parseInt(cateID), "fg_products" );
+                deleteReferenceOfCategory(session,Integer.parseInt(cateID), "fg_supplier_categories" );
+                session.delete(cate);
+                trans.commit();
+                return true;
+            }
+            catch (Exception e) {
+                // TODO: handle exception
+                trans.rollback();
+                return false;
+            }
 		
 	}
+        
 	public List<Category> getListCategoryFilterType(String type) {
-		Session session = this.sessionFactory.getCurrentSession();
-		Transaction trans = session.beginTransaction();
-		Criteria criteria = session.createCriteria(Category.class);
-		criteria.add(Restrictions.eq("cate_type", type));
-		List<Category> list = (List<Category>)criteria.list();
-		trans.commit();
-		return list;
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            List<Category> list = new ArrayList<Category>();
+            try{
+               
+                Criteria criteria = session.createCriteria(Category.class);
+                criteria.add(Restrictions.eq("cate_type", type));
+                list = (List<Category>)criteria.list();
+                trans.commit();
+                
+            }
+            catch(Exception ex){
+                trans.rollback();
+            }
+            return list;
 	}
+        
 	public List<CategoryView> getListCategoryView(String type){
 		List<CategoryView> lstCategoryView = new ArrayList<CategoryView>();
 		List<Category> lstCategory = getListCategoryFilterType(type);
@@ -171,21 +194,35 @@ public class CategoryService implements ICategoryService{
 	private List<Category> getListCategoryFromSupplier(int supplierId){
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
-		String sql = "SELECT * FROM fg_categories c INNER JOIN fg_product_categories pc ON c.cate_id = pc.cate_id INNER JOIN fg_products p ON pc.prod_id = p.prod_id WHERE p.suppl_id = "+supplierId + " GROUP BY p.cate_id";
-		SQLQuery query = session.createSQLQuery(sql);
-		query.addEntity(Category.class);
-		List results = query.list();
-		trans.commit();
+                List<Category> results = new ArrayList<Category>();
+                try{
+                    String sql = "SELECT * FROM fg_categories c INNER JOIN fg_product_categories pc ON c.cate_id = pc.cate_id INNER JOIN fg_products p ON pc.prod_id = p.prod_id WHERE p.suppl_id = "+supplierId + " GROUP BY p.cate_id";
+                    SQLQuery query = session.createSQLQuery(sql);
+                    query.addEntity(Category.class);
+                    results = query.list();
+                    trans.commit();
+                }
+                catch(Exception ex){
+                    trans.rollback();
+                }
+		
 		return results;
 	}
+        
 	private List<Product> getListProductOfCategoryProduct(int cate){
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
-		String sql = "SELECT * FROM fg_products p INNER JOIN fg_product_categories pc ON p.prod_id = pc.prod_id WHERE pc.cate_id = "+cate;
-		SQLQuery query = session.createSQLQuery(sql);
-		query.addEntity(Product.class);
-		List results = query.list();
-		trans.commit();
+                List<Product> results = new ArrayList<Product>();
+		try{
+                    String sql = "SELECT * FROM fg_products p INNER JOIN fg_product_categories pc ON p.prod_id = pc.prod_id WHERE pc.cate_id = "+cate;
+                    SQLQuery query = session.createSQLQuery(sql);
+                    query.addEntity(Product.class);
+                    results = query.list();
+                    trans.commit();
+                }
+                catch(Exception ex){
+                    trans.rollback();
+                }
 		return results;
 	}
 	

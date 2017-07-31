@@ -56,13 +56,20 @@ public class UserService implements IUserService {
 		this.sessionFactory = sessionFactory;
 	}
 	public List<User> getListUser(){
-		Session session = this.sessionFactory.getCurrentSession();
-		Transaction trans = session.beginTransaction();
-		Criteria criteria = session.createCriteria(User.class);		
-		List<User> list = (List<User>)criteria.list();			
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            List<User> list = new ArrayList<>();
+            try{
+                Criteria criteria = session.createCriteria(User.class);		
+		list = (List<User>)criteria.list();			
 		trans.commit();
-		System.out.println("count:" + list.size());
-		return list;		
+		
+            }
+            catch(Exception ex){
+                trans.rollback();
+            }
+            return list;
+			
 	}
 	public List<User> getListUserPermissionStore(String username){
 		User user = findUserByUserName(username);
@@ -565,6 +572,21 @@ public class UserService implements IUserService {
 			return false;
 		}
 	}
+        
+        public List<User> getListUserOfRole(int roleId){
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            List<User> users = new ArrayList<>();
+            try{
+                users = session.createSQLQuery("select u.* from fg_users u inner join fg_user_roles ur on u.user_id = ur.user_id where ur.role_id = " + roleId).addEntity(User.class).list();
+                trans.commit();            
+            }
+            catch(Exception ex){
+                trans.rollback();
+            }
+            return users;
+            
+        }
 
 }
 

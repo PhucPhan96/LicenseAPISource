@@ -41,7 +41,12 @@ public class SupplierManagementController {
 	public List<Supplier> getSupplier() {
 		List<Supplier> supplier = supplierDAO.getListSupplier();
 		return supplier;
-		// return Utils.convertObjectToJsonString(supplier);
+	}
+        
+        @RequestMapping(value = "supplier/manage/{roleId}", method = RequestMethod.GET)
+	public List<Supplier> getSupplierManage(@PathVariable("roleId") int roleId) {
+		List<Supplier> supplier = supplierDAO.getListSupplierManage(roleId);
+		return supplier;
 	}
 
 	@RequestMapping(value = "supplier/view", method = RequestMethod.GET)
@@ -49,16 +54,38 @@ public class SupplierManagementController {
 		String token = request.getHeader(tokenHeader);
 		String username = jwtTokenUtil.getUsernameFromToken(token);
 		List<SupplierView> lstSupplierView = supplierDAO.getListSupplierView(username);
-		System.out.println(Utils.convertObjectToJsonString(lstSupplierView));
+		//System.out.println(Utils.convertObjectToJsonString(lstSupplierView));
 		return lstSupplierView;
-		// return Utils.convertObjectToJsonString(lstSupplierView);
+	}
+        
+        @RequestMapping(value = "manage/suppliers/{supplierId}", method = RequestMethod.GET)
+	public List<Supplier> getListSupplierViewOfManage(@PathVariable("supplierId") int supplierId) {
+            List<Supplier> lstSupplier = supplierDAO.getListSupplierOfManage(supplierId);
+            return lstSupplier;
+	}
+        
+        @RequestMapping(value = "role/suppliers/{roleId}", method = RequestMethod.GET)
+	public List<Supplier> getListSupplierViewOfRole(@PathVariable("roleId") int roleId) {
+            List<Supplier> lstSupplier = supplierDAO.getListSupplierOfRole(roleId);
+            return lstSupplier;
+	}
+        
+        @RequestMapping(value = "supplier/view/manage/{supplierId}", method = RequestMethod.GET)
+	public List<SupplierView> getListSupplierOfManage(@PathVariable("supplierId") int supplierId) {
+            List<SupplierView> lstSupplierView = supplierDAO.getListSupplierViewOfManage(supplierId);
+            return lstSupplierView;
+	}
+        
+        @RequestMapping(value = "supplier/view/role/{roleId}", method = RequestMethod.GET)
+	public List<SupplierView> getListSupplierOfRole(@PathVariable("roleId") int roleId) {
+            List<SupplierView> lstSupplierView = supplierDAO.getListSupplierViewOfRole(roleId);
+            return lstSupplierView;
 	}
 
 	@RequestMapping(value = "app/supplier/{id}", method = RequestMethod.GET)
 	public List<SupplierAppView> getListSupplierViewOfCategory(@PathVariable("id") int categoryId) {
 		List<SupplierAppView> lstSupplierView = supplierDAO.getListSupplierViewOfCategory(categoryId);
 		return lstSupplierView;
-		// return Utils.convertObjectToJsonString(lstSupplierView);
 	}
 
 	@RequestMapping(value = "supplier/user", method = RequestMethod.GET)
@@ -67,13 +94,11 @@ public class SupplierManagementController {
 		String username = jwtTokenUtil.getUsernameFromToken(token);
 		Supplier supplier = supplierDAO.getSupplierFromUser(username);
 		return supplier;
-		// return Utils.convertObjectToJsonString(supplier);
 	}
 
 	@RequestMapping(value = "supplier/{id}", method = RequestMethod.GET)
 	public Supplier getSupplier(@PathVariable("id") String supplId) {
 		Supplier supplier = supplierDAO.getSupplier(supplId);
-		// System.out.println("SupplierStr " + supplierStr);
 		return supplier;
 	}
 
@@ -86,10 +111,6 @@ public class SupplierManagementController {
 	// get supplier view
 	@RequestMapping(value = "supplier/detail/{id}", method = RequestMethod.GET)
 	public SupplierView getSupplierView(@PathVariable("id") String supplId, HttpServletRequest request) {
-		/*
-		 * String token = request.getHeader(tokenHeader); String username =
-		 * jwtTokenUtil.getUsernameFromToken(token);
-		 */
 		SupplierView supplierView = supplierDAO.getSupplierView(Integer.parseInt(supplId));
 		System.out.println("supplierViewStr" + supplierView);
 		return supplierView;
@@ -98,9 +119,6 @@ public class SupplierManagementController {
 
 	@RequestMapping(value = "supplier/add", method = RequestMethod.POST)
 	public @ResponseBody String insertSupplier(@RequestBody SupplierView supplierView, HttpServletRequest request) {
-		// System.out.println("Vao Inser supplier ne " +
-		// supplierView.getSupplier().getApp_id());
-		// System.out.println("Image size " + supplierView.getImages().size());
 		String token = request.getHeader(tokenHeader);
 		String username = jwtTokenUtil.getUsernameFromToken(token);
 		String data = supplierDAO.insertSupplierView(supplierView, username) + "";
@@ -109,9 +127,6 @@ public class SupplierManagementController {
 
 	@RequestMapping(value = "supplier/edit", method = RequestMethod.PUT)
 	public @ResponseBody String updateSupplier(@RequestBody SupplierView supplierView) {
-		// System.out.println("Vao Inser supplier ne " +
-		// supplierView.getSupplier().getApp_id());
-		// System.out.println("Image size " + supplierView.getImages().size());
 		String data = supplierDAO.updateSupplierView(supplierView) + "";
 		return "{\"result\":\"" + data + "\"}";
 	}
@@ -128,11 +143,6 @@ public class SupplierManagementController {
 	@RequestMapping(value = "app/supplierFavorite/add/{supplierID}/{userID}", method = RequestMethod.POST)
 	public @ResponseBody String insertSupplierFavorite(@PathVariable("supplierID") int supplierId,
 			@PathVariable("userID") String userId) {
-		// System.out.println("Vao Inser supplier ne " +
-		// supplierView.getSupplier().getApp_id());
-		// System.out.println("Image size " + supplierView.getImages().size());
-		// String token = request.getHeader(tokenHeader);
-		// String username = jwtTokenUtil.getUsernameFromToken(token);
 		String data = supplierDAO.insertSupplierFavorite(supplierId, userId) + "";
 		return "{\"result\":\"" + data + "\"}";
 	}
@@ -140,7 +150,6 @@ public class SupplierManagementController {
 	@RequestMapping(value = "app/isSupplierFavorite/{id}", method = RequestMethod.GET)
 	public SupplierFavorite isSupplierFavorite(@PathVariable("id") String userId) {
 		SupplierFavorite supplierFavorite = supplierDAO.isSupplierFavorite(userId);
-		// System.out.println("SupplierStr " + supplierStr);
 		return supplierFavorite;
 	}
 
@@ -199,6 +208,7 @@ public class SupplierManagementController {
 		return "{\"result\":\"" + data + "\"}";
 
 	}
+        
 	//Get List Bill History
 	@RequestMapping(value = "app/billHistory/{userID}", method = RequestMethod.GET)
 	public @ResponseBody List<BillHistory> getListBillHistory(@PathVariable("userID") String userID) {
@@ -206,12 +216,18 @@ public class SupplierManagementController {
 		List<BillHistory> listBillHistory = supplierDAO.getListBillHistory(userID);
 		return listBillHistory;
 	}
+        
 	//Get List Search Bill History
-		@RequestMapping(value = "app/searchBillHistory/{userID}/{dateFrom}/{dateTo}", method = RequestMethod.GET)
-		public @ResponseBody List<BillHistory> getListSearchBillHistory (@PathVariable("userID") String userID,@PathVariable("dateFrom") String dateFrom,@PathVariable("dateTo") String dateTo) {
-			System.out.println("run getListSearchBillHistory");
-			List<BillHistory> listBillHistory = supplierDAO.getListSearchBillHistory(userID, dateFrom, dateTo);
-			System.out.println("show list search BillHistory"+listBillHistory.size());
-			return listBillHistory;
-		}
+        @RequestMapping(value = "app/searchBillHistory/{userID}/{dateFrom}/{dateTo}", method = RequestMethod.GET)
+        public @ResponseBody List<BillHistory> getListSearchBillHistory (@PathVariable("userID") String userID,@PathVariable("dateFrom") String dateFrom,@PathVariable("dateTo") String dateTo) {
+                List<BillHistory> listBillHistory = supplierDAO.getListSearchBillHistory(userID, dateFrom, dateTo);
+                System.out.println("show list search BillHistory"+listBillHistory.size());
+                return listBillHistory;
+        }
+        
+        @RequestMapping(value="/suppliers/roles/{rolejoin}",method=RequestMethod.GET)
+	public List<Supplier> getListUserOfRole(@PathVariable("rolejoin") String roleJoin){
+            List<Supplier> suppliers = supplierDAO.getListSupplierFromRoles(roleJoin);	
+            return suppliers; 
+	}
 }

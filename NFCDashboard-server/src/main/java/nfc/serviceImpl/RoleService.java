@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import nfc.model.Code;
+import nfc.model.Product;
 import nfc.model.Role;
 import nfc.model.User;
 import nfc.model.UserRole;
@@ -17,6 +18,7 @@ import nfc.service.IUserService;
 import nfc.service.common.ICommonService;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -126,54 +128,66 @@ public class RoleService implements IRoleService {
 		// TODO Auto-generated method stub
 		return roles;
 	}
-	public List<Role> getListRoleOfUserPermission(String username){
-		User user = userDAO.findUserByUserName(username);
-		List<Role> userRoles = getListRoleByUserId(user.getUser_id());
-		System.out.println("get user: "+ user.getUser_id());
-		System.out.println("userrole: "+ userRoles.size());
-		if(containsRoleName(userRoles,"SysAdmin")!=null)
-		{
-			return getRoleOfUserPermission(new String[]{"SysAdmin"});
-		}
-		else if(containsRoleName(userRoles,"WholeSale")!=null)
-		{
-			return getRoleOfUserPermission(new String[]{"SysAdmin", "WholeSale"});
-		}
-		else if(containsRoleName(userRoles,"Headquarter")!=null)
-		{
-			return getRoleOfUserPermission(new String[]{"SysAdmin", "WholeSale", "Headquarter"});
-		}
-		else if(containsRoleName(userRoles,"Branch")!=null)
-		{
-			return getRoleOfUserPermission(new String[]{"SysAdmin", "WholeSale", "Headquarter", "Branch"});
-		}
-		else if(containsRoleName(userRoles,"Dealer")!=null)
-		{
-			return getRoleOfUserPermission(new String[]{"SysAdmin", "WholeSale", "Headquarter", "Branch", "Dealer"});
-		}
-		else
-		{
-			return new ArrayList<Role>();
-		}
+        public List<Role> getListRoleOfUserPermission(String username){
+            Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Query query = session.createSQLQuery(
+				"CALL SP_GetListRoleOfUserPermission(:username)")
+                                .addEntity(Role.class)
+                                .setParameter("username", username);
+		List<Role>  roles = (List<Role>) query.list();
+		trans.commit();
+		return roles;
 	}
-	private Role containsRoleName(Collection<Role> c, String roleName) {
-	    for(Role o : c) {
-	        if(o != null && o.getRole_name().equals(roleName)) {
-	            return o;
-	        }
-	    }
-	    return null;
-	}
-	private List<Role> getRoleOfUserPermission(String[] roleLimit)
-	{
-		List<Role> roleSupplier = new ArrayList<Role>();
-		List<Role> roles = getListRole();
-		for(Role role: roles)
-		{
-			if(!Arrays.asList(roleLimit).contains(role.getRole_name().trim())){
-				roleSupplier.add(role);
-			}
-		}
-		return roleSupplier;
-	}
+        
+//	public List<Role> getListRoleOfUserPermission(String username){
+//		User user = userDAO.findUserByUserName(username);
+//		List<Role> userRoles = getListRoleByUserId(user.getUser_id());
+//		System.out.println("get user: "+ user.getUser_id());
+//		System.out.println("userrole: "+ userRoles.size());
+//		if(containsRoleName(userRoles,"SuperAdmin")!=null)
+//		{
+//			return getRoleOfUserPermission(new String[]{"SuperAdmin"});
+//		}
+//		else if(containsRoleName(userRoles,"WholeSale")!=null)
+//		{
+//			return getRoleOfUserPermission(new String[]{"SysAdmin", "WholeSale"});
+//		}
+//		else if(containsRoleName(userRoles,"Headquarter")!=null)
+//		{
+//			return getRoleOfUserPermission(new String[]{"SysAdmin", "WholeSale", "Headquarter"});
+//		}
+//		else if(containsRoleName(userRoles,"Branch")!=null)
+//		{
+//			return getRoleOfUserPermission(new String[]{"SysAdmin", "WholeSale", "Headquarter", "Branch"});
+//		}
+////		else if(containsRoleName(userRoles,"Dealer")!=null)
+////		{
+////			return getRoleOfUserPermission(new String[]{"SysAdmin", "WholeSale", "Headquarter", "Branch", "Dealer"});
+////		}
+//		else
+//		{
+//			return new ArrayList<Role>();
+//		}
+//	}
+//	private Role containsRoleName(Collection<Role> c, String roleName) {
+//	    for(Role o : c) {
+//	        if(o != null && o.getRole_name().equals(roleName)) {
+//	            return o;
+//	        }
+//	    }
+//	    return null;
+//	}
+//	private List<Role> getRoleOfUserPermission(String[] roleLimit)
+//	{
+//		List<Role> roleSupplier = new ArrayList<Role>();
+//		List<Role> roles = getListRole();
+//		for(Role role: roles)
+//		{
+//			if(!Arrays.asList(roleLimit).contains(role.getRole_name().trim())){
+//				roleSupplier.add(role);
+//			}
+//		}
+//		return roleSupplier;
+//	}
 }

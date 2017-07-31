@@ -21,7 +21,7 @@ public class JwtUserFactory {
         return new JwtUser(
                 user.getUser_id(),
                 user.getUser_name(),
-                user.luser_name(),
+                user.getLuser_name(),
                 user.getLast_name(),
                 user.getEmail(),
                 user.getPassword(),
@@ -36,7 +36,6 @@ public class JwtUserFactory {
     	Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
         // Build user's authorities
         for (Role role : authorities) {
-        	System.out.println("Role" + role.getRole_name());
             setAuths.add(new SimpleGrantedAuthority(role.getRole_name()));
         }
         List<GrantedAuthority> Result = new ArrayList<GrantedAuthority>(setAuths);

@@ -41,4 +41,14 @@ public interface ISupplierService {
 	String deleteStoreFavorite(int supplId);
 	List<BillHistory> getListBillHistory (String userID);
 	List<BillHistory> getListSearchBillHistory(String userID, String dateFrom, String dateTo);
+        List<Supplier> getListSupplierManage(int roleId);
+        List<Supplier> getListSupplierFromRoles(String roleJoin);
+        List<SupplierWork> getListSupplierWorkOfManager(int manageSupplId);
+        List<SupplierView> getListSupplierViewOfManage(int supplierId);
+        List<SupplierView> getListSupplierViewOfRole(int roleId);
+        
+        List<Supplier> getListSupplierOfManage(int supplierId);
+        List<Supplier> getListSupplierOfRole(int roleId);
+        
+        
 }

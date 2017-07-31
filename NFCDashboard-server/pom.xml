@@ -16,6 +16,8 @@
   <properties>
        <springsecurity.version>3.2.3.RELEASE</springsecurity.version>
        <springframework.version>4.3.4.RELEASE</springframework.version><!-- 4.1.4.RELEASE -->
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
   <dependencies>
     <dependency>

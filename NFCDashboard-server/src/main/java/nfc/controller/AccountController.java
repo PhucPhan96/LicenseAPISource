@@ -1,9 +1,13 @@
 package nfc.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import nfc.messages.BaseResponse;
+import nfc.messages.ErrorResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,12 +31,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import nfc.model.User;
 import nfc.model.UserRegister;
+import nfc.model.ViewModel.UserModelLogin;
 import nfc.service.IUserService;
 import nfc.serviceImpl.Security.JwtAuthenticationRequest;
 import nfc.serviceImpl.Security.JwtAuthenticationResponse;
 import nfc.serviceImpl.Security.JwtTokenUtil;
 import nfc.serviceImpl.Security.JwtUser;
 import nfc.serviceImpl.common.Utils;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.GrantedAuthority;
 
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
@@ -54,21 +61,66 @@ public class AccountController {
     private IUserService userDAO;
 
     @RequestMapping(value = "/auth", method = RequestMethod.POST)
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest) throws AuthenticationException {
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest){
         // Perform the security
-		final Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        authenticationRequest.getUsername(),
-                        authenticationRequest.getPassword()
-                )
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+//		final Authentication authentication = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(
+//                        authenticationRequest.getUsername(),
+//                        authenticationRequest.getPassword()
+//                )
+//        );
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//        // Reload password post-security so we can generate token
+//        final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+//        final String token = jwtTokenUtil.generateToken(userDetails);
+//        //userDAO.insertUserLogin( authenticationRequest.getUsername());
+//        // Return the token
+//        return ResponseEntity.ok(new JwtAuthenticationResponse(token));
+//        
+        
+        // Perform the security
+        try {
+            final Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            authenticationRequest.getUsername(),
+                            authenticationRequest.getPassword()
+                    )
+            );
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (BadCredentialsException be) {
+            ErrorResponse error = new ErrorResponse();
+            error.setResultCode(BaseResponse.FAILED);
+            error.setErrorMsg(be.getMessage());
+            return ResponseEntity.ok(error);
+        } catch (AuthenticationException ex) {
+            ErrorResponse error = new ErrorResponse();
+            error.setResultCode(BaseResponse.FAILED);
+            error.setErrorMsg(ex.getMessage());
+            return ResponseEntity.ok(error);
+        }
+
         // Reload password post-security so we can generate token
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         final String token = jwtTokenUtil.generateToken(userDetails);
-        //userDAO.insertUserLogin( authenticationRequest.getUsername());
+
+        // create user model
+        JwtUser jwtUser = (JwtUser) userDetails;
+        UserModelLogin user = new UserModelLogin();
+        user.setUser_id(jwtUser.getId());
+        user.setUser_name(jwtUser.getUsername());
+        user.setFirst_name(jwtUser.getFirstname());
+        user.setLast_name(jwtUser.getLastname());
+        user.setEmail(jwtUser.getEmail());
+        List<String> roles = new ArrayList<String>();
+        for(GrantedAuthority grantAuth: jwtUser.getAuthorities()){
+            roles.add(grantAuth.getAuthority());
+        }
+        user.setRoles(roles);
         // Return the token
-        return ResponseEntity.ok(new JwtAuthenticationResponse(token));
+        JwtAuthenticationResponse response = new JwtAuthenticationResponse(token, user);
+        response.setResultCode(BaseResponse.OK);
+        return ResponseEntity.ok(response);
     }
 
     @RequestMapping(value = "/refresh", method = RequestMethod.GET)

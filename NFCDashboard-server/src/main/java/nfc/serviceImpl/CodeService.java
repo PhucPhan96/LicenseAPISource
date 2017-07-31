@@ -1,5 +1,6 @@
 package nfc.serviceImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -18,23 +19,35 @@ public class CodeService implements ICodeService{
 		this.sessionFactory = sessionFactory;
 	}
 	public List<Code> getListCode(String groupCode) {
-		Session session = this.sessionFactory.getCurrentSession();
-		Transaction trans = session.beginTransaction();
-		Criteria criteria = session.createCriteria(Code.class);
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            List<Code> list = new ArrayList<>();
+            try{
+                Criteria criteria = session.createCriteria(Code.class);
 		criteria.add(Restrictions.eq("group_code", groupCode));
-		List<Code> list = (List<Code>) criteria.list();
+		list = (List<Code>) criteria.list();
 		trans.commit();
-		return list;
+            }
+            catch(Exception ex){
+                trans.rollback();
+            }
+            return list;
 	}
 	public Code getCode(String groupCode, String subCode){
-		Session session = this.sessionFactory.getCurrentSession();
-		Transaction trans = session.beginTransaction();
-		Criteria criteria = session.createCriteria(Code.class);
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            Code code = new Code();
+            try{
+                Criteria criteria = session.createCriteria(Code.class);
 		criteria.add(Restrictions.eq("group_code", groupCode));
 		criteria.add(Restrictions.eq("sub_code", subCode));
-		Code code = (Code) criteria.uniqueResult();
+		code = (Code) criteria.uniqueResult();
 		trans.commit();
-		return code;
+            }
+            catch(Exception ex){
+                trans.rollback();
+            }
+            return code;
 	}
 	public boolean insertCode(Code code){
 		Session session = this.sessionFactory.getCurrentSession();
@@ -53,12 +66,18 @@ public class CodeService implements ICodeService{
 		}
 	}
 	public List<Code> getAllCode(){
-		Session session = this.sessionFactory.getCurrentSession();
-		Transaction trans = session.beginTransaction();
-		Criteria criteria = session.createCriteria(Code.class);
-		List<Code> list = (List<Code>) criteria.list();
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            List<Code> list = new ArrayList<>();
+            try{
+                Criteria criteria = session.createCriteria(Code.class);
+		list = (List<Code>) criteria.list();
 		trans.commit();
-		return list;
+            }
+            catch(Exception ex){
+                trans.rollback();
+            }
+            return list;
 	}
 	public boolean deleteCode(String groupCode, String subCode){
 		Session session = this.sessionFactory.getCurrentSession();

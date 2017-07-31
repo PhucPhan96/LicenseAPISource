@@ -30,4 +30,5 @@ public interface IUserService {
 	String forgotPassword (User user);
 	boolean insertUserLogin(String username);
 	public boolean insertUserFb(User user);
+        List<User> getListUserOfRole(int roleId);
 }

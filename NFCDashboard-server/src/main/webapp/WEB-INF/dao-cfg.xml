@@ -52,4 +52,7 @@
 	 <bean id="threadDAO" class="nfc.serviceImpl.ThreadService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
+         <bean id="paymentService" class="nfc.serviceImpl.PaymentService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
 </beans>
