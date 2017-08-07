@@ -26,6 +26,7 @@ public class CodeManagementController {
 	}
         @RequestMapping(value="codes/group/{groupCode}", method=RequestMethod.GET)
 	public List<Code> getListCodeFromGroupCode(@PathVariable("groupCode") String groupCode){
+            System.out.println("List Code "+ codeDAO.getListCode(groupCode) );
 		return codeDAO.getListCode(groupCode);
 	}
 	@RequestMapping(value="code/{groupCode}/{subCode}", method=RequestMethod.GET)
