@@ -21,6 +21,8 @@ public interface ISupplierService {
 	Supplier getSupplierFromUser(String username);
 	SupplierWork getSupplierWork(int supplId);
 	SupplierView getSupplierView(int supplId);
+        SupplierView getSupplierView1(int supplId);
+        boolean ChangeOrderPhoneNumberSupplier(String supplierId,String orderPhoneNum);
 	List<SupplierImage> getListSupplierImage(int supplId);
 	List<SupplierUser> getListSupplierUser(String username);
 	Address getAddress(int addrId);

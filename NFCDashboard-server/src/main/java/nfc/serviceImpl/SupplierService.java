@@ -140,6 +140,69 @@ public class SupplierService implements ISupplierService {
 		// supplierView.setSupplierManage(getSupplier(supplId + ""));
 		return supplierView;
 	}
+        //Lucas
+        public SupplierView getSupplierView1(int supplId) {
+		SupplierView supplierView = new SupplierView();
+                SupplierWork supplierWork = new SupplierWork();
+                supplierWork = getSupplierWork(supplId);
+                User user = new User();
+                user = getDirectorSuplier(supplierWork.getManage_suppl_id());
+                supplierView.setDirector(user);
+                
+		supplierView.setSupplier(getSupplier(supplId + ""));
+		supplierView.setSupplierWork(getSupplierWork(supplId));
+		// get image of supplier
+		List<SupplierImage> supplImgs = getListSupplierImage(supplId);
+		List<SupplierAttachFileView> supplAttachFiles = new ArrayList<SupplierAttachFileView>();
+		for (SupplierImage supImg : supplImgs) {
+			SupplierAttachFileView supplierAttachView = new SupplierAttachFileView();
+			supplierAttachView.setAttachFile(fileDAO.getAttachFile(supImg.getImg_id()));
+			supplierAttachView.setImageType(supImg.getImg_type());
+			supplAttachFiles.add(supplierAttachView);
+		}
+		supplierView.setImages(supplAttachFiles);
+		// get categories of supplier
+		List<SupplierCategories> supplCates = getListSupplierCategory(supplId);
+		List<Category> supplCategories = new ArrayList<Category>();
+		for (SupplierCategories supCate : supplCates) {
+			supplCategories.add(categoryDAO.getCategory(supCate.getCate_id() + ""));
+		}
+		supplierView.setCategories(supplCategories);
+		// get address of supplier
+		List<SupplierAddress> supplAddresses = getListSupplierAddress(supplId);
+		List<SupplierAddressView> supplAddressViewLst = new ArrayList<SupplierAddressView>();
+		for (SupplierAddress supplAddr : supplAddresses) {
+			SupplierAddressView suppAddrView = new SupplierAddressView();
+			suppAddrView.setAddressOfSuppl(getAddress(supplAddr.getAddr_id()));
+			suppAddrView.setIs_deliver(supplAddr.getIs_deliver());
+			suppAddrView.setIs_main(supplAddr.getIs_main());
+			supplAddressViewLst.add(suppAddrView);
+		}
+		supplierView.setLstSupplAddressView(supplAddressViewLst);
+		// get supplier manager
+		// supplierView.setSupplierManage(getSupplier(supplId + ""));
+		return supplierView;
+	}
+        //Lucas
+        public boolean ChangeOrderPhoneNumberSupplier(String supplierId,String orderPhoneNum){	
+		System.out.println("vao dc update");
+		Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		try
+		{
+                    String strQuery = "update fg_suppliers set order_phone_no='" + orderPhoneNum + "' where suppl_id = '" + supplierId +"'";
+                    System.out.println(strQuery);
+                    Query query = session.createSQLQuery(strQuery);
+		    query.executeUpdate();			
+                    trans.commit();
+			return true;			
+		}
+		catch(Exception ex)
+		{
+			trans.rollback();
+			return false;
+		}
+	}
 
 	public SupplierWork getSupplierWork(int supplId) {
 		Session session = this.sessionFactory.getCurrentSession();

@@ -24,12 +24,30 @@ public class Supplier {
 	private String busi_intro;
 	private String sales_info;
 	private String app_id;
+        private String supplier_reg_number;
+        private String supplier_reg_name;
 	@Id
 	@Column(name="suppl_id")
 	@GeneratedValue
 	public int getSuppl_id() {
 		return suppl_id;
 	}
+        @Column(name="supplier_reg_number")
+        public String getSupplier_reg_number() {
+            return supplier_reg_number;
+        }
+
+        public void setSupplier_reg_number(String supplier_reg_number) {
+            this.supplier_reg_number = supplier_reg_number;
+        }
+        @Column(name="supplier_reg_name")
+        public String getSupplier_reg_name() {
+            return supplier_reg_name;
+        }
+
+        public void setSupplier_reg_name(String supplier_reg_name) {
+            this.supplier_reg_name = supplier_reg_name;
+        }
 	public void setSuppl_id(int suppl_id) {
 		this.suppl_id = suppl_id;
 	}

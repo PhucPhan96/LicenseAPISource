@@ -322,20 +322,17 @@ public class UserService implements IUserService {
 		List<UserRole> userRoles =  (List<UserRole>) criteria.list(); 
 		return userRoles;
 	}
-	private void deleteAddressOfUser(Session session, String userId)
-	{
+	private void deleteAddressOfUser(Session session, String userId){
 		String deleteQuery = "delete from fg_user_address where user_id = '" + userId+"'";
 		Query query = session.createSQLQuery(deleteQuery);
 	    query.executeUpdate();
 	}
-	private void deleteRoleOfUser(Session session, String userId)
-	{
+	private void deleteRoleOfUser(Session session, String userId){
 		String deleteQuery = "delete from fg_user_roles where user_id = '" + userId+"'";
 		Query query = session.createSQLQuery(deleteQuery);
 	    query.executeUpdate();
 	}
-	private void deleteSupplierOfUser(Session session, String userId)
-	{
+	private void deleteSupplierOfUser(Session session, String userId){
 		String deleteQuery = "delete from fg_supplier_users where user_id = '" + userId+"'";
 		Query query = session.createSQLQuery(deleteQuery);
 	    query.executeUpdate();
@@ -502,6 +499,18 @@ public class UserService implements IUserService {
 		}
 		return "fail";
 	}
+        /**
+         * Lucas
+         * */
+        public List<User> getListUserByPhoneNumber( String phoneNum){
+            Session session = this.sessionFactory.getCurrentSession();
+		Transaction trans = session.beginTransaction();
+		Criteria criteria = session.createCriteria(User.class);
+		criteria.add(Restrictions.eq("phone_no", phoneNum));
+                List<User> lstUser =  (List<User>) criteria.list(); 
+		trans.commit();
+		return lstUser;
+        }
 // Forgot Password - LanAnh
 	public boolean updateUserForgotPassword(User user){
 		Session session = this.sessionFactory.getCurrentSession();
