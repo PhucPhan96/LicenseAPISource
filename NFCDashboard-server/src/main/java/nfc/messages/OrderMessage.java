@@ -7,6 +7,7 @@ package nfc.messages;
 
 import java.util.ArrayList;
 import java.util.List;
+import nfc.messages.base.PaymentRequestPacket;
 import nfc.messages.base.StoreBasePacket;
 import nfc.model.Order;
 import nfc.model.OrderDetail;
@@ -20,6 +21,7 @@ public class OrderMessage extends StoreBasePacket{
     private Order order = new Order();
     private List<OrderDetail> lstOrderDetail = new ArrayList<OrderDetail>();
     private String customer_name;
+    
     
     public OrderMessage(int store_id) {
         super(store_id);
@@ -43,6 +45,6 @@ public class OrderMessage extends StoreBasePacket{
     }
     public void setLstOrderDetail(List<OrderDetail> lstOrderDetail) {
             this.lstOrderDetail = lstOrderDetail;
-    }
+    }    
     
 }

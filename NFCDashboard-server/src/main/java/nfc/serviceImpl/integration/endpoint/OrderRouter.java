@@ -11,27 +11,14 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import nfc.model.ViewModel.OrderView;
 
 public class OrderRouter {
-	/*@Autowired
-	ServerWebSocketContainer serverWebSocketContainer;*/
 	public String routeOrder(OrderView orderView) {
-		String result = "prepareSendToStore"; 
-		if(orderView.getOrder().getOrder_status().trim().equals("new")){
-			result = "newOrder";
-		}
-		else if(orderView.getOrder().getOrder_status().trim().equals("paid")){
-			result = "paidOrder";
-		}
-		/*switch (orderView.getOrder().getOrder_status()) {
-	        case "new":
-	            result = "newOrder";
-	            break;
-	        case "paid":
-	            result = "paidOrder";
-	            break;     
-	        //delivery here
-	    }*/
-		System.out.println(result);
-		return result;
-		//return (order.getOrderDetails().size()>1) ? "pos" : "paid";
+            String result = "orderFailed"; 
+            if(orderView.getOrder().getOrder_status().trim().equals("Failed")){
+                result = "outputChannel";
+            }
+            else{
+                result = "paymentChannel";
+            }
+            return result;	
 	}
 }

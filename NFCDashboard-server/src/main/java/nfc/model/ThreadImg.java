@@ -13,15 +13,15 @@ import nfc.model.PKModel.ThreadImgPK;
 public class ThreadImg 
 {
 	@Id
-	private int thread_id;
+	private String thread_id;
 	@Id
 	private int img_id;
-	
+        
 	@Column(name="thread_id")
-	public int getThread_id() {
+	public String getThread_id() {
 		return thread_id;
 	}
-	public void setThread_id(int thread_id) {
+	public void setThread_id(String thread_id) {
 		this.thread_id = thread_id;
 	}	
 	@Column(name="img_id")

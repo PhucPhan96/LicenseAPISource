@@ -27,20 +27,48 @@
                                  http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
                                  http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
-    <gateway id="requestGateway" 
-	             service-interface="nfc.serviceImpl.integration.RequestGateway"/>
-	             
-	<channel id="requestChannel"/>
-	<router input-channel="requestChannel" method="routeOrder" ref="orderRouter"/>
-	<beans:bean class="nfc.serviceImpl.integration.endpoint.OrderRouter" id="orderRouter"/>
+    <gateway id="orderGateway" service-interface="nfc.serviceImpl.integration.OrderGateway" default-reply-channel="outputChannel"/>
+	  
+    <channel id="orders"/>    
+    
+    <service-activator input-channel="orders" ref="orderService" method="saveOrder" output-channel="orderRouterChannel" />
+    
+    <channel id="orderRouterChannel"/>  
+    
+    <router input-channel="orderRouterChannel" method="routeOrder" ref="orderRouter"/>
+    
+    <channel id="paymentChannel"/>  
+    
+    <service-activator input-channel="orders" ref="paymentService" method="payment" output-channel="outputChannel" />
+    
+    
+    <channel id="outputChannel">
+        <queue capacity="100" />
+    </channel>
+    
+    
+    <beans:bean class="nfc.serviceImpl.integration.endpoint.OrderRouter" id="orderRouter"/>
+    <beans:bean id="orderService" class="nfc.serviceImpl.integration.endpoint.OrderServiceEndpoint"/>
+    <beans:bean class="nfc.serviceImpl.integration.endpoint.PaymentServiceEndpoint" id="paymentService"/>
+    
+    
+    
+    
+    <channel id="requestChannel"/>
+    
     <channel id="newOrder"></channel>
     <channel id="paidOrder"></channel>
     <!-- <service-activator input-channel="requetChannel" ref="orderService" method="saveOrder" output-channel="prepareSendToStore" /> -->
     <service-activator input-channel="newOrder" ref="orderService" method="saveOrder" output-channel="prepareSendToStore" />
     <service-activator input-channel="paidOrder" ref="orderService" method="updateOrder" output-channel="prepareSendToStore" />
-    <beans:bean id="orderService" class="nfc.serviceImpl.integration.endpoint.OrderServiceEndpoint"/>
+    
+    
+    
+<!--    <beans:bean id="paymentService" class="nfc.serviceImpl.integration.endpoint.PaymentServiceEndpoint"/>-->
     <channel id="prepareSendToStore" >
     </channel>
+     
+     
      
      
      

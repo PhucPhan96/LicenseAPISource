@@ -21,56 +21,15 @@ import nfc.service.ICodeService;
 import nfc.service.IOrderService;
 import nfc.service.IPosService;
 import nfc.serviceImpl.Security.JwtTokenUtil;
-import nfc.serviceImpl.common.SocketIntegrationService;
-import nfc.serviceImpl.common.Utils;
-import nfc.serviceImpl.integration.RequestGateway;
-import nfc.socket.DataQueue;
-
-import org.hibernate.annotations.common.reflection.java.generics.TypeEnvironmentFactory;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.integration.annotation.IntegrationComponentScan;
-import org.springframework.integration.annotation.ServiceActivator;
-import org.springframework.integration.channel.DirectChannel;
-import org.springframework.integration.channel.PublishSubscribeChannel;
-import org.springframework.integration.channel.QueueChannel;
-import org.springframework.integration.config.EnableIntegration;
-import org.springframework.integration.dsl.IntegrationFlow;
-import org.springframework.integration.dsl.support.Function;
-import org.springframework.integration.splitter.DefaultMessageSplitter;
-import org.springframework.integration.websocket.IntegrationWebSocketContainer;
-import org.springframework.integration.websocket.ServerWebSocketContainer;
-import org.springframework.integration.websocket.WebSocketListener;
-import org.springframework.integration.websocket.outbound.WebSocketOutboundMessageHandler;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.MessageHandler;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.WebSocketHandler;
-import org.springframework.web.socket.WebSocketMessage;
-import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import org.springframework.web.socket.config.annotation.ServletWebSocketHandlerRegistry;
-import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistration;
-import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+import nfc.serviceImpl.integration.OrderGateway;
 
 
 @RestController
@@ -84,7 +43,7 @@ public class OrderManagementController {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
     @Autowired
-    RequestGateway requestGateway;
+    OrderGateway orderGateway;
     @Autowired
     IOrderService orderDAO;
     @Autowired
@@ -167,28 +126,13 @@ public class OrderManagementController {
     @RequestMapping(value="/order/customer", method = RequestMethod.POST)
     public void send(@RequestBody OrderView orderView) {
     	try{ 
-            requestGateway.echo(orderView);
+            orderGateway.sendOrder(orderView);
             //return "{\"result\":\"true\"}";
     	}
     	catch(Exception ex)
     	{
             System.out.println("Error " + ex.getMessage());
             //return "{\"result\":\"false\"}";
-    	}
-    }
-    
-    @RequestMapping( value = "/receiveGateway", method = RequestMethod.POST )
-    public @ResponseBody void testGateway(@RequestBody String data )
-    {
-    	try{
-            System.out.println("data" + data);
-//            integrationService.sendToStore().send(MessageBuilder.withPayload(data).build());
-//            JSONObject jsonObject = Utils.convertStringToJsonObject(data);
-//            JSONObject order = (JSONObject) jsonObject.get("order");
-//            integrationService.sendToCustomer().send(MessageBuilder.withPayload(order.get("user_id")).build());
-    	}
-    	catch(Exception ex){
-            System.out.println("vao nay ne");
     	}
     }
     
@@ -201,7 +145,7 @@ public class OrderManagementController {
     }
         
     @RequestMapping(value="pos/detail/{id}",method=RequestMethod.GET)
-	public PosDetailView getListOrderPosDetailView(@PathVariable("id") int orderId ,HttpServletRequest request){
+	public PosDetailView getListOrderPosDetailView(@PathVariable("id") String orderId ,HttpServletRequest request){
 		String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
         PosDetailView  posDetailView = posDAO.getPosDetailView(orderId);
@@ -215,7 +159,7 @@ public class OrderManagementController {
     }
         
     @RequestMapping(value="order/delete/{id}", method=RequestMethod.DELETE)
-    public @ResponseBody String deleteRole(@PathVariable("id") int orderId){
+    public @ResponseBody String deleteRole(@PathVariable("id") String orderId){
         String data = orderDAO.deleteOrderView(orderId) + "";
         return "{\"result\":\"" + data + "\"}";
     }
@@ -226,67 +170,15 @@ public class OrderManagementController {
         return "{\"result\":\"" + data + "\"}";
     }
     
-    @RequestMapping(value="/app/getSocketKey", method=RequestMethod.GET)
-    public @ResponseBody String getSocketKey(){
-        //serverWebSocketContainer().
-//        for(String key: integrationService.serverWebSocketContainer().getSessions().keySet()){
-//            System.err.println("Key " + key);
-//        }       
-        
-        return "OKIE";
-        
+    
+    @RequestMapping(value="/order/customer/test", method = RequestMethod.GET)
+    public String sendTest() {
+    	OrderView orderView = new OrderView();
+        Order order = new Order();
+        order.setSuppl_id(1111);
+        orderView.setOrder(order);
+        orderGateway.sendOrder(orderView);
+        return orderGateway.receive().getOrder().getSuppl_id() + "";
     }
-    
-//    @MessageMapping("/greeting")
-//    public String handle(String greeting) {
-//        return "[" + getTimestamp() + ": " + greeting;
-//    }
-    
-    
-//    @Bean
-//    public String socketServerListener() {
-////        serverWebSocketContainer().registerWebSocketHandlers(new WebSocketHandlerRegistry() {
-////            @Override
-////            public WebSocketHandlerRegistration addHandler(WebSocketHandler wsh, String... strings) {
-////                System.err.println("socket register day");
-////
-//////                for(String str: strings){
-//////                    System.err.println("maybe key ne " + str);
-//////                }
-////                //return 
-////                //return null;
-////                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-////            }
-////        });
-//        serverWebSocketContainer().setMessageListener(new WebSocketListener() {
-//            @Override
-//            public void onMessage(WebSocketSession wss, WebSocketMessage<?> wsm) throws Exception {
-//                System.err.println("on socket message");
-//                System.err.println("WebSocketSession " + wss.toString());
-//                System.err.println("socket message " + wsm.toString());
-//                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//            }
-//
-//            @Override
-//            public void afterSessionStarted(WebSocketSession wss) throws Exception {
-//                
-//                System.err.println("afterSessionStarted " + wss.toString());
-//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//            }
-//
-//            @Override
-//            public void afterSessionEnded(WebSocketSession wss, CloseStatus cs) throws Exception {
-//                System.err.println("afterSessionEnded " + cs.toString());
-//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//            }
-//
-//            @Override
-//            public List<String> getSubProtocols() {
-//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//            }
-//
-//        });
-//        return "";
-//    }
     
 }

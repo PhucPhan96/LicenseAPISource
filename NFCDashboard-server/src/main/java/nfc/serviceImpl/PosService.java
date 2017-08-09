@@ -32,7 +32,7 @@ public class PosService implements IPosService{
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
-	public PosDetailView getPosDetailView(int orderId) {
+	public PosDetailView getPosDetailView(String orderId) {
 		PosDetailView posDetailView = new PosDetailView();
 		Order order = orderDAO.getOrder(orderId);
 		posDetailView.setOrder(order);

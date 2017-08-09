@@ -111,6 +111,7 @@ public class AccountController {
         user.setUser_name(jwtUser.getUsername());
         user.setFirst_name(jwtUser.getFirstname());
         user.setLast_name(jwtUser.getLastname());
+        user.setMiddle_name(jwtUser.getMiddlename());
         user.setEmail(jwtUser.getEmail());
         List<String> roles = new ArrayList<String>();
         for(GrantedAuthority grantAuth: jwtUser.getAuthorities()){

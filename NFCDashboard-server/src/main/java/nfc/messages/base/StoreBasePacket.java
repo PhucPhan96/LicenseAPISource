@@ -24,8 +24,8 @@ public class StoreBasePacket  extends BasePacket {
 	
 	@Override
 	public StoreBasePacket clone() throws CloneNotSupportedException {
-		StoreBasePacket data = (StoreBasePacket) super.clone();
-		return data;
+            StoreBasePacket data = (StoreBasePacket) super.clone();
+            return data;
 	}
 	
 	@Override

@@ -23,6 +23,7 @@ public class PaymentMeta {
     private String meta_value;
     private int payment_id;
     private String payment_type;
+    private String meta_map_key;
     
     @Id
     @Column(name="meta_id")
@@ -70,6 +71,16 @@ public class PaymentMeta {
     public void setPayment_type(String payment_type) {
         this.payment_type = payment_type;
     }
+
+    @Column(name="meta_map_key")
+    public String getMeta_map_key() {
+        return meta_map_key;
+    }
+
+    public void setMeta_map_key(String meta_map_key) {
+        this.meta_map_key = meta_map_key;
+    }
+    
     
     
     

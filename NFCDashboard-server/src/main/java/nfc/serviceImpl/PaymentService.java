@@ -6,17 +6,22 @@
 package nfc.serviceImpl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import nfc.model.Payment;
 import nfc.model.PaymentMeta;
 import nfc.model.ViewModel.PaymentView;
 import nfc.service.IPaymentService;
+import nfc.serviceImpl.common.NFCHttpClient;
+import nfc.serviceImpl.common.SpeedPayInformation;
+import org.apache.commons.httpclient.NameValuePair;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -45,9 +50,9 @@ public class PaymentService implements IPaymentService{
     }   
     
     private Payment getPayment(int paymentId, Session session){
-        Criteria criteria = session.createCriteria(PaymentMeta.class);
+        Criteria criteria = session.createCriteria(Payment.class);
         criteria.add(Restrictions.eq("payment_id", paymentId));
-        return (Payment) criteria.list();
+        return (Payment) criteria.uniqueResult();
     }
     
     private List<PaymentMeta> getListPaymentMeta(int paymentId, Session session){
@@ -130,4 +135,25 @@ public class PaymentService implements IPaymentService{
             return false;
         }
     }
+    
+    public boolean updatePaymentDefault(int paymentId){
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        try{
+            String updateQuery = "update fg_payments set is_default = false where payment_id != " + paymentId;
+            Query query = session.createSQLQuery(updateQuery);
+            query.executeUpdate();
+            updateQuery = "update fg_payments set is_default = true where payment_id = " + paymentId;
+            Query queryUpdatePayment = session.createSQLQuery(updateQuery);
+            queryUpdatePayment.executeUpdate();
+            trans.commit();
+            return true;
+        }
+        catch(Exception ex){
+            trans.rollback();
+            return false;
+        }
+    }
+    
+    
 }
