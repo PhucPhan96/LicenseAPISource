@@ -120,7 +120,13 @@ public class SupplierManagementController {
 		SupplierView supplierView = supplierDAO.getSupplierView(Integer.parseInt(supplId));
 		System.out.println("supplierViewStr" + supplierView);
 		return supplierView;
-
+	}
+        // get supplier view by Lucas
+	@RequestMapping(value = "supplier/detail1/{id}", method = RequestMethod.GET)
+	public SupplierView getSupplierView1(@PathVariable("id") String supplId, HttpServletRequest request) {
+		SupplierView supplierView = supplierDAO.getSupplierView1(Integer.parseInt(supplId));
+		System.out.println("supplierViewStr" + supplierView);
+		return supplierView;
 	}
 
 	@RequestMapping(value = "supplier/add", method = RequestMethod.POST)
@@ -235,5 +241,11 @@ public class SupplierManagementController {
 	public List<Supplier> getListUserOfRole(@PathVariable("rolejoin") String roleJoin){
             List<Supplier> suppliers = supplierDAO.getListSupplierFromRoles(roleJoin);	
             return suppliers; 
+	}
+        //Lucas
+        @RequestMapping(value="supplier/changeOrderPhoneNumber",method=RequestMethod.POST)
+	public @ResponseBody String ChangePasswordUser(@RequestBody String[] temp){
+		String data = supplierDAO.ChangeOrderPhoneNumberSupplier(temp[0], temp[1]) + "";
+		return "{\"result\":\"" + data + "\"}";
 	}
 }
