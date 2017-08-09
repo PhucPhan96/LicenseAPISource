@@ -57,6 +57,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.mysql.jdbc.Util;
+import nfc.model.SupplierBank;
 
 import nfc.model.ViewModel.SupplierAttachFileView;
 
@@ -136,21 +137,47 @@ public class SupplierService implements ISupplierService {
 			supplAddressViewLst.add(suppAddrView);
 		}
 		supplierView.setLstSupplAddressView(supplAddressViewLst);
+                supplierView.setSupplierBanks(getListSupplierBank(supplId));
 		// get supplier manager
 		// supplierView.setSupplierManage(getSupplier(supplId + ""));
 		return supplierView;
 	}
-
+        
+        
 	public SupplierWork getSupplierWork(int supplId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
-		Criteria criteria = session.createCriteria(SupplierWork.class);
-		criteria.add(Restrictions.eq("suppl_id", supplId));
-		SupplierWork supplierWork = (SupplierWork) criteria.uniqueResult();
-		trans.commit();
+                SupplierWork supplierWork = new SupplierWork();
+                try{
+                    Criteria criteria = session.createCriteria(SupplierWork.class);
+                    criteria.add(Restrictions.eq("suppl_id", supplId));
+                     supplierWork = (SupplierWork) criteria.uniqueResult();
+                    trans.commit();
+                }
+                catch(Exception ex){
+                    trans.rollback();
+                    
+                }
 		return supplierWork;
 	}
-
+        
+        
+        public List<SupplierBank> getListSupplierBank(int supplId) {
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            List<SupplierBank> list = new ArrayList<>();
+            try{
+                Criteria criteria = session.createCriteria(SupplierBank.class);
+                criteria.add(Restrictions.eq("suppl_id", supplId));
+                list = (List<SupplierBank>) criteria.list();
+                trans.commit();
+            }
+            catch(Exception ex){
+                trans.rollback();
+            }
+            return list;
+	}
+        
 	public List<SupplierImage> getListSupplierImage(int supplId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
@@ -265,6 +292,7 @@ public class SupplierService implements ISupplierService {
                          * supplUser.setUser_id(user.getUser_id()); session.save(supplUser);
                          * 
                          */
+                        insertSupplierBank(supplierView.getSupplierBanks(), supplIdDesc, session);
                         trans.commit();
                         return true;
                     } catch (Exception ex) {
@@ -281,13 +309,20 @@ public class SupplierService implements ISupplierService {
 	}
 
 	private void insertSupplierCategory(List<Category> lstCategory, int supplIdDesc, Session session) {
-		for (Category category : lstCategory) {
-			SupplierCategories supplCate = new SupplierCategories();
-			supplCate.setCate_id(category.getCate_id());
-			supplCate.setCate_name(category.getCate_name());
-			supplCate.setSuppl_id(supplIdDesc);
-			session.save(supplCate);
-		}
+            for (Category category : lstCategory) {
+                    SupplierCategories supplCate = new SupplierCategories();
+                    supplCate.setCate_id(category.getCate_id());
+                    supplCate.setCate_name(category.getCate_name());
+                    supplCate.setSuppl_id(supplIdDesc);
+                    session.save(supplCate);
+            }
+	}
+        
+        private void insertSupplierBank(List<SupplierBank> lstSupplierBank, int supplIdDesc, Session session) {
+            for (SupplierBank supplierBank : lstSupplierBank) {
+                supplierBank.setSuppl_id(supplIdDesc);
+                session.save(supplierBank);
+            }
 	}
 
 	private void insertSupplierImage(List<SupplierAttachFileView> lstAttachFile, int supplIdDesc, Session session) {
@@ -343,6 +378,8 @@ public class SupplierService implements ISupplierService {
 				supplAddr.setIs_main(addrView.isIs_main());
 				session.save(supplAddr);
 			}
+                        deleteReferenceOfSupplier(session, supplId, "fg_supplier_bank");
+			insertSupplierBank(supplierView.getSupplierBanks(), supplId, session);
 			trans.commit();
 			return true;
 		} catch (Exception ex) {
@@ -378,6 +415,7 @@ public class SupplierService implements ISupplierService {
 			deleteReferenceOfSupplier(session, supplId, "fg_supplier_imgs");
 			deleteReferenceOfSupplier(session, supplId, "fg_supplier_address");
 			deleteReferenceOfSupplier(session, supplId, "fg_supplier_users");
+                        deleteReferenceOfSupplier(session, supplId, "fg_supplier_bank");
 			deleteReferenceOfSupplier(session, supplId, "fg_supplier_work");
 			deleteReferenceOfSupplier(session, supplId, "fg_suppliers");
 
@@ -800,6 +838,21 @@ public class SupplierService implements ISupplierService {
             List<Supplier> suppliers = new ArrayList<>();
             try{
                 suppliers = session.createSQLQuery("select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id where suppl_role = " + roleId).addEntity(Supplier.class).list();
+                trans.commit();            
+            }
+            catch(Exception ex){
+                trans.rollback();
+            }
+            return suppliers;
+        }
+        
+        
+        public List<Supplier> getListStore(){
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            List<Supplier> suppliers = new ArrayList<>();
+            try{
+                suppliers = session.createSQLQuery("select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_roles r on r.role_id = sw.suppl_role where r.role_id = 21").addEntity(Supplier.class).list();
                 trans.commit();            
             }
             catch(Exception ex){

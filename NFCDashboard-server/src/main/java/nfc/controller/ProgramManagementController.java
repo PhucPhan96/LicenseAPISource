@@ -27,58 +27,52 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ProgramManagementController {
-	@Value("Authorization")
+    
+    @Value("Authorization")
     private String tokenHeader;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
-	@Autowired
-	private IProgramService programDAO;
-	
-	@RequestMapping(value="program",method=RequestMethod.GET)
-	public List<Program> getListProgram(HttpServletRequest request){
-		String token = request.getHeader(tokenHeader);
-        String username = jwtTokenUtil.getUsernameFromToken(token);
-		List<Program> programs = programDAO.getListProgram(username);
-		return programs;
-		//return Utils.convertObjectToJsonString(programs);
-	}
-	@RequestMapping(value="program/add", method=RequestMethod.POST)
-	public @ResponseBody String insertProgram(@RequestBody Program prog){
-		prog.setApp_id(Utils.appId);
-		UUID uuid = UUID.randomUUID();
-		String randomUUID = uuid.toString();
-		prog.setProgram_id(randomUUID);	
-		String data = programDAO.insertProgram(prog)+"";
-		return "{\"result\":\"" + data + "\"}";
-	}
-	@RequestMapping(value="program/delete/{id}", method=RequestMethod.DELETE)
-	public @ResponseBody String deleteProgram(@PathVariable("id") String progID){
-		String data = programDAO.deleteProgram(progID)+"";
-		return "{\"result\":\"" + data + "\"}";
-	}
-	@RequestMapping(value="program/edit", method=RequestMethod.POST)
-	public @ResponseBody String editProgram(@RequestBody Program prog){
-		String data = programDAO.editProgram(prog)+"";
-		return "{\"result\":\"" + data + "\"}";
-	}
-	@RequestMapping(value="programfull",method=RequestMethod.GET)
-	public List<Program> getListProgramFull(HttpServletRequest request){		
-		List<Program> programs = programDAO.getListProgramFull();
-		return programs;
-	}
-	@RequestMapping(value="programRole",method=RequestMethod.POST)
-	public List<ProgramRole> getListProgramRolebyRoleId(@RequestBody int roleId){
+    @Autowired
+    private IProgramService programDAO;
 
-		List<ProgramRole> programs = programDAO.getListProgramRolebyRoleId(roleId);
-		return programs;
-		//return Utils.convertObjectToJsonString(programs);
-	}
-	@RequestMapping(value="SaveProgramRole",method=RequestMethod.POST)
-	public @ResponseBody String SaveProgRole(@RequestBody ProgramRoleSubmit ProgRole){
-		System.out.println("-------vao save -----------------: ");
-		System.out.println("roleid is: "+ProgRole.getRole_id());
-		System.out.println("count progrolw is: "+ProgRole.getListProgRole().size());
-		String data =programDAO.SaveProgRole(ProgRole)+"";
-		return "{\"result\":\"" + data + "\"}";
-	}
+    @RequestMapping(value="program/user",method=RequestMethod.GET)
+    public List<Program> getListProgramOfUserLogin(HttpServletRequest request){
+        String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        List<Program> programs = programDAO.getListProgram(username);
+        return programs;
+        //return Utils.convertObjectToJsonString(programs);
+    }
+    @RequestMapping(value="program/add", method=RequestMethod.POST)
+    public @ResponseBody Program insertProgram(@RequestBody Program prog){
+        prog.setApp_id(Utils.appId);
+        return programDAO.insertProgram(prog);
+    }
+    @RequestMapping(value="program/delete/{id}", method=RequestMethod.DELETE)
+    public @ResponseBody String deleteProgram(@PathVariable("id") String progID){
+        String data = programDAO.deleteProgram(progID)+"";
+        return "{\"result\":\"" + data + "\"}";
+    }
+    @RequestMapping(value="program/edit", method=RequestMethod.POST)
+    public @ResponseBody String editProgram(@RequestBody Program prog){
+        String data = programDAO.editProgram(prog)+"";
+        return "{\"result\":\"" + data + "\"}";
+    }
+    @RequestMapping(value="programfull",method=RequestMethod.GET)
+    public List<Program> getListProgramFull(HttpServletRequest request){		
+        List<Program> programs = programDAO.getListProgramFull();
+        return programs;
+    }
+    @RequestMapping(value="programRole",method=RequestMethod.POST)
+    public List<ProgramRole> getListProgramRolebyRoleId(@RequestBody int roleId){
+        List<ProgramRole> programs = programDAO.getListProgramRolebyRoleId(roleId);
+        return programs;
+        //return Utils.convertObjectToJsonString(programs);
+    }
+
+    @RequestMapping(value="SaveProgramRole",method=RequestMethod.POST)
+    public @ResponseBody String SaveProgRole(@RequestBody ProgramRoleSubmit ProgRole){
+        String data =programDAO.SaveProgRole(ProgRole)+"";
+        return "{\"result\":\"" + data + "\"}";
+    }
 }

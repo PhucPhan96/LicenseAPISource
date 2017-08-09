@@ -49,6 +49,7 @@ public interface ISupplierService {
         
         List<Supplier> getListSupplierOfManage(int supplierId);
         List<Supplier> getListSupplierOfRole(int roleId);
+        List<Supplier> getListStore();
         
         
 }

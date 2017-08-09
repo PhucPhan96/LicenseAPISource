@@ -14,8 +14,8 @@
   <name>NFCDashboard-server Maven Webapp</name>
   <url>http://maven.apache.org</url>
   <properties>
-       <springsecurity.version>3.2.3.RELEASE</springsecurity.version>
-       <springframework.version>4.3.4.RELEASE</springframework.version><!-- 4.1.4.RELEASE -->
+    <springsecurity.version>3.2.3.RELEASE</springsecurity.version>
+    <springframework.version>4.3.4.RELEASE</springframework.version><!-- 4.1.4.RELEASE -->
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
@@ -117,11 +117,11 @@
            <version>1.3.1</version>
        </dependency>
        <dependency>
-			<groupId>org.eclipse.paho</groupId>
-			<artifactId>org.eclipse.paho.client.mqttv3</artifactId>
-			<version>1.1.0</version>
-	   </dependency>
-	   <!-- Spring Security -->
+            <groupId>org.eclipse.paho</groupId>
+            <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+            <version>1.1.0</version>
+       </dependency>
+        <!-- Spring Security -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
@@ -143,81 +143,82 @@
             <version>${springsecurity.version}</version>
         </dependency>
         <!-- Apache Commons FileUpload --> 
-		<dependency>
-			<groupId>commons-fileupload</groupId>
-			<artifactId>commons-fileupload</artifactId>
-			<version>1.3.2</version>
-		</dependency>
-		<!-- Apache Commons IO --> 
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
-		</dependency>
-		<dependency>
-	       <groupId>org.codehaus.jackson</groupId>
-	       <artifactId>jackson-mapper-asl</artifactId>
-	       <version>1.9.13</version>
-	   </dependency>
-	   <dependency>
-	    	<groupId>com.google.code.gson</groupId>
-	    	<artifactId>gson</artifactId>
-	    	<version>2.8.0</version>
-	    </dependency>
+        <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>1.3.2</version>
+        </dependency>
+        <!-- Apache Commons IO --> 
+        <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.13</version>
+        </dependency>
+        <dependency>
+             <groupId>com.google.code.gson</groupId>
+             <artifactId>gson</artifactId>
+             <version>2.8.0</version>
+         </dependency>
 	    
 	    
 	     <!-- Integrate Spring Config -->
-	     <dependency>
-	        <groupId>com.googlecode.json-simple</groupId>
-	        <artifactId>json-simple</artifactId>
-	        <version>1.1.1</version>
-	    </dependency>
-	     <dependency>
-			<groupId>org.springframework.integration</groupId>
-			<artifactId>spring-integration-core</artifactId>
-			<version>4.3.5.RELEASE</version>
-		</dependency>
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-core</artifactId>
+            <version>4.3.5.RELEASE</version>
+        </dependency>
 		
-		<dependency>
-			<groupId>org.springframework.integration</groupId>
-			<artifactId>spring-integration-http</artifactId>
-			<version>4.3.5.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.integration</groupId>
-			<artifactId>spring-integration-stream</artifactId>
-			<version>4.3.5.RELEASE</version>
-		</dependency>
-		 <dependency>
-	        <groupId>org.springframework.integration</groupId>
-	        <artifactId>spring-integration-java-dsl</artifactId>
-	        <version>1.2.1.RELEASE</version>
-	    </dependency>
-	    <dependency>
-	        <groupId>org.springframework.integration</groupId>
-	        <artifactId>spring-integration-websocket</artifactId>
-	        <version>4.3.5.RELEASE</version>
-	    </dependency>
-	    <dependency>
-	        <groupId>org.springframework.integration</groupId>
-	        <artifactId>spring-integration-ip</artifactId>
-	        <version>4.3.5.RELEASE</version>
-	    </dependency>
-	    <dependency>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-http</artifactId>
+            <version>4.3.5.RELEASE</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-stream</artifactId>
+            <version>4.3.5.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-java-dsl</artifactId>
+            <version>1.2.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-websocket</artifactId>
+            <version>4.3.5.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-ip</artifactId>
+            <version>4.3.5.RELEASE</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.mobile</groupId>
             <artifactId>spring-mobile-device</artifactId>
             <version>1.1.5.RELEASE</version>
         </dependency>
-	    <dependency>
+        <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
             <version>0.7.0</version>
         </dependency>
         <dependency>
-	      <groupId>commons-codec</groupId>
-	      <artifactId>commons-codec</artifactId>
-	      <version>1.8</version>
-	    </dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.8</version>
+        </dependency>
 	    <!-- https://mvnrepository.com/artifact/org.springframework/spring-websocket -->
 		<!-- <dependency>
 		    <groupId>org.springframework</groupId>
@@ -250,48 +251,78 @@
 			<version>1.1</version> 
 			<scope>provided</scope>
 		</dependency> -->
-		<dependency>
-		    <groupId>com.fasterxml.jackson.core</groupId>
-		    <artifactId>jackson-core</artifactId>
-		    <version>2.8.5</version>
-		</dependency>
-		<dependency>
-		    <groupId>com.fasterxml.jackson.core</groupId>
-		    <artifactId>jackson-annotations</artifactId> 
-		    <version>2.8.5</version>
-		</dependency>
-		<dependency>
-		    <groupId>com.fasterxml.jackson.core</groupId>
-		    <artifactId>jackson-databind</artifactId> 
-		    <version>2.8.5</version>
-		</dependency>
-		<dependency> 
-			<groupId>javax.websocket</groupId>
-			<artifactId>javax.websocket-api</artifactId> 
-			<version>1.1</version> 
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-		  <groupId>com.twilio.sdk</groupId>
-		  <artifactId>twilio</artifactId>
-		  <version>(7.0,7.9)</version>
-		</dependency>
-		<!-- Mail dependency -->
-	    <dependency>
-	          <groupId>org.springframework</groupId>
-	          <artifactId>spring-context-support</artifactId>
-	          <version>${springframework.version}</version>
-	    </dependency>
-	    <dependency>
-		    <groupId>javax.mail</groupId>
-		    <artifactId>mail</artifactId>
-		    <version>1.4.3</version>
-		</dependency>
-		<dependency>
-		    <groupId>javax.mail</groupId>
-		    <artifactId>mailapi</artifactId>
-		    <version>1.4.3</version>
-		</dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.8.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId> 
+            <version>2.8.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId> 
+            <version>2.8.5</version>
+        </dependency>
+        <dependency> 
+                <groupId>javax.websocket</groupId>
+                <artifactId>javax.websocket-api</artifactId> 
+                <version>1.1</version> 
+                <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>com.twilio.sdk</groupId>
+          <artifactId>twilio</artifactId>
+          <version>(7.0,7.9)</version>
+        </dependency>
+        <!-- Mail dependency -->
+        <dependency>
+              <groupId>org.springframework</groupId>
+              <artifactId>spring-context-support</artifactId>
+              <version>${springframework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.3</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mailapi</artifactId>
+            <version>1.4.3</version>
+        </dependency>
+        
+        
+        <!-- quart dependency-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${springframework.version}</version>
+	</dependency>
+
+	<!-- Spring + Quartz need transaction -->
+	<dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>${springframework.version}</version>
+	</dependency>
+
+	<!-- Quartz framework -->
+	<dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>2.3.0</version>
+	</dependency>
+        
+        <!-- https://mvnrepository.com/artifact/commons-httpclient/commons-httpclient -->
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+        </dependency>
+        
   </dependencies>
   <build>
     <finalName>NFCDashboard-server</finalName>

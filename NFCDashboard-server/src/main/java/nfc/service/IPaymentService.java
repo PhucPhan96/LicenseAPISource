@@ -8,6 +8,7 @@ package nfc.service;
 import java.util.List;
 import nfc.model.Payment;
 import nfc.model.ViewModel.PaymentView;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -19,4 +20,5 @@ public interface IPaymentService {
     boolean insertPaymentView(PaymentView paymentView);
     boolean updatePaymentView(PaymentView paymentView);
     boolean deletePaymentView(int paymentId);
+    boolean updatePaymentDefault(int paymentId);
 }

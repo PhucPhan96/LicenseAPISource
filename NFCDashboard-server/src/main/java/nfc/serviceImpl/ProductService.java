@@ -84,36 +84,36 @@ public class ProductService implements IProductService{
 		session.save(proCate);
 	}
 	public boolean insertProductView(ProductView productView) {
-		Session session = this.sessionFactory.getCurrentSession();
-		Transaction trans = session.beginTransaction();
-		try
-		{
-			System.out.println("Vao insert product");
-			System.out.println("Category Id " + productView.getProduct().getCate_id());
-			int productIdDesc = 0;
-			productView.getProduct().setApp_id(Utils.appId);
-			Serializable ser = session.save(productView.getProduct());
-	        if (ser != null) {
-	        	productIdDesc = (Integer) ser;
-	        }
-			System.out.println("Product Id " + productIdDesc);
-			//deleteImagesOfProduct(session, product.getProd_id());
-			productView.getProduct().setProd_id(productIdDesc);
-	        //insertProductImage(session, product);
-	        //deleteCategoryProduct(session, product.getProd_id());
-	        insertProductCategory(session, productView.getProduct());
-	        insertProductImage(session, productView);
-	        insertProductAdd(session, productView);
-	        insertProductOption(session, productView);
-			trans.commit();
-			return true;
-		}
-		catch(Exception ex)
-		{
-			System.out.println("Error " + ex.getMessage());
-			trans.rollback();
-			return false;
-		}
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            try
+            {
+                    System.out.println("Vao insert product");
+                    System.out.println("Category Id " + productView.getProduct().getCate_id());
+                    int productIdDesc = 0;
+                    productView.getProduct().setApp_id(Utils.appId);
+                    Serializable ser = session.save(productView.getProduct());
+            if (ser != null) {
+                    productIdDesc = (Integer) ser;
+            }
+            System.out.println("Product Id " + productIdDesc);
+            //deleteImagesOfProduct(session, product.getProd_id());
+            productView.getProduct().setProd_id(productIdDesc);
+            //insertProductImage(session, product);
+            //deleteCategoryProduct(session, product.getProd_id());
+            insertProductCategory(session, productView.getProduct());
+            insertProductImage(session, productView);
+            insertProductAdd(session, productView);
+            insertProductOption(session, productView);
+                    trans.commit();
+                    return true;
+            }
+            catch(Exception ex)
+            {
+                    System.out.println("Error " + ex.getMessage());
+                    trans.rollback();
+                    return false;
+            }
 	}
 	private void insertProductAdd(Session session, ProductView productView){
 		for(ProductAdd productAdd : productView.getLstProductAdd())
@@ -123,14 +123,14 @@ public class ProductService implements IProductService{
         }
 	}
 	private void insertProductOption(Session session, ProductView productView){
-		for(Product product : productView.getLstProductOption())
-        {
-			ProductOptional prodOption = new ProductOptional();
-			prodOption.setProd_id(productView.getProduct().getProd_id());
-			prodOption.setOption_prod_id(product.getProd_id());
-			prodOption.setIs_optional(true);
-        	session.save(prodOption);
-        }
+            for(Product product : productView.getLstProductOption())
+            {
+                ProductOptional prodOption = new ProductOptional();
+                prodOption.setProd_id(productView.getProduct().getProd_id());
+                prodOption.setOption_prod_id(product.getProd_id());
+                prodOption.setIs_optional(true);
+                session.save(prodOption);
+            }
 	}
 	public List<Product> getProduct(String prodId){
 		Session session = this.sessionFactory.getCurrentSession();
@@ -185,33 +185,33 @@ public class ProductService implements IProductService{
 		}
 	}
 	public boolean deleteProductView(List<ProductView> productViews) {
-		Session session = this.sessionFactory.getCurrentSession();
-		Transaction trans = session.beginTransaction();
-		try
-		{
-			for(ProductView productView: productViews)
-			{
-				/*for(AttachFile file: product.getAttachFiles())
-				{
-					System.out.println("FileID " + file.getFile_id());
-					session.delete(file);
-				}*/
-				deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_prod_imgs");
-				deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_product_categories");
-				deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_prod_addition");
-				deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_prod_optional");
-				deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_products");
-				//session.delete(product);
-				
-			}
-			trans.commit();
-			return true;
-		}
-		catch(Exception ex)
-		{
-			trans.rollback();
-			return false;
-		} 
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            try
+            {
+                for(ProductView productView: productViews)
+                {
+                    /*for(AttachFile file: product.getAttachFiles())
+                    {
+                            System.out.println("FileID " + file.getFile_id());
+                            session.delete(file);
+                    }*/
+                    deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_prod_imgs");
+                    deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_product_categories");
+                    deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_prod_addition");
+                    deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_prod_optional");
+                    deleteReferenceOfProduct(session, productView.getProduct().getProd_id(), "fg_products");
+                    //session.delete(product);
+
+                }
+                trans.commit();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                    trans.rollback();
+                    return false;
+            } 
 	}
 	public List<ProductImage> getListProductImage(int productId){
 		Session session = this.sessionFactory.getCurrentSession();
@@ -273,14 +273,20 @@ public class ProductService implements IProductService{
 		return lstProductView;
 	}
 	private Product getProductSupplier(int productId, int supplId) {
-		Session session = this.sessionFactory.getCurrentSession();
-		Transaction trans = session.beginTransaction();
-		Criteria criteria = session.createCriteria(Product.class);
-		criteria.add(Restrictions.eq("prod_id",productId));
-		criteria.add(Restrictions.eq("suppl_id",supplId));
-		Product product = (Product) criteria.uniqueResult();
-		trans.commit();
-		return product;
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            Product product = new Product();
+            try{
+                Criteria criteria = session.createCriteria(Product.class);
+                criteria.add(Restrictions.eq("prod_id",productId));
+                criteria.add(Restrictions.eq("suppl_id",supplId));
+                product = (Product) criteria.uniqueResult();
+                trans.commit();
+            }
+            catch(Exception ex){
+                trans.rollback();
+            }
+            return product;
 	}
 	public List<Product> getListProductOfCategory(int cateId, int supplId){
 		List<Product> lstProduct = new ArrayList<Product>();
@@ -294,14 +300,34 @@ public class ProductService implements IProductService{
 		return lstProduct;
 	}
 	public List<ProductCategory> getListProductCategory(int cateId){
-		Session session = this.sessionFactory.getCurrentSession();
-		Transaction trans = session.beginTransaction();
-		Criteria criteria = session.createCriteria(ProductCategory.class);
-		criteria.add(Restrictions.eq("cate_id", cateId));
-		//Product product = (Product) criteria.uniqueResult();
-		List<ProductCategory> lstProductCategory = (List<ProductCategory>) criteria.list();
-		trans.commit();
-		return lstProductCategory;
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            Criteria criteria = session.createCriteria(ProductCategory.class);
+            criteria.add(Restrictions.eq("cate_id", cateId));
+            //Product product = (Product) criteria.uniqueResult();
+            List<ProductCategory> lstProductCategory = (List<ProductCategory>) criteria.list();
+            trans.commit();
+            return lstProductCategory;
 	}
+        
+        public boolean deleteProductView(int productId){
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            try
+            {
+                deleteReferenceOfProduct(session, productId, "fg_prod_imgs");
+                deleteReferenceOfProduct(session, productId, "fg_product_categories");
+                deleteReferenceOfProduct(session, productId, "fg_prod_addition");
+                deleteReferenceOfProduct(session, productId, "fg_prod_optional");
+                deleteReferenceOfProduct(session, productId, "fg_products");
+                trans.commit();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                    trans.rollback();
+                    return false;
+            } 
+        }
 	
 }

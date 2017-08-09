@@ -19,6 +19,7 @@ public interface IProductService {
 	boolean updateProductView(ProductView productView);
 	//Product getProducts(String productId);
 	boolean deleteProductView(List<ProductView> productViews);
+        boolean deleteProductView(int productId);
 	List<ProductCategory> getListProductCategory(int cateId);
 	List<Product> getListProductOfCategory(int cateId, int supplId);
 	List<ProductOptional> getProductOptional(int prodId);

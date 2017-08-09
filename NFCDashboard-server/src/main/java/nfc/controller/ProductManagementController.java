@@ -64,10 +64,15 @@ public class ProductManagementController {
 	}
 	
 
-	@RequestMapping(value="product/delete", method=RequestMethod.POST)
-	public @ResponseBody String deleteProduct(@RequestBody List<ProductView> productViews){
-		String data = productDAO.deleteProductView(productViews) + "";
-		return "{\"result\":\"" + data + "\"}";
-	}
+//	@RequestMapping(value="product/delete", method=RequestMethod.POST)
+//	public @ResponseBody String deleteProduct(@RequestBody List<ProductView> productViews){
+//		String data = productDAO.deleteProductView(productViews) + "";
+//		return "{\"result\":\"" + data + "\"}";
+//	}
+        @RequestMapping(value="product/delete/{id}", method=RequestMethod.DELETE)
+        public @ResponseBody String deleteProduct(@PathVariable("id") int productId){
+            String data = productDAO.deleteProductView(productId) + "";
+            return "{\"result\":\"" + data + "\"}";
+        }
 	
 }

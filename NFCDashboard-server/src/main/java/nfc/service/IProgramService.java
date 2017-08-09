@@ -8,7 +8,7 @@ import nfc.model.ViewModel.ProgramRoleSubmit;
 
 public interface IProgramService {
 	List<Program> getListProgram(String username);
-	boolean insertProgram(Program prog);
+	Program insertProgram(Program prog);
 	boolean deleteProgram(String ProgId);
 	boolean editProgram(Program prog);
 	List<Program> getListProgramFull();

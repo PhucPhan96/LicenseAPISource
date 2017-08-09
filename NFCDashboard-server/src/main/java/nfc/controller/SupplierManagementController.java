@@ -43,6 +43,12 @@ public class SupplierManagementController {
 		return supplier;
 	}
         
+        @RequestMapping(value = "stores", method = RequestMethod.GET)
+	public List<Supplier> getListStore() {
+		List<Supplier> stores = supplierDAO.getListStore();
+		return stores;
+	}
+        
         @RequestMapping(value = "supplier/manage/{roleId}", method = RequestMethod.GET)
 	public List<Supplier> getSupplierManage(@PathVariable("roleId") int roleId) {
 		List<Supplier> supplier = supplierDAO.getListSupplierManage(roleId);

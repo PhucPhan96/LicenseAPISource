@@ -10,9 +10,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class JwtUser implements UserDetails {
 
-	private final String id;
+    private final String id;
     private final String username;
     private final String firstname;
+    private final String middlename;
     private final String lastname;
     private final String password;
     private final String email;
@@ -25,6 +26,7 @@ public class JwtUser implements UserDetails {
           String username,
           String firstname,
           String lastname,
+          String middlename,
           String email,
           String password, Collection<? extends GrantedAuthority> authorities,
           boolean enabled,
@@ -34,6 +36,7 @@ public class JwtUser implements UserDetails {
         this.username = username;
         this.firstname = firstname;
         this.lastname = lastname;
+        this.middlename = middlename;
         this.email = email;
         this.password = password;
         this.authorities = authorities;
@@ -71,6 +74,10 @@ public class JwtUser implements UserDetails {
 
     public String getLastname() {
         return lastname;
+    }
+    
+    public String getMiddlename() {
+        return middlename;
     }
 
     public String getEmail() {

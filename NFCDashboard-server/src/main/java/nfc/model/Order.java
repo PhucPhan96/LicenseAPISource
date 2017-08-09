@@ -16,7 +16,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name="fg_orders")
 public class Order {
-	private int order_id;
+	private String order_id;
 	private int suppl_id;
 	private String user_id;
 	private String app_id;
@@ -40,11 +40,11 @@ public class Order {
 	}*/
 	@Id
 	@Column(name="order_id")
-	@GeneratedValue
-	public int getOrder_id() {
+	//@GeneratedValue
+	public String getOrder_id() {
 		return order_id;
 	}
-	public void setOrder_id(int order_id) {
+	public void setOrder_id(String order_id) {
 		this.order_id = order_id;
 	}
 	@Column(name="suppl_id")

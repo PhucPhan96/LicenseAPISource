@@ -38,6 +38,8 @@ public class SupplierWork {
     private BigDecimal rank_money;
     private Date rank_start_date;
     private Date rank_due_date;
+    private String suppl_delivery_info;
+    private int delivery_id;
 
     @Id
     @Column(name="suppl_id")
@@ -232,6 +234,27 @@ public class SupplierWork {
     public void setRank_due_date(Date rank_due_date) {
         this.rank_due_date = rank_due_date;
     }
+
+    @Column(name="suppl_delivery_info")
+    public String getSuppl_delivery_info() {
+        return suppl_delivery_info;
+    }
+
+    public void setSuppl_delivery_info(String suppl_delivery_info) {
+        this.suppl_delivery_info = suppl_delivery_info;
+    }
+
+    @Column(name="delivery_id")
+    public int getDelivery_id() {
+        return delivery_id;
+    }
+
+    public void setDelivery_id(int delivery_id) {
+        this.delivery_id = delivery_id;
+    }
+    
+    
         
+    
         
 }

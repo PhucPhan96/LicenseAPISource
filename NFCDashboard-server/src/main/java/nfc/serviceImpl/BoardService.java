@@ -1,5 +1,6 @@
 package nfc.serviceImpl;
 
+import java.nio.channels.SeekableByteChannel;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,12 +29,17 @@ import nfc.service.IFileService;
 import nfc.model.ViewModel.SupplierAddressView;
 import nfc.model.ViewModel.SupplierView;
 import nfc.model.ViewModel.BoardView;
+import nfc.service.IUserService;
+import org.hibernate.criterion.Order;
 
 public class BoardService implements IBoardService{
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
     private IFileService fileDAO;
+    @Autowired
+    private IUserService userDAO;
+    
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
@@ -108,29 +114,60 @@ public class BoardService implements IBoardService{
     {
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
-        Criteria criteria = session.createCriteria(Thread.class);
-        criteria.add(Restrictions.eq("board_id",board_id));
-        List<Thread> list = (List<Thread>) criteria.list();
-        for(Thread thread:list)
-        {			
-            Criteria criteria1 = session.createCriteria(ThreadImg.class);
-            criteria1.add(Restrictions.eq("thread_id",thread.getThread_id()));
-            List<ThreadImg> listThImg = (List<ThreadImg>)criteria1.list();
-//			System.out.println(listThImg.get(0).getImg_id());
-//			System.out.println(listThImg.get(1).getImg_id());
-            List<AttachFile> listAtt = new ArrayList<AttachFile>();
-            for(ThreadImg item : listThImg)
-            {
-                listAtt.add(fileDAO.getAttachFileWithSession(item.getImg_id(),session));				
+        List<Thread> list = new ArrayList<>();
+        try{
+            Criteria criteria = session.createCriteria(Thread.class);
+            criteria.add(Restrictions.eq("board_id", board_id));
+            criteria.add(Restrictions.eq("parent_thread_id","0"));
+            criteria.addOrder(Order.asc("write_date"));
+            list = (List<Thread>) criteria.list();
+            for(Thread thread: list){	                
+               thread.setAttachFile(getListAttachFileOfThread(session, thread.getThread_id()));   
+               thread.setChildThreads(getListChildThread(session, thread.getThread_id()));
+               thread.setName(getNameOfUserFromUserid(session, thread.getWriter_id()));
             }
-            if(listAtt.size()>0)
-            {
-                thread.setAttachFile(listAtt);
-            }
+            trans.commit();
         }
-
-        trans.commit();
+        catch(Exception ex){
+            System.err.println("error " + ex.getMessage() +  ex.getLocalizedMessage());
+            trans.rollback();
+        }
         return list;
+    }
+    
+    private String getNameOfUserFromUserid(Session session, String userId){
+        String name = "";
+        Criteria criteria = session.createCriteria(User.class);
+        criteria.add(Restrictions.eq("user_id", userId));
+        User user =  (User) criteria.uniqueResult(); 
+        if(user != null){
+            name = user.getFirst_name() + " " + user.getMiddle_name() + " " + user.getLast_name();
+        } 
+        return name;
+    }
+    
+    private List<AttachFile> getListAttachFileOfThread(Session session, String threadId){
+        List<AttachFile> attachFiles = new ArrayList<>();
+        Criteria criteria = session.createCriteria(ThreadImg.class);
+        criteria.add(Restrictions.eq("thread_id",threadId));
+        List<ThreadImg> listThImg = (List<ThreadImg>)criteria.list();
+        for(ThreadImg item : listThImg)
+        {
+            attachFiles.add(fileDAO.getAttachFileWithSession(item.getImg_id(),session));				
+        }
+        return attachFiles;
+    }
+    
+    private List<Thread> getListChildThread(Session session, String threadId){
+        List<Thread> listChildThreads = new ArrayList<>();
+        Criteria criteria = session.createCriteria(Thread.class);
+        criteria.add(Restrictions.eq("parent_thread_id", threadId));
+        listChildThreads = (List<Thread>) criteria.list();
+        for(Thread thread: listChildThreads){
+            thread.setAttachFile(getListAttachFileOfThread(session, thread.getThread_id().trim()));
+            thread.setName(getNameOfUserFromUserid(session, thread.getWriter_id().trim()));
+        }
+        return listChildThreads;
     }
 
     public boolean deleteThread(String threadId){
@@ -200,7 +237,7 @@ public class BoardService implements IBoardService{
         Transaction trans = session.beginTransaction();		
         Criteria criteria = session.createCriteria(Thread.class);
         Criterion boardId = Restrictions.eq("board_id", board_id);
-        Criterion parentId = Restrictions.eq("parent_thread_id", 0);
+        Criterion parentId = Restrictions.eq("parent_thread_id", "0");
         LogicalExpression orExp = Restrictions.and(boardId, parentId);
         criteria.add(orExp);
         List<Thread> list = (List<Thread>) criteria.list();
@@ -236,7 +273,7 @@ public class BoardService implements IBoardService{
         return board;
     }
 	
-    public List<ThreadImg> getListThreadImg(int threadId){
+    public List<ThreadImg> getListThreadImg(String threadId){
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();		
         Criteria criteria = session.createCriteria(ThreadImg.class);
