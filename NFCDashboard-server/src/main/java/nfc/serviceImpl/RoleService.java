@@ -2,16 +2,12 @@ package nfc.serviceImpl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import nfc.model.Code;
-import nfc.model.Product;
 import nfc.model.Role;
-import nfc.model.User;
 import nfc.model.UserRole;
 import nfc.service.IRoleService;
 import nfc.service.IUserService;
