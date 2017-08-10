@@ -40,7 +40,15 @@ public class SupplierWork {
     private Date rank_due_date;
     private String suppl_delivery_info;
     private int delivery_id;
+    private String distance_in_km;
+    @javax.persistence.Transient
+    public String getDistance_in_km() {
+        return distance_in_km;
+    }
 
+    public void setDistance_in_km(String distance_in_km) {
+        this.distance_in_km = distance_in_km;
+    }
     @Id
     @Column(name="suppl_id")
     public int getSuppl_id() {
