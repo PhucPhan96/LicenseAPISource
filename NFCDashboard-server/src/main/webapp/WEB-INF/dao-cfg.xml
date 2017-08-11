@@ -58,4 +58,7 @@
          <bean id="deliveryService" class="nfc.serviceImpl.DeliveryService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
+         <bean id="textDAO" class="nfc.serviceImpl.TextService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
 </beans>

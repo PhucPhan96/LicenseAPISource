@@ -53,5 +53,6 @@ public interface ISupplierService {
         List<Supplier> getListSupplierOfRole(int roleId);
         List<Supplier> getListStore();
         List<SupplierView> getListSupplierByAddress(String longT, String latT);
+        List<SupplierView> getListSupplierViewByTextInput(String text);
         
 }

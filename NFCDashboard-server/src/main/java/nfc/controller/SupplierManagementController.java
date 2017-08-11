@@ -1,9 +1,12 @@
 package nfc.controller;
 
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-
+import java.nio.charset.Charset;
 import nfc.model.Code;
 import nfc.model.Supplier;
 import nfc.model.SupplierFavorite;
@@ -15,6 +18,7 @@ import nfc.service.ICodeService;
 import nfc.service.ISupplierService;
 import nfc.serviceImpl.Security.JwtTokenUtil;
 import nfc.serviceImpl.common.Utils;
+import nfc.model.Search;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 @RestController
 public class SupplierManagementController {
 
@@ -253,7 +256,6 @@ public class SupplierManagementController {
         return suppliers;
     }
     //Lucas
-
     @RequestMapping(value = "supplier/changeOrderPhoneNumber", method = RequestMethod.POST)
     public @ResponseBody
     String ChangePasswordUser(@RequestBody String[] temp) {
@@ -261,7 +263,6 @@ public class SupplierManagementController {
         return "{\"result\":\"" + data + "\"}";
     }
     //Lucas
-
     @RequestMapping(value = "app/suppliers/getlstbylocation/{long}/{lat}", method = RequestMethod.GET)
     public List<SupplierView> getListSupplierByLocation(@PathVariable("long") String longT, @PathVariable("lat") String lat) {
         System.out.println(longT);
@@ -269,4 +270,9 @@ public class SupplierManagementController {
         List<SupplierView> suppliers = supplierDAO.getListSupplierByAddress(longT, lat);
         return suppliers;
     }
+    @RequestMapping(value = "app/suppliers/searchsupplierbytextinput", method = RequestMethod.POST)
+    public List<SupplierView> getListSupplierByTextInput(@RequestBody Search search) throws UnsupportedEncodingException {
+        List<SupplierView> lstsuppliers = supplierDAO.getListSupplierViewByTextInput(search.getText());
+        return lstsuppliers;
+    }  
 }

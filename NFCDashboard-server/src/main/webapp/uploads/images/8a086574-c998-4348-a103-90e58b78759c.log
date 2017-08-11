@@ -1,0 +1,42 @@
+﻿[2017-07-28 09:23:03]
+A WebClient Started
+[2017-07-28 09:23:03]
+Home => Index: Exception System.Net.WebException: 원격 이름을 확인할 수 없습니다.: 'mail.ckdbio.com'
+   위치: System.Net.WebClient.UploadValues(Uri address, String method, NameValueCollection data)
+   위치: System.Net.WebClient.UploadValues(String address, NameValueCollection data)
+   위치: CKDBIO.Web.Framework.Controllers.HomeController.Index() 파일 D:\BIOGruopware\03.Development\02.CKDBIO\CKDBIO\CKDBIO.Web.Framework\Controllers\HomeController.cs:줄 200
+[2017-07-28 09:23:11]
+A WebClient Started
+[2017-07-28 09:23:11]
+Home => Index: Exception System.Net.WebException: 원격 이름을 확인할 수 없습니다.: 'mail.ckdbio.com'
+   위치: System.Net.WebClient.UploadValues(Uri address, String method, NameValueCollection data)
+   위치: System.Net.WebClient.UploadValues(String address, NameValueCollection data)
+   위치: CKDBIO.Web.Framework.Controllers.HomeController.Index() 파일 D:\BIOGruopware\03.Development\02.CKDBIO\CKDBIO\CKDBIO.Web.Framework\Controllers\HomeController.cs:줄 200
+[2017-07-28 09:33:32]
+A WebClient Started
+[2017-07-28 09:33:32]
+Home => Index: Exception System.Net.WebException: 원격 이름을 확인할 수 없습니다.: 'mail.ckdbio.com'
+   위치: System.Net.WebClient.UploadValues(Uri address, String method, NameValueCollection data)
+   위치: System.Net.WebClient.UploadValues(String address, NameValueCollection data)
+   위치: CKDBIO.Web.Framework.Controllers.HomeController.Index() 파일 D:\BIOGruopware\03.Development\02.CKDBIO\CKDBIO\CKDBIO.Web.Framework\Controllers\HomeController.cs:줄 200
+[2017-07-28 14:11:10]
+A WebClient Started
+[2017-07-28 14:11:10]
+Home => Index: Exception System.Net.WebException: 원격 이름을 확인할 수 없습니다.: 'mail.ckdbio.com'
+   위치: System.Net.WebClient.UploadValues(Uri address, String method, NameValueCollection data)
+   위치: System.Net.WebClient.UploadValues(String address, String method, NameValueCollection data)
+   위치: CKDBIO.Web.Framework.Controllers.HomeController.Index() 파일 D:\BIOGruopware\03.Development\02.CKDBIO\CKDBIO\CKDBIO.Web.Framework\Controllers\HomeController.cs:줄 200
+[2017-07-28 14:11:43]
+A WebClient Started
+[2017-07-28 14:11:43]
+Home => Index: Exception System.Net.WebException: 원격 이름을 확인할 수 없습니다.: 'mail.ckdbio.com'
+   위치: System.Net.WebClient.UploadValues(Uri address, String method, NameValueCollection data)
+   위치: System.Net.WebClient.UploadValues(String address, String method, NameValueCollection data)
+   위치: CKDBIO.Web.Framework.Controllers.HomeController.Index() 파일 D:\BIOGruopware\03.Development\02.CKDBIO\CKDBIO\CKDBIO.Web.Framework\Controllers\HomeController.cs:줄 200
+[2017-07-28 14:12:10]
+A WebClient Started
+[2017-07-28 14:12:10]
+Home => Index: Exception System.Net.WebException: 원격 이름을 확인할 수 없습니다.: 'mail.ckdbio.com'
+   위치: System.Net.WebClient.UploadValues(Uri address, String method, NameValueCollection data)
+   위치: System.Net.WebClient.UploadValues(String address, String method, NameValueCollection data)
+   위치: CKDBIO.Web.Framework.Controllers.HomeController.Index() 파일 D:\BIOGruopware\03.Development\02.CKDBIO\CKDBIO\CKDBIO.Web.Framework\Controllers\HomeController.cs:줄 200

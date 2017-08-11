@@ -224,8 +224,7 @@ public class SupplierService implements ISupplierService {
     }
 
     /**
-     * Lucas
-     *
+     * Lucas - get list of supplierView around 3km by longitude and latitude
      */
     public List<SupplierView> getListSupplierByAddress(String longT, String latT) {
         List<SupplierView> lstSupplierView = new ArrayList<SupplierView>();
@@ -265,7 +264,9 @@ public class SupplierService implements ISupplierService {
 
         return lstSupplierView;
     }
-
+    /**
+     * Lucas - get supplierWork by longitude and latitude. Give distance from my location to store.
+     */
     public SupplierWork getSupplierByLongLat(String LongT, String LatT, String supplierID) {
         SupplierWork supplierWork = new SupplierWork();
         Session session = this.sessionFactory.getCurrentSession();
@@ -309,7 +310,31 @@ public class SupplierService implements ISupplierService {
         }
         return supplierWork;
     }
-
+    /**
+     * Lucas - get list of supplier by input text from searching bar.
+     */
+    public List<SupplierView> getListSupplierViewByTextInput(String text){
+        List<SupplierView> lstSupplierView = new ArrayList<SupplierView>();
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        String sqlQuery = "SELECT * FROM 82wafoodgo.fg_suppliers where supplier_name like '%" + text + "%' or short_name like '%" 
+                + text+ "%' or official_name like '%" + text +"%' or phone_no like '%" 
+                + text + "%' or mobile_no like '%" + text+ "%' or order_phone_no like '%" + text + "%'";
+        try{
+            Query query = session.createSQLQuery(sqlQuery).addEntity(Supplier.class);;
+            List<Supplier> list = (List<Supplier>) query.list();
+            trans.commit();
+            for( Supplier supplier: list){
+                SupplierView supplierView = new SupplierView();
+                supplierView = getSupplierView1(supplier.getSuppl_id());
+                lstSupplierView.add(supplierView);
+            }
+        } catch(Exception ex){
+            System.out.println("Loi Ne");
+            System.out.println(ex);
+        }
+        return lstSupplierView;
+    }
     public List<SupplierBank> getListSupplierBank(int supplId) {
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();

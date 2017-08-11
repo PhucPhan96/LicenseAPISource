@@ -18,6 +18,7 @@
     <springframework.version>4.3.4.RELEASE</springframework.version><!-- 4.1.4.RELEASE -->
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <project.build.sourceEncoding>windows-1252</project.build.sourceEncoding>
   </properties>
   <dependencies>
     <dependency>
@@ -337,6 +338,22 @@
 	          <port>1234</port>
 	        </configuration>
       	</plugin>
-     </plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <encoding>${project.build.sourceEncoding}</encoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.4.3</version>
+        <configuration>
+          <encoding>${project.build.sourceEncoding}</encoding>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 </project>

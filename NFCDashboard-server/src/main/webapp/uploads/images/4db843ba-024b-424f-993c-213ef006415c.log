@@ -1,0 +1,92 @@
+Logfile of Trend Micro HijackThis v2.0.5
+Scan saved at 5:47:46 PM, on 7/26/2017
+Platform: Unknown Windows (WinNT 6.02.1008)
+MSIE: Internet Explorer v11.0 (11.00.10240.17443)
+
+
+Boot mode: Normal
+
+Running processes:
+C:\Program Files (x86)\Zemana AntiMalware\ZAM.exe
+C:\Program Files\Malwarebytes\Anti-Malware\mbamtray.exe
+C:\Program Files (x86)\Skype\Phone\Skype.exe
+C:\Program Files (x86)\TechSmith\Snagit 12\Snagit32.exe
+C:\Program Files (x86)\TechSmith\Snagit 12\TSCHelp.exe
+C:\Program Files (x86)\TechSmith\Snagit 12\snagiteditor.exe
+C:\Program Files (x86)\Skype\Browser\SkypeBrowserHost.exe
+C:\Program Files (x86)\Skype\Browser\SkypeBrowserHost.exe
+C:\Windows\SysWOW64\DllHost.exe
+C:\Users\Admin\Downloads\HijackThis.exe
+
+R1 - HKCU\Software\Microsoft\Internet Explorer\Main,SearchAssistant = www.google.com
+R1 - HKCU\Software\Microsoft\Internet Explorer\Main,Search Bar = Preserve
+R0 - HKCU\Software\Microsoft\Internet Explorer\Main,Start Page = 
+R1 - HKLM\Software\Microsoft\Internet Explorer\Main,Default_Page_URL = http://go.microsoft.com/fwlink/p/?LinkId=255141
+R1 - HKLM\Software\Microsoft\Internet Explorer\Main,Default_Search_URL = http://go.microsoft.com/fwlink/?LinkId=54896
+R1 - HKLM\Software\Microsoft\Internet Explorer\Main,Search Page = http://go.microsoft.com/fwlink/?LinkId=54896
+R0 - HKLM\Software\Microsoft\Internet Explorer\Main,Start Page = http://gj.l114la.com/?92192
+R1 - HKCU\Software\Microsoft\Internet Explorer\Search,Default_Search_URL = www.google.com
+R0 - HKLM\Software\Microsoft\Internet Explorer\Search,SearchAssistant = 
+R0 - HKLM\Software\Microsoft\Internet Explorer\Search,CustomizeSearch = 
+R0 - HKLM\Software\Microsoft\Internet Explorer\Main,Local Page = C:\Windows\SysWOW64\blank.htm
+R0 - HKCU\Software\Microsoft\Internet Explorer\Toolbar,LinksFolderName = 
+O2 - BHO: Lync Click to Call BHO - {31D09BA0-12F5-4CCE-BE8A-2923E76605DA} - C:\Program Files (x86)\Microsoft Office\Office15\OCHelper.dll
+O2 - BHO: ∫£Ã‘ƒ£øÈ÷˙ ÷ - {97510FAC-ED50-46BF-B2A1-25F434BF1030} - C:\Users\Admin\AppData\Local\htyh\application\HTDataView.dll (file missing)
+O2 - BHO: Microsoft SkyDrive Pro Browser Helper - {D0498E0A-45B7-42AE-A9AA-ABA463DBD3BF} - C:\PROGRA~2\MIF5BA~1\Office15\GROOVEEX.DLL
+O4 - HKLM\..\Run: [SunJavaUpdateSched] "C:\Program Files (x86)\Common Files\Java\Java Update\jusched.exe"
+O4 - HKCU\..\Run: [OneDrive] "C:\Users\Admin\AppData\Local\Microsoft\OneDrive\OneDrive.exe" /background
+O4 - HKCU\..\Run: [Skype] "C:\Program Files (x86)\Skype\Phone\Skype.exe" /minimized /regrun
+O4 - HKCU\..\Run: [MySQL Notifier] C:\Program Files (x86)\MySQL\MySQL Notifier 1.1\MySqlNotifier.exe
+O4 - HKCU\..\Run: [RESTART_STICKY_NOTES] C:\Windows\system32\StikyNot.exe
+O4 - Global Startup: Snagit 12.lnk = C:\Program Files (x86)\TechSmith\Snagit 12\Snagit32.exe
+O8 - Extra context menu item: E&xport to Microsoft Excel - res://C:\PROGRA~1\MIF5BA~1\Office15\EXCEL.EXE/3000
+O8 - Extra context menu item: Se&nd to OneNote - res://C:\PROGRA~1\MIF5BA~1\Office15\ONBttnIE.dll/105
+O9 - Extra button: Send to OneNote - {2670000A-7350-4f3c-8081-5663EE0C6C49} - C:\Program Files (x86)\Microsoft Office\Office15\ONBttnIE.dll
+O9 - Extra 'Tools' menuitem: Se&nd to OneNote - {2670000A-7350-4f3c-8081-5663EE0C6C49} - C:\Program Files (x86)\Microsoft Office\Office15\ONBttnIE.dll
+O9 - Extra button: Lync Click to Call - {31D09BA0-12F5-4CCE-BE8A-2923E76605DA} - C:\Program Files (x86)\Microsoft Office\Office15\OCHelper.dll
+O9 - Extra 'Tools' menuitem: Lync Click to Call - {31D09BA0-12F5-4CCE-BE8A-2923E76605DA} - C:\Program Files (x86)\Microsoft Office\Office15\OCHelper.dll
+O9 - Extra button: OneNote Lin&ked Notes - {789FE86F-6FC4-46A1-9849-EDE0DB0C95CA} - C:\Program Files (x86)\Microsoft Office\Office15\ONBttnIELinkedNotes.dll
+O9 - Extra 'Tools' menuitem: OneNote Lin&ked Notes - {789FE86F-6FC4-46A1-9849-EDE0DB0C95CA} - C:\Program Files (x86)\Microsoft Office\Office15\ONBttnIELinkedNotes.dll
+O11 - Options group: [ACCELERATED_GRAPHICS] Accelerated graphics
+O16 - DPF: {414FB93D-DEDD-4FEF-AD7F-167992EBDB52} (SlimClient Class) - https://svpn.ckdpharm.com/sslvpn/SNX/CSHELL/extender.cab
+O18 - Protocol: osf - {D924BDC6-C83A-4BD5-90D0-095128A113D1} - C:\Program Files (x86)\Microsoft Office\Office15\MSOSB.DLL
+O18 - Protocol: tbauth - {14654CA6-5711-491D-B89A-58E571679951} - C:\Windows\SysWOW64\tbauth.dll
+O18 - Filter hijack: text/xml - {807583E5-5146-11D5-A672-00B0D022E945} - C:\Program Files (x86)\Common Files\Microsoft Shared\OFFICE15\MSOXMLMF.DLL
+O23 - Service: @%SystemRoot%\system32\Alg.exe,-112 (ALG) - Unknown owner - C:\Windows\System32\alg.exe (file missing)
+O23 - Service: Check Point SSL Network Extender (cpextender) - Check Point Software Technologies - C:\Program Files (x86)\CheckPoint\SSL Network Extender\slimsvc.exe
+O23 - Service: @%SystemRoot%\system32\DiagSvcs\DiagnosticsHub.StandardCollector.ServiceRes.dll,-1000 (diagnosticshub.standardcollector.service) - Unknown owner - C:\Windows\system32\DiagSvcs\DiagnosticsHub.StandardCollector.Service.exe (file missing)
+O23 - Service: @%SystemRoot%\system32\efssvc.dll,-100 (EFS) - Unknown owner - C:\Windows\System32\lsass.exe (file missing)
+O23 - Service: @%systemroot%\system32\fxsresm.dll,-118 (Fax) - Unknown owner - C:\Windows\system32\fxssvc.exe (file missing)
+O23 - Service: Google Update Service (gupdate) (gupdate) - Google Inc. - C:\Program Files (x86)\Google\Update\GoogleUpdate.exe
+O23 - Service: Google Update Service (gupdatem) (gupdatem) - Google Inc. - C:\Program Files (x86)\Google\Update\GoogleUpdate.exe
+O23 - Service: @%SystemRoot%\system32\ieetwcollectorres.dll,-1000 (IEEtwCollectorService) - Unknown owner - C:\Windows\system32\IEEtwCollector.exe (file missing)
+O23 - Service: @keyiso.dll,-100 (KeyIso) - Unknown owner - C:\Windows\system32\lsass.exe (file missing)
+O23 - Service: Malwarebytes Service (MBAMService) - Malwarebytes - C:\Program Files\Malwarebytes\Anti-Malware\mbamservice.exe
+O23 - Service: @comres.dll,-2797 (MSDTC) - Unknown owner - C:\Windows\System32\msdtc.exe (file missing)
+O23 - Service: MySQL57 - Unknown owner - C:\Program Files\MySQL\MySQL Server 5.7\bin\mysqld.exe
+O23 - Service: MySQL Router (MySQLRouter) - Unknown owner - C:\Program Files\MySQL\MySQL Router 2.1\bin\mysqlrouter.exe
+O23 - Service: @%SystemRoot%\System32\netlogon.dll,-102 (Netlogon) - Unknown owner - C:\Windows\system32\lsass.exe (file missing)
+O23 - Service: @%SystemRoot%\System32\ngcsvc.dll,-100 (NgcSvc) - Unknown owner - C:\Windows\system32\lsass.exe (file missing)
+O23 - Service: NVIDIA Display Container LS (NVDisplay.ContainerLocalSystem) - NVIDIA Corporation - C:\Program Files\NVIDIA Corporation\Display.NvContainer\NVDisplay.Container.exe
+O23 - Service: @%systemroot%\system32\Locator.exe,-2 (RpcLocator) - Unknown owner - C:\Windows\system32\locator.exe (file missing)
+O23 - Service: @%SystemRoot%\system32\samsrv.dll,-1 (SamSs) - Unknown owner - C:\Windows\system32\lsass.exe (file missing)
+O23 - Service: @%SystemRoot%\system32\SensorDataService.exe,-101 (SensorDataService) - Unknown owner - C:\Windows\System32\SensorDataService.exe (file missing)
+O23 - Service: Skype Updater (SkypeUpdate) - Skype Technologies - C:\Program Files (x86)\Skype\Updater\Updater.exe
+O23 - Service: @%SystemRoot%\system32\snmptrap.exe,-3 (SNMPTRAP) - Unknown owner - C:\Windows\System32\snmptrap.exe (file missing)
+O23 - Service: @%systemroot%\system32\spoolsv.exe,-1 (Spooler) - Unknown owner - C:\Windows\System32\spoolsv.exe (file missing)
+O23 - Service: @%SystemRoot%\system32\sppsvc.exe,-101 (sppsvc) - Unknown owner - C:\Windows\system32\sppsvc.exe (file missing)
+O23 - Service: TeamViewer 12 (TeamViewer) - TeamViewer GmbH - C:\Program Files (x86)\TeamViewer\TeamViewer_Service.exe
+O23 - Service: @%SystemRoot%\system32\ui0detect.exe,-101 (UI0Detect) - Unknown owner - C:\Windows\system32\UI0Detect.exe (file missing)
+O23 - Service: @%SystemRoot%\system32\vaultsvc.dll,-1003 (VaultSvc) - Unknown owner - C:\Windows\system32\lsass.exe (file missing)
+O23 - Service: @%SystemRoot%\system32\vds.exe,-100 (vds) - Unknown owner - C:\Windows\System32\vds.exe (file missing)
+O23 - Service: @%systemroot%\system32\vssvc.exe,-102 (VSS) - Unknown owner - C:\Windows\system32\vssvc.exe (file missing)
+O23 - Service: @%systemroot%\system32\wbengine.exe,-104 (wbengine) - Unknown owner - C:\Windows\system32\wbengine.exe (file missing)
+O23 - Service: @%ProgramFiles%\Windows Defender\MpAsDesc.dll,-320 (WdNisSvc) - Unknown owner - C:\Program Files (x86)\Windows Defender\NisSrv.exe (file missing)
+O23 - Service: @%ProgramFiles%\Windows Defender\MpAsDesc.dll,-310 (WinDefend) - Unknown owner - C:\Program Files (x86)\Windows Defender\MsMpEng.exe (file missing)
+O23 - Service: @%SystemRoot%\system32\wlms\wlms.exe,-1 (WLMS) - Unknown owner - C:\Windows\system32\wlms\wlms.exe (file missing)
+O23 - Service: @%Systemroot%\system32\wbem\wmiapsrv.exe,-110 (wmiApSrv) - Unknown owner - C:\Windows\system32\wbem\WmiApSrv.exe (file missing)
+O23 - Service: @%PROGRAMFILES%\Windows Media Player\wmpnetwk.exe,-101 (WMPNetworkSvc) - Unknown owner - C:\Program Files (x86)\Windows Media Player\wmpnetwk.exe (file missing)
+O23 - Service: ZAM Controller Service (ZAMSvc) - Copyright 2017. - C:\Program Files (x86)\Zemana AntiMalware\ZAM.exe
+
+--
+End of file - 9332 bytes
