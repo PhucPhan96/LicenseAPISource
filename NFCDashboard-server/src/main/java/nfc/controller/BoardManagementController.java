@@ -76,7 +76,7 @@ public class BoardManagementController {
 		return threads;
 	}
 	@RequestMapping(value="app/board/threadsmall/{id}", method=RequestMethod.GET)
-	public List<Thread> getThreadSmall(@PathVariable("id") int thread_id){
+	public List<Thread> getThreadSmall(@PathVariable("id") String thread_id){
 		System.out.println("thread_id is: " + thread_id);	
 		List<Thread> threads = boardDAO.getListThreadSmall(thread_id);
 		return threads;

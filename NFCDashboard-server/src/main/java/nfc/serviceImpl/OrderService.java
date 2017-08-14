@@ -324,4 +324,12 @@ public class OrderService implements IOrderService{
             return false;
         }
     }
+    
+    /*Lucas -  get list all order by supplierID
+    */
+    public List<OrderView> getListOrderBySupplierID(String username){
+        List<OrderView> lstOrderView = new ArrayList<OrderView>();
+        
+        return lstOrderView;
+    }
 }

@@ -15,7 +15,7 @@ public interface IBoardService {
 	boolean deleteBoard(int boardId);
 	List<Board> getListBoards(int boardId);
 	List<Thread> getListThreadFromBoardId(int board_id);
-	List<Thread> getListThreadSmall(int thread_id);
+	List<Thread> getListThreadSmall(String thread_id);
 	boolean insertThread(Thread thread);
 	BoardView getBoardView (int boardId);
         Board getBoard(int boardId);
