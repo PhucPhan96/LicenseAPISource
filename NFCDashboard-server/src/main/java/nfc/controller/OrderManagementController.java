@@ -16,6 +16,7 @@ import nfc.messages.OrderStatusRequest;
 import nfc.messages.SpeedPayRequest;
 import nfc.messages.base.BasePacket;
 import nfc.messages.base.PaymentRequestPacket;
+import nfc.messages.filters.StatisticRequestFilter;
 
 import nfc.model.Code;
 import nfc.model.Group;
@@ -24,6 +25,7 @@ import nfc.model.OrderDetail;
 import nfc.model.ViewModel.OrderView;
 import nfc.model.ViewModel.PosDetailView;
 import nfc.model.ViewModel.SupplierView;
+import nfc.model.Filter;
 import nfc.service.ICodeService;
 import nfc.service.IOrderService;
 import nfc.service.IPosService;
@@ -188,6 +190,12 @@ public class OrderManagementController {
         orderGateway.sendOrder(orderView);
         return orderGateway.receive().getOrder().getSuppl_id() + "";
     }
+    @RequestMapping(value = "app/order/getlistorderbyfilter", method = RequestMethod.POST)
+    public List<Order> getListOrderByFilter(@RequestBody Filter filter) {
+        List<Order> lstOrder = new ArrayList<Order>();
+        lstOrder = orderDAO.fGetListOrderByFilter(filter.getSupplierId(), filter.getFromDate(), filter.getToDate(), filter.getStatus());
+        return lstOrder;
+    }
     
     
     @RequestMapping(value="/order/customer", method = RequestMethod.POST)
@@ -261,7 +269,12 @@ public class OrderManagementController {
         return "Okie";
     }
     
-    
+    @RequestMapping(value = "/order/statistic", method = RequestMethod.POST)
+    public List<Order> getListOrderByFilter(@RequestBody StatisticRequestFilter filter) {
+        List<Order> lstOrder = new ArrayList<Order>();
+        lstOrder = orderDAO.getListOrderOfStatisticRequest(filter);
+        return lstOrder;
+    }
    
     
 }

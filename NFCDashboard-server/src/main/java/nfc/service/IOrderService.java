@@ -1,5 +1,6 @@
 package nfc.service;
 import java.util.List;
+import nfc.messages.filters.StatisticRequestFilter;
 
 import nfc.model.Order;
 import nfc.model.OrderDetail;
@@ -21,4 +22,6 @@ public interface IOrderService {
         boolean updateOrderStatus(String orderId, String status);
         PaymentOrderHistory getPaymentOrderHistory(String orderId);
         List<Order> getListOrderAllStoreOfUser(String userId);
+        List<Order> fGetListOrderByFilter(int[] suppliers, String fromDate, String toDate, String status);
+        List<Order> getListOrderOfStatisticRequest(StatisticRequestFilter filter);
 }

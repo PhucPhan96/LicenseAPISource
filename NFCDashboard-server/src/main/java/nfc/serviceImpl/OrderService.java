@@ -17,6 +17,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.core.ObjectCodec;
+import nfc.messages.filters.StatisticRequestFilter;
 
 import nfc.model.Category;
 import nfc.model.Customer;
@@ -27,6 +28,7 @@ import nfc.model.Supplier;
 import nfc.model.SupplierAddress;
 import nfc.model.SupplierCategories;
 import nfc.model.SupplierUser;
+import nfc.model.SupplierWork;
 import nfc.model.User;
 import nfc.model.ViewModel.OrderView;
 import nfc.model.ViewModel.SupplierAddressView;
@@ -269,8 +271,32 @@ public class OrderService implements IOrderService{
         }
         return order;
     }
-        
-        
+    /**
+     * Lucas - Get List Order From SupplierID By Filter date, status (All Information)
+     **/
+    public List<Order> fGetListOrderByFilter(int[] suppliers, String fromDate, String toDate, String status) {
+        List<Order> lstOrder = new ArrayList<Order>();
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        for (int supplId : suppliers) {
+            System.out.println(supplId);
+            String sqlQuery = "SELECT * FROM 82wafoodgo.fg_orders where suppl_id = '" + supplId + "' and order_status = '" + status
+                    + "' and order_date >= '" + fromDate + "' and order_date <= '" + toDate + "';";
+            List<Order> lstOrderTemp = new ArrayList<Order>();
+            try {
+                Query query = session.createSQLQuery(sqlQuery).addEntity(Order.class);;
+                lstOrderTemp = (List<Order>) query.list();
+            } catch (Exception ex) {
+                System.out.println("Loi Ne");
+                System.out.println(ex);
+            }
+            for (Order order: lstOrderTemp) {
+                lstOrder.add(order);
+            }
+        }
+        trans.commit();
+        return lstOrder;
+    }    
     public Order getLastOrder(){
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
@@ -396,4 +422,30 @@ public class OrderService implements IOrderService{
     }
     
    
+    
+    /*Lucas -  get list all order by supplierID
+    */
+    public List<OrderView> getListOrderBySupplierID(String username){
+        List<OrderView> lstOrderView = new ArrayList<OrderView>();
+        
+        return lstOrderView;
+    }
+    
+    public List<Order> getListOrderOfStatisticRequest(StatisticRequestFilter filter){
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        List<Order> orders = new ArrayList<>();
+        try{
+            Query query = session.createSQLQuery("select * from fg_orders where find_in_set(suppl_id,'" + filter.getStoreIds() + "') and order_date >= '" + Utils.convertDateToString(filter.getDateFrom())+ "' and order_date <= '" + Utils.convertDateToString(filter.getDateTo())+ "'")
+                                  .setResultTransformer(Transformers.aliasToBean(Order.class));
+            orders = (List<Order>) query.list();
+            trans.commit();
+        }
+        catch(Exception ex){
+            System.err.println("error " + ex.getMessage());
+            trans.rollback();
+        }
+        return orders;
+    }
+    
 }

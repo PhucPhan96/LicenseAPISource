@@ -221,7 +221,7 @@ public class BoardService implements IBoardService{
         } 
     }
 
-    public List<Thread> getListThreadSmall(int thread_id)
+    public List<Thread> getListThreadSmall(String thread_id)
     {
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();

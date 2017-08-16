@@ -1,5 +1,6 @@
 package nfc.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -153,15 +154,25 @@ public class UserManagementController {
 	@RequestMapping(value="app/user/checkUserFB/{id}",method=RequestMethod.GET)
 	public String checkUserFacebook(@PathVariable("id") String username){
 		User users = userDAO.findUserByUserName(username);// .getUser(userId);	
-		System.out.println(users.getUser_name());
-		if(users.getUser_name().equals(username)){
-			final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            final String token = jwtTokenUtil.generateToken(userDetails);
-			return "{\"result\":\"" + token + "\"}";
-		} else {
-			String data = "false";
+                try{
+                    if(users != null ){
+			if(users.getUser_name().equals(username)){
+                            final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                            final String token = jwtTokenUtil.generateToken(userDetails);
+                            return "{\"result\":\"" + token + "\"}";
+                        } else {
+                            String data = "false";
+                            return "{\"result\":\"" + data + "\"}";
+                        }
+                    } else{
+                        String data = "false";
+                        return "{\"result\":\"" + data + "\"}";
+                    }
+                    
+                } catch( Exception ex){
+                    String data = "false";
 			return "{\"result\":\"" + data + "\"}";
-		}
+                }
 	}
 	@RequestMapping(value="user/delete/{id}", method=RequestMethod.DELETE)
 	public @ResponseBody String deleteUser(@PathVariable("id") String userId){
@@ -181,5 +192,17 @@ public class UserManagementController {
 		System.out.println("vao change password: Id: " + temp[2]);
 		String data = userDAO.ChangPasswordUser(temp[1],temp[0],temp[2])+"";
 		return "{\"result\":\"" + data + "\"}";
+	}
+        /**
+         * Lucas 
+         **/
+        @RequestMapping(value="user/findbyphone/{id}",method=RequestMethod.GET)
+	public List<User> getListUserByPhone(@PathVariable("id") String phoneNum){
+		List<User> lstUser = userDAO.getListUserByPhoneNumber( phoneNum);
+                if(lstUser == null){
+                    List<User> list = new ArrayList<>();
+                    return list;
+                }
+		return lstUser;
 	}
 }

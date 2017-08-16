@@ -136,5 +136,10 @@ public class Utils {
         String modifiedDate= new SimpleDateFormat("yyyy-MM-dd").format(date);
         return modifiedDate;
     }
+    
+    public static String convertDateToString(Date date){
+        String modifiedDate= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+        return modifiedDate;
+    }
         
 }

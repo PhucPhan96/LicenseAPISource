@@ -4,6 +4,8 @@ import java.util.List;
 import org.hibernate.Session;
 
 import nfc.model.Address;
+import nfc.model.Order;
+import nfc.model.PKModel.SupplierUserPK;
 import nfc.model.Supplier;
 import nfc.model.SupplierCategories;
 import nfc.model.SupplierImage;
@@ -21,6 +23,8 @@ public interface ISupplierService {
 	Supplier getSupplierFromUser(String username);
 	SupplierWork getSupplierWork(int supplId);
 	SupplierView getSupplierView(int supplId);
+        SupplierView getSupplierView1(int supplId);
+        boolean ChangeOrderPhoneNumberSupplier(String supplierId,String orderPhoneNum);
 	List<SupplierImage> getListSupplierImage(int supplId);
 	List<SupplierUser> getListSupplierUser(String username);
 	Address getAddress(int addrId);
@@ -50,5 +54,8 @@ public interface ISupplierService {
         List<Supplier> getListSupplierOfManage(int supplierId);
         List<Supplier> getListSupplierOfRole(int roleId);
         List<Supplier> getListStore();
-        
+        List<SupplierView> getListSupplierByAddress(String longT, String latT);
+        List<SupplierView> getListSupplierViewByTextInput(String text);
+        List<Supplier> fGetListSupplierFromSuppIDManager(int supplId);
+        List<Supplier> fGetListSupplierFromUserName(String userID);
 }

@@ -32,4 +32,5 @@ public interface IUserService {
 	public boolean insertUserFb(User user);
         List<User> getListUserOfRole(int roleId);
         String getUserIdOfSupplier(int supplierId);
+        List<User> getListUserByPhoneNumber( String phoneNum);
 }
