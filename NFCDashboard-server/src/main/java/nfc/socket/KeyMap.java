@@ -18,69 +18,69 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class KeyMap {
     private ConcurrentHashMap<String, CopyOnWriteArrayList<String>> map = new ConcurrentHashMap<String, CopyOnWriteArrayList<String>>();
 	
-	/**
-	 * SelectionKey ?? 
-	 * @param storename	??? ??? 
-	 * @param key	SelectionKey
-	 */
+    /**
+     * SelectionKey ?? 
+     * @param storename	??? ??? 
+     * @param key	SelectionKey
+     */
 //	public void addKey(String storename, SelectionKey key){
 //                    
 //			map.put(storename, key);
 //	}
-        
-        public void addKey(String storeId, String sessionId){
-            if(map.get(storeId) == null){
-                map.put(storeId, new CopyOnWriteArrayList<String>());   
-            }
-            map.get(storeId).add(sessionId);  
-			//map.put(storename, key);
-	}
 
-	/**
-	 * SelectionKey? ?? ??? 
-	 */
-	public void clearAll(){
-		map.clear();
-	}
-	
-	/**
-	 * ???? ??? ??, ???.
-	 * @param storename
-	 */
-	public void removeKey(String storename){
-		map.remove(storename);
-	}
-	
-        public void removeKey(String storeId, String sessionId){
-            try{
-                Iterator<String> it = map.get(storeId).iterator();
-                while(it.hasNext()){
-                    String value = it.next();
-                    if(value.equals(sessionId)){
-                        map.get(storeId).remove(value);
-                    }
-                }
-                if(map.get(storeId).size() == 0){
-                    map.remove(storeId);
+    public void addKey(String userId, String sessionId){
+        if(map.get(userId) == null){
+            map.put(userId, new CopyOnWriteArrayList<String>());   
+        }
+        map.get(userId).add(sessionId);  
+                    //map.put(storename, key);
+    }
+
+    /**
+     * SelectionKey? ?? ??? 
+     */
+    public void clearAll(){
+            map.clear();
+    }
+
+    /**
+     * ???? ??? ??, ???.
+     * @param storename
+     */
+    public void removeKey(String userId){
+        map.remove(userId);
+    }
+
+    public void removeKey(String userId, String sessionId){
+        try{
+            Iterator<String> it = map.get(userId).iterator();
+            while(it.hasNext()){
+                String value = it.next();
+                if(value.equals(sessionId)){
+                    map.get(userId).remove(value);
                 }
             }
-            catch(Exception ex){
-                System.err.println("Error " + ex.getMessage());
-            }    
+            if(map.get(userId).size() == 0){
+                map.remove(userId);
+            }
         }
-        
-        public List<String> getKey(String storename){
-            return map.get(storename);
-	}
-	
-	
+        catch(Exception ex){
+            System.err.println("Error " + ex.getMessage());
+        }    
+    }
+
+    public List<String> getKey(String storename){
+        return map.get(storename);
+    }
+
+
 //	@Override
-	public String print(){
-		StringBuilder sb = new StringBuilder();
-		
-		for(String store : map.keySet()){
-			sb.append(store).append(":").append(map.get(store));
-		}
-		return sb.toString();
-	}
+    public String print(){
+        StringBuilder sb = new StringBuilder();
+
+        for(String store : map.keySet()){
+            sb.append(store).append(":").append(map.get(store));
+        }
+        return sb.toString();
+    }
 }

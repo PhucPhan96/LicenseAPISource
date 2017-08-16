@@ -11,14 +11,14 @@ package nfc.messages.base;
  */
 public class StoreBasePacket  extends BasePacket {
 	
-	protected int store_id;
+	protected String user_id;
 	
-	public StoreBasePacket(int store_id) {
-		this.store_id = store_id;
+	public StoreBasePacket(String user_id) {
+		this.user_id = user_id;
 	}
 	
-	public int getStoreId(){
-		return this.store_id;
+	public String getUserId(){
+		return this.user_id;
 	}
 	
 	
@@ -30,6 +30,6 @@ public class StoreBasePacket  extends BasePacket {
 	
 	@Override
 	public String toString(){
-		return String.format("%s store_id:%s", this.getClass().getSimpleName(), store_id);
+		return String.format("%s user_id:%s", this.getClass().getSimpleName(), user_id);
 	}
 }

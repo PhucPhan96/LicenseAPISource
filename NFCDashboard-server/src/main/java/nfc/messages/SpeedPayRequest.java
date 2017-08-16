@@ -17,12 +17,12 @@ public class SpeedPayRequest extends PaymentRequestPacket{
     private String card_ymd;
     private String card_serial;
     private String sell_nm;
-    private String sign;
-    private long amt;
-    private String product_nm;
-    private String buyer_nm;
-    private String buyer_phone_no;
-    private String buyer_email;
+    private String sign = null;
+    private String amt;
+    private String product_nm = "";
+    private String buyer_nm = "";
+    private String buyer_phone_no = "";
+    private String buyer_email= "";
 
     public String getCard_no() {
         return card_no;
@@ -64,11 +64,11 @@ public class SpeedPayRequest extends PaymentRequestPacket{
         this.sign = sign;
     }
 
-    public long getAmt() {
+    public String getAmt() {
         return amt;
     }
 
-    public void setAmt(long amt) {
+    public void setAmt(String amt) {
         this.amt = amt;
     }
 

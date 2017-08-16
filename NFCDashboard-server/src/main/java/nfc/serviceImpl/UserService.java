@@ -42,6 +42,9 @@ import nfc.service.IRoleService;
 import nfc.service.ISupplierService;
 import nfc.service.IUserService;
 import nfc.serviceImpl.common.Utils;
+import org.hibernate.SQLQuery;
+import org.hibernate.transform.ResultTransformer;
+import org.hibernate.transform.Transformers;
 
 @Transactional
 public class UserService implements IUserService {
@@ -224,17 +227,22 @@ public class UserService implements IUserService {
 	}
 	private void insertUserSupplier(Session session, User user)
 	{
-		SupplierUser userSuppl = new SupplierUser();
+            for(Integer supplierId : user.getListSupplierId()){
+                SupplierUser userSuppl = new SupplierUser();
 		userSuppl.setUser_id(user.getUser_id());
 		userSuppl.setApp_id(user.getApp_id());
-		userSuppl.setSuppl_id(user.getSuppl_id());
+		userSuppl.setSuppl_id(supplierId);
 		session.save(userSuppl);
+            }
+		
 	}
 	private void updateUserSupplier(Session session, User user)
 	{
-		String updateQuery = "update fg_supplier_users set suppl_id ="+ user.getSuppl_id()+" where user_id = '" + user.getUser_id()+"'";
-		Query query = session.createSQLQuery(updateQuery);
-	    query.executeUpdate();
+            deleteSupplierOfUser(session, user.getUser_id());
+            insertUserSupplier(session, user);
+            //String updateQuery = "update fg_supplier_users set suppl_id ="+ user.getSuppl_id()+" where user_id = '" + user.getUser_id()+"'";
+//            Query query = session.createSQLQuery(updateQuery);
+//	    query.executeUpdate();
 	}
 	public boolean deleteUser(String userID) {
 		System.out.print("Vao nay roi " + userID);
@@ -258,17 +266,18 @@ public class UserService implements IUserService {
 		
 	}
 	public User getUser(String userId){
-		List<SupplierUser> supplUser = supplDAO.getListSupplierUserId(userId);
+		//List<SupplierUser> supplUser = supplDAO.getListSupplierUserId(userId);
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
 		Criteria criteria = session.createCriteria(User.class);
 		criteria.add(Restrictions.eq("user_id", userId));
 		User user =  (User) criteria.uniqueResult(); 
+                user.setListSupplierId(getListSupplierIdOfUser(session, userId));
 //		set SupplierUser
-		if(supplUser.size()>0)
-		{
-			user.setSuppl_id(supplUser.get(0).getSuppl_id());
-		}
+//		if(supplUser.size()>0)
+//		{
+//			user.setSuppl_id(supplUser.get(0).getSuppl_id());
+//		}
 //		 set Address user
 		List<UserAddress> userAddresses = getListUserAddress(session,userId);
 		List<UserAddressView> userAddressViewLst = new ArrayList<UserAddressView>();
@@ -296,6 +305,15 @@ public class UserService implements IUserService {
 		trans.commit();
 		return user;
 	}
+        
+        
+        private List<Integer> getListSupplierIdOfUser(Session session, String userId){
+            String sql = "select suppl_id from fg_supplier_users where user_id = '" + userId + "'";
+            SQLQuery query = session.createSQLQuery(sql);
+            List<Integer> listSupplerId = query.list();
+            return listSupplerId;
+        }
+        
 	public User findUserByUserName(String username) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
@@ -336,8 +354,8 @@ public class UserService implements IUserService {
 	}
 	private void deleteSupplierOfUser(Session session, String userId)
 	{
-		String deleteQuery = "delete from fg_supplier_users where user_id = '" + userId+"'";
-		Query query = session.createSQLQuery(deleteQuery);
+            String deleteQuery = "delete from fg_supplier_users where user_id = '" + userId+"'";
+            Query query = session.createSQLQuery(deleteQuery);
 	    query.executeUpdate();
 	}
 	public List<UserAddress> getListUserAddress(Session session,String userId){
@@ -586,6 +604,21 @@ public class UserService implements IUserService {
             }
             return users;
             
+        }
+        
+        public String getUserIdOfSupplier(int supplierId){
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            String userId = "";
+            try{
+                userId = (String)session.createSQLQuery("select user_id from fg_supplier_users where suppl_id='" + supplierId + "' limit 1").uniqueResult();
+                trans.commit();            
+            }
+            catch(Exception ex){
+                System.err.println("error " + ex.getMessage());
+                trans.rollback();
+            }
+            return userId;
         }
 
 }

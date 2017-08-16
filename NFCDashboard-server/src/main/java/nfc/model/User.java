@@ -44,7 +44,8 @@ public class User {
 	private String app_id;
 	private Date password_expired_date;
 	private int role_id;
-	private int suppl_id;
+        
+	private List<Integer> listSupplierId;
 	
 	private List<UserAddressView> lstuserAddress = new ArrayList<UserAddressView>();
 	private List<Role> lstRoles = new ArrayList<Role>();
@@ -248,6 +249,7 @@ public class User {
 	public void setPassword_expired_date(Date password_expired_date) {
 		this.password_expired_date = password_expired_date;
 	}
+      
 	@javax.persistence.Transient
 	@Column(name="role_id")
 	public int getRole_id() {
@@ -256,14 +258,16 @@ public class User {
 	public void setRole_id(int role_id) {
 		this.role_id = role_id;
 	}
-	@javax.persistence.Transient
-	@Column(name="suppl_id")
-	public int getSuppl_id() {
-		return suppl_id;
-	}
-	public void setSuppl_id(int suppl_id) {
-		this.suppl_id = suppl_id;
-	}
+        
+        @javax.persistence.Transient
+        public List<Integer> getListSupplierId() {
+            return listSupplierId;
+        }
+
+        public void setListSupplierId(List<Integer> listSupplierId) {
+            this.listSupplierId = listSupplierId;
+        }
+        
 	@javax.persistence.Transient
 	public List<UserAddressView> getLstuserAddress() {
 		return lstuserAddress;

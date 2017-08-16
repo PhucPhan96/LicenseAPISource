@@ -51,5 +51,4 @@ public interface ISupplierService {
         List<Supplier> getListSupplierOfRole(int roleId);
         List<Supplier> getListStore();
         
-        
 }

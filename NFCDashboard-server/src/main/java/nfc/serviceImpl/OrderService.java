@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.core.ObjectCodec;
 
 import nfc.model.Category;
+import nfc.model.Customer;
 import nfc.model.Order;
 import nfc.model.OrderDetail;
 import nfc.model.PaymentOrderHistory;
@@ -29,10 +30,13 @@ import nfc.model.SupplierUser;
 import nfc.model.User;
 import nfc.model.ViewModel.OrderView;
 import nfc.model.ViewModel.SupplierAddressView;
+import nfc.model.ViewModel.UserAddressView;
 import nfc.service.IOrderService;
 import nfc.service.ISupplierService;
 import nfc.service.IUserService;
 import nfc.serviceImpl.common.Utils;
+import org.hibernate.transform.Transformers;
+import org.springframework.util.StringUtils;
 
 public class OrderService implements IOrderService{
     @Autowired
@@ -60,8 +64,10 @@ public class OrderService implements IOrderService{
         Transaction trans = session.beginTransaction();
         try
         {
+            
             String orderIdDesc = generateOrderId();
             orderView.getOrder().setOrder_id(orderIdDesc);
+            setupCustomerInformationForOrder(session, orderView);
             session.save(orderView.getOrder());
             insertOrderDetail(orderView.getLstOrderDetail(), orderIdDesc, session);
             trans.commit();
@@ -73,6 +79,32 @@ public class OrderService implements IOrderService{
             trans.rollback();
             return false;
         }
+    }
+    
+    private void setupCustomerInformationForOrder(Session session, OrderView orderView){
+         if(StringUtils.isEmpty(orderView.getOrder().getUser_id())){
+            insertCustomer(session, orderView.getCustomer());
+            orderView.getOrder().setCustomer_id(orderView.getCustomer().getCustomer_id());
+        }
+    }
+    
+    private void insertCustomer(Session session, Customer customer){
+        if(!isCustomerExist(session, customer)){
+            session.save(customer);
+        }
+    }
+    
+    private boolean isCustomerExist(Session session, Customer customer){
+        Criteria criteria = session.createCriteria(Customer.class);
+        criteria.add(Restrictions.eq("customer_phone", customer.getCustomer_phone()));
+        criteria.add(Restrictions.eq("customer_email", customer.getCustomer_email()));
+        criteria.add(Restrictions.eq("customer_address", customer.getCustomer_address()));
+        criteria.add(Restrictions.eq("customer_name", customer.getCustomer_name()));
+        Customer cus = (Customer)criteria.uniqueResult();
+        if(cus == null){
+            return false;
+        }
+        return true;
     }
 
     public boolean updateOrderView(OrderView orderView) {
@@ -134,7 +166,7 @@ public class OrderService implements IOrderService{
             orderView.setOrder(order);
             orderView.setLstOrderDetail(getListOrderDetail(order.getOrder_id()));
             User cusUser = userDAO.getUser(order.getUser_id());
-            orderView.setCustomer_name(cusUser.getFirst_name() + " " + cusUser.getMiddle_name() + " " + cusUser.getLast_name());
+            //orderView.setCustomer_name(cusUser.getFirst_name() + " " + cusUser.getMiddle_name() + " " + cusUser.getLast_name());
             lstOrderForPos.add(orderView);
         }
         return lstOrderForPos;
@@ -208,7 +240,7 @@ public class OrderService implements IOrderService{
             orderView.setOrder(order);
             orderView.setLstOrderDetail(getListOrderDetail(order.getOrder_id()));
             User cusUser = userDAO.getUser(order.getUser_id());
-            orderView.setCustomer_name(cusUser.getFirst_name() + " " + cusUser.getMiddle_name() + " " + cusUser.getLast_name());
+            //orderView.setCustomer_name(cusUser.getFirst_name() + " " + cusUser.getMiddle_name() + " " + cusUser.getLast_name());
             lstOrderForPos.add(orderView);
         }
         return lstOrderForPos;
@@ -225,10 +257,16 @@ public class OrderService implements IOrderService{
     public Order getOrder(String orderId){
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
-        Criteria criteria = session.createCriteria(Order.class);
-        criteria.add(Restrictions.eq("order_id", orderId));
-        Order order = (Order) criteria.uniqueResult();
-        trans.commit();
+        Order order = new Order();
+        try{
+            Criteria criteria = session.createCriteria(Order.class);
+            criteria.add(Restrictions.eq("order_id", orderId));
+            order = (Order) criteria.uniqueResult();
+            trans.commit();
+        }
+        catch(Exception ex){
+            trans.rollback();
+        }
         return order;
     }
         
@@ -239,14 +277,13 @@ public class OrderService implements IOrderService{
         Order order = new Order();
         try{
             Query query = session.createSQLQuery("SELECT * FROM 82wafoodgo.fg_orders order by order_id desc limit 1")
-                        .addEntity(Order.class);
+                          .addEntity(Order.class);
             order = (Order) query.uniqueResult();
+            trans.commit();
         }
         catch(Exception ex){
-
+            trans.rollback();
         }
-
-        trans.commit();
         return order;
     }
     
@@ -324,4 +361,39 @@ public class OrderService implements IOrderService{
             return false;
         }
     }
+    
+    public PaymentOrderHistory getPaymentOrderHistory(String orderId){
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        PaymentOrderHistory paymentOrderHistory = new PaymentOrderHistory();
+        try{
+            Criteria criteria = session.createCriteria(PaymentOrderHistory.class);
+            criteria.add(Restrictions.eq("order_id", orderId));
+            paymentOrderHistory = (PaymentOrderHistory) criteria.list();
+            trans.commit();
+        }
+        catch(Exception ex){
+            trans.rollback();
+        }
+        return paymentOrderHistory;
+    }
+    
+    public List<Order> getListOrderAllStoreOfUser(String userId){
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        List<Order> orders = new ArrayList<>();
+        try{
+            Query query = session.createSQLQuery("select o.*, s.supplier_name from fg_orders o inner join fg_supplier_users su on o.suppl_id = su.suppl_id inner join fg_suppliers s on s.suppl_id = su.suppl_id where su.user_id='" + userId + "' and order_date >= current_date() order by o.order_date desc")
+                                  .setResultTransformer(Transformers.aliasToBean(Order.class));
+            orders = (List<Order>) query.list();
+            trans.commit();
+        }
+        catch(Exception ex){
+            System.err.println("error " + ex.getMessage());
+            trans.rollback();
+        }
+        return orders;
+    }
+    
+   
 }

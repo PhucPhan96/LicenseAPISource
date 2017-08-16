@@ -5,42 +5,39 @@
  */
 package nfc.socket;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import nfc.messages.base.CustomerBasePacket;
 import nfc.messages.base.StoreBasePacket;
-import nfc.serviceImpl.common.SocketIntegrationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.support.MessageBuilder;
 
 /**
  *
  * @author Admin
  */
-public class DataQueue {
+public class CustomerDataQueue {
     private SimpMessagingTemplate template;
     static final int MAX_SIZE_QUEUE = 100;
-    private LinkedList<StoreBasePacket> dataQueue = new LinkedList<StoreBasePacket>();
-    private ConcurrentHashMap<String, LinkedList<StoreBasePacket>> pendingDataMap = new 
-			ConcurrentHashMap<String, LinkedList<StoreBasePacket>>();
-    private KeyMap keymap;
+    private LinkedList<CustomerBasePacket> dataQueue = new LinkedList<CustomerBasePacket>();
+    private ConcurrentHashMap<String, LinkedList<CustomerBasePacket>> pendingDataMap = new 
+			ConcurrentHashMap<String, LinkedList<CustomerBasePacket>>();
+    private CustomerKeyMap keymap;
 //    @Autowired 
 //    private SocketIntegrationService integrationService; 
     
     private static class SingletonHelper{
-        private static final DataQueue INSTANCE = new DataQueue(); 
+        private static final CustomerDataQueue INSTANCE = new CustomerDataQueue(); 
     }
     
-    public static DataQueue getInstance(){
+    public static CustomerDataQueue getInstance(){
         return SingletonHelper.INSTANCE;
     }
     
-    public DataQueue(){
-        keymap = new KeyMap();
+    public CustomerDataQueue(){
+        keymap = new CustomerKeyMap();
         ExecutorService executorService = Executors.newFixedThreadPool(
 				Runtime.getRuntime().availableProcessors());
 //		ExecutorService executorService = Executors.newFixedThreadPool(1);
@@ -51,7 +48,7 @@ public class DataQueue {
         this.template = template;
     }
     
-    public void addDataQueue(StoreBasePacket data){
+    public void addDataQueue(CustomerBasePacket data){
         synchronized(dataQueue){
             System.err.println("Add data queue");
             dataQueue.add(data);
@@ -59,38 +56,31 @@ public class DataQueue {
         }
     }
     
-    public void deleteKeyMap(String sessionId, String storeId){
-        keymap.removeKey(storeId, sessionId);
-//        Iterator<String> it = keymap.getKey(storeId).iterator();
-//        while(it.hasNext()){
-//            String value = it.next();
-//            if(value.equals(sessionId)){
-//                    keymap.getKey(storeId).remove(value);
-//            }
-//        }
+    public void deleteKeyMap(String uuid){
+        keymap.removeKey(uuid);
     }
     
-    public void addKeyMap(String sessionId, String storeId){
-        keymap.addKey(storeId, sessionId);
+    public void addKeyMap(String uuid, String sessionId){
+        keymap.addKey(uuid, sessionId);
     }
     
-    public void sendPendingData(String userId){
+    public void sendPendingData(String uuid){
 		
-        LinkedList<StoreBasePacket> list = pendingDataMap.get(userId);
+        LinkedList<CustomerBasePacket> list = pendingDataMap.get(uuid);
         if (list == null) return;
 
         while(!list.isEmpty()){
-            StoreBasePacket data = list.removeFirst();
+            CustomerBasePacket data = list.removeFirst();
             System.out.println("pending : " + data);
-            sendDataToClient(userId, data);
+            sendDataToClient(uuid, data);
         }
     }    
     
-    public void addPendingData(StoreBasePacket msg){
+    public void addPendingData(CustomerBasePacket msg){
 		
-        LinkedList<StoreBasePacket> list = pendingDataMap.get(msg.getUserId());
+        LinkedList<CustomerBasePacket> list = pendingDataMap.get(msg.getUUID());
         if (list == null){
-                list = new LinkedList<StoreBasePacket>();
+                list = new LinkedList<CustomerBasePacket>();
         }
 
         if ( list.size() >= MAX_SIZE_QUEUE) {
@@ -99,7 +89,7 @@ public class DataQueue {
         }
 
         list.add(msg);
-        pendingDataMap.put(msg.getUserId()+"", list);
+        pendingDataMap.put(msg.getUUID()+"", list);
 
         System.err.println(
                         String.format("channel is not connected... pendingDataMap(%d)",
@@ -107,8 +97,9 @@ public class DataQueue {
                         );
     }
     
-    private void sendDataToClient(String storeId, StoreBasePacket msg){
-        template.convertAndSend("/topic/"+storeId, msg);    
+    private void sendDataToClient(String uuid, CustomerBasePacket msg){
+        System.err.println("template " + template);
+        template.convertAndSend("/topic/"+uuid, msg);    
     }
     
     private class PoolWorker extends Thread {
@@ -121,15 +112,18 @@ public class DataQueue {
                                 dataQueue.wait();
                         }catch(InterruptedException e){}
                     }
-                    StoreBasePacket order = (StoreBasePacket)dataQueue.removeFirst();
-                    List<String> keys = keymap.getKey(order.getUserId());
-                    System.err.println("keys " +  keys.size());
-                    if(keys!=null && keys.size() > 0){
-                        sendPendingData(order.getUserId());
-                        sendDataToClient(order.getUserId(), order);
+                    CustomerBasePacket data = (CustomerBasePacket)dataQueue.removeFirst();
+                    System.err.println(data.toString());
+                    String key = keymap.getKey(data.getUUID());
+                    System.err.println(key);
+                    if(key!=null && key != ""){
+                        System.err.println("Vao send pending");
+                        sendPendingData(data.getUUID()+ "");
+                        sendDataToClient(data.getUUID()+ "", data);
                     }
                     else{
-                        addPendingData(order);
+                        System.err.println("Vao add pending");
+                        addPendingData(data);
                     }
 
                 }

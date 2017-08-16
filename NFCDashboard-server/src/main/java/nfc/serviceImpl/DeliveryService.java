@@ -130,4 +130,20 @@ public class DeliveryService implements IDeliveryService{
             return false;
         }
     }
+    
+    public Delivery getDeliveryFromStore(int storeId){
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        Delivery delivery = new Delivery();
+        try{
+            Query query = session.createSQLQuery("SELECT d.* FROM fg_supplier_work sw inner join fg_delivery d on sw.delivery_id = d.delivery_id where sw.suppl_id = " + storeId + " limit 1")
+                            .addEntity(Delivery.class);
+            delivery = (Delivery) query.uniqueResult();
+            trans.commit();
+        }
+        catch(Exception ex){
+            trans.rollback();
+        }
+        return delivery;
+    }
 }

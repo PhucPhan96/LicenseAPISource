@@ -80,4 +80,7 @@ public class OrderDetail {
     public void setProd_amt(BigDecimal prod_amt) {
             this.prod_amt = prod_amt;
     }
+
+    
+    
 }

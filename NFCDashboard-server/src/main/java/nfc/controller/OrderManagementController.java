@@ -9,6 +9,13 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
+import nfc.messages.BaseResponse;
+import nfc.messages.OrderMessage;
+import nfc.messages.OrderStatusMessage;
+import nfc.messages.OrderStatusRequest;
+import nfc.messages.SpeedPayRequest;
+import nfc.messages.base.BasePacket;
+import nfc.messages.base.PaymentRequestPacket;
 
 import nfc.model.Code;
 import nfc.model.Group;
@@ -21,6 +28,8 @@ import nfc.service.ICodeService;
 import nfc.service.IOrderService;
 import nfc.service.IPosService;
 import nfc.serviceImpl.Security.JwtTokenUtil;
+import nfc.serviceImpl.common.SpeedPayInformation;
+import nfc.serviceImpl.common.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +39,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import nfc.serviceImpl.integration.OrderGateway;
+import nfc.serviceImpl.integration.OrderStatusGateway;
+import nfc.serviceImpl.payment.PaymentFactory;
+import nfc.socket.DataQueue;
+import org.json.simple.JSONObject;
 
 
 @RestController
@@ -44,6 +57,9 @@ public class OrderManagementController {
     private JwtTokenUtil jwtTokenUtil;
     @Autowired
     OrderGateway orderGateway;
+    @Autowired
+    OrderStatusGateway orderProcessGateway;
+    
     @Autowired
     IOrderService orderDAO;
     @Autowired
@@ -123,18 +139,6 @@ public class OrderManagementController {
 //        };
 //    }
     
-    @RequestMapping(value="/order/customer", method = RequestMethod.POST)
-    public void send(@RequestBody OrderView orderView) {
-    	try{ 
-            orderGateway.sendOrder(orderView);
-            //return "{\"result\":\"true\"}";
-    	}
-    	catch(Exception ex)
-    	{
-            System.out.println("Error " + ex.getMessage());
-            //return "{\"result\":\"false\"}";
-    	}
-    }
     
     @RequestMapping(value="order/pos",method=RequestMethod.GET)
 	public List<OrderView> getListOrderPosView(HttpServletRequest request){
@@ -145,12 +149,16 @@ public class OrderManagementController {
     }
         
     @RequestMapping(value="pos/detail/{id}",method=RequestMethod.GET)
-	public PosDetailView getListOrderPosDetailView(@PathVariable("id") String orderId ,HttpServletRequest request){
-		String token = request.getHeader(tokenHeader);
-        String username = jwtTokenUtil.getUsernameFromToken(token);
+    public PosDetailView getListOrderPosDetailView(@PathVariable("id") String orderId){
         PosDetailView  posDetailView = posDAO.getPosDetailView(orderId);
         return posDetailView;
     }
+        
+    @RequestMapping(value="orders/stores/{userId}",method=RequestMethod.GET)
+    public List<Order> getListOrderOfStoresUser(@PathVariable("userId") String userId){
+        return orderDAO.getListOrderAllStoreOfUser(userId);
+    }
+        
         
     @RequestMapping(value="order/search",method=RequestMethod.POST)
 	public @ResponseBody List<OrderView> getListOrderSearch(@RequestBody Map<String,String> data){
@@ -180,5 +188,80 @@ public class OrderManagementController {
         orderGateway.sendOrder(orderView);
         return orderGateway.receive().getOrder().getSuppl_id() + "";
     }
+    
+    
+    @RequestMapping(value="/order/customer", method = RequestMethod.POST)
+    public BaseResponse customerOrder(@RequestBody OrderView orderView) {
+        BaseResponse baseResponse = new BaseResponse();
+        orderGateway.sendOrder(orderView);
+        if(orderGateway.receive().getOrder().getOrder_status().equals(Utils.ORDER_FAILED)){
+            baseResponse.resultCode = BaseResponse.FAILED;
+        }
+        else{
+            baseResponse.resultCode = BaseResponse.OK;
+        }
+        return baseResponse;
+    }
+    
+    @RequestMapping(value="/order/update/request", method = RequestMethod.POST)
+    public BaseResponse send(@RequestBody OrderStatusRequest orderStatusRequest) {
+        BaseResponse baseResponse = new BaseResponse();
+        orderProcessGateway.sendOrderMessage(orderStatusRequest);
+        if(orderProcessGateway.receive().getStatus().equals(Utils.ORDER_FAILED)){
+            baseResponse.resultCode = BaseResponse.FAILED;
+        }
+        else{
+            baseResponse.resultCode = BaseResponse.OK;
+        }
+        return baseResponse;
+    }
+    
+    @RequestMapping(value="/order/payment/test", method = RequestMethod.GET)
+    public String paymentTest() {
+    	SpeedPayRequest speedPayRequest = new SpeedPayRequest();
+        speedPayRequest.setAmt("1000");
+        speedPayRequest.setCard_no("5562456078580705");
+        //speedPayRequest.setCard_serial("6267");
+        speedPayRequest.setCard_ymd("20170817");
+        speedPayRequest.setSell_nm("sadsad");
+        speedPayRequest.setProduct_nm("aaaa");
+        speedPayRequest.setBuyer_email("aa@gmail.com");
+        speedPayRequest.setBuyer_nm("chongsongyong");
+        speedPayRequest.setBuyer_phone_no("01023134519");
+        JSONObject resultPayment = PaymentFactory.getPaymentApi(SpeedPayInformation.PaymentAPI.SPEED_PAY).payment(speedPayRequest);
+        return resultPayment.toJSONString();
+    }
+    
+    @RequestMapping(value="/order/send/store/test", method = RequestMethod.GET)
+    public String sendOrderToStoreTest() {
+        Order order = new Order();
+        order.setSupplier_name("Store Example");
+        order.setOrder_amt(BigDecimal.valueOf(1000));
+        order.setOrder_date(new java.util.Date());
+        order.setOrder_id("2017081140000001");
+        order.setOrder_status(Utils.ORDER_PAID);
+        order.setProd_amt(BigDecimal.valueOf(900));
+        order.setTax_amt(BigDecimal.valueOf(12));
+        order.setDisc_amt(BigDecimal.valueOf(11));
+    	OrderMessage orderMessage = new OrderMessage("e56f5a26-2272-410d-9713-4e4a54093d88");
+        //orderMessage.setCustomer_name("Nguyen Van A");
+        orderMessage.setOrder(order);
+        DataQueue.getInstance().addDataQueue(orderMessage);
+        return "Okie";
+    }
+    
+    @RequestMapping(value="/order/send/status/test", method = RequestMethod.GET)
+    public String sendOrderStatusToStoreTest() {
+        OrderStatusMessage orderStatusMessage = new OrderStatusMessage("e56f5a26-2272-410d-9713-4e4a54093d88", BasePacket.PacketType.COMPLETE_ORDER);
+        orderStatusMessage.setStoreId(35);
+        orderStatusMessage.setOrderId("2017081140000001");
+        orderStatusMessage.setStatus(Utils.ORDER_COMPLETE);
+        DataQueue.getInstance().addDataQueue(orderStatusMessage);
+        DataQueue.getInstance().addDataQueue(orderStatusMessage);
+        return "Okie";
+    }
+    
+    
+   
     
 }
