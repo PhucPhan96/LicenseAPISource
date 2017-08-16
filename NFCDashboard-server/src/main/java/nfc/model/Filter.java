@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nfc.model;
 
+package nfc.model;
+import java.util.Date;
 /**
  *
  * @author Admin
@@ -13,10 +14,20 @@ public class Filter {
     int[] supplierId;
     String fromDate;
     String toDate;
-    String status;
+    String[] status;
+    String address;
+    String phone_num;
 
-    public String getStatus() {
+    public String[] getStatus() {
         return status;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getPhone_num() {
+        return phone_num;
     }
 
     public int[] getSupplierId() {

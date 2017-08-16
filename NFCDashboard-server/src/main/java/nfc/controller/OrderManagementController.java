@@ -192,7 +192,7 @@ public class OrderManagementController {
     @RequestMapping(value = "app/order/getlistorderbyfilter", method = RequestMethod.POST)
     public List<Order> getListOrderByFilter(@RequestBody Filter filter) {
         List<Order> lstOrder = new ArrayList<Order>();
-        lstOrder = orderDAO.fGetListOrderByFilter(filter.getSupplierId(), filter.getFromDate(), filter.getToDate(), filter.getStatus());
+        lstOrder = orderDAO.fGetListOrderByFilter(filter);
         return lstOrder;
     }
     
