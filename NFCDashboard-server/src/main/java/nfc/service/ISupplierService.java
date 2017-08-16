@@ -4,6 +4,8 @@ import java.util.List;
 import org.hibernate.Session;
 
 import nfc.model.Address;
+import nfc.model.Order;
+import nfc.model.PKModel.SupplierUserPK;
 import nfc.model.Supplier;
 import nfc.model.SupplierCategories;
 import nfc.model.SupplierImage;
@@ -54,5 +56,6 @@ public interface ISupplierService {
         List<Supplier> getListStore();
         List<SupplierView> getListSupplierByAddress(String longT, String latT);
         List<SupplierView> getListSupplierViewByTextInput(String text);
-        
+        List<Supplier> fGetListSupplierFromSuppIDManager(int supplId);
+        List<Supplier> fGetListSupplierFromUserName(String userID);
 }

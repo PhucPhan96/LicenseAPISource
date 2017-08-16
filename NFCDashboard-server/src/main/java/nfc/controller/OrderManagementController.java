@@ -17,6 +17,7 @@ import nfc.model.OrderDetail;
 import nfc.model.ViewModel.OrderView;
 import nfc.model.ViewModel.PosDetailView;
 import nfc.model.ViewModel.SupplierView;
+import nfc.model.Filter;
 import nfc.service.ICodeService;
 import nfc.service.IOrderService;
 import nfc.service.IPosService;
@@ -179,6 +180,12 @@ public class OrderManagementController {
         orderView.setOrder(order);
         orderGateway.sendOrder(orderView);
         return orderGateway.receive().getOrder().getSuppl_id() + "";
+    }
+    @RequestMapping(value = "app/order/getlistorderbyfilter", method = RequestMethod.POST)
+    public List<Order> getListOrderByFilter(@RequestBody Filter filter) {
+        List<Order> lstOrder = new ArrayList<Order>();
+        lstOrder = orderDAO.fGetListOrderByFilter(filter.getSupplierId(), filter.getFromDate(), filter.getToDate(), filter.getStatus());
+        return lstOrder;
     }
     
 }

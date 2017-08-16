@@ -59,6 +59,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.mysql.jdbc.Util;
 import java.math.BigDecimal;
 import nfc.model.SupplierBank;
+import nfc.model.PKModel.SupplierUserPK;
 
 import nfc.model.ViewModel.SupplierAttachFileView;
 
@@ -264,8 +265,10 @@ public class SupplierService implements ISupplierService {
 
         return lstSupplierView;
     }
+
     /**
-     * Lucas - get supplierWork by longitude and latitude. Give distance from my location to store.
+     * Lucas - get supplierWork by longitude and latitude. Give distance from my
+     * location to store.
      */
     public SupplierWork getSupplierByLongLat(String LongT, String LatT, String supplierID) {
         SupplierWork supplierWork = new SupplierWork();
@@ -299,7 +302,7 @@ public class SupplierService implements ISupplierService {
                 str.setVisit_pay(Boolean.parseBoolean(row[14] + ""));
                 str.setWd_end_hm(row[3] + "");
                 str.setWd_start_hm(row[2] + "");
-                str.setDelivery_id(Integer.parseInt(row[27]+""));
+                str.setDelivery_id(Integer.parseInt(row[27] + ""));
                 supplierWork = str;
             }
             trans.commit();
@@ -310,31 +313,47 @@ public class SupplierService implements ISupplierService {
         }
         return supplierWork;
     }
+
     /**
      * Lucas - get list of supplier by input text from searching bar.
      */
-    public List<SupplierView> getListSupplierViewByTextInput(String text){
+    public List<SupplierView> getListSupplierViewByTextInput(String text) {
         List<SupplierView> lstSupplierView = new ArrayList<SupplierView>();
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
-        String sqlQuery = "SELECT * FROM 82wafoodgo.fg_suppliers where supplier_name like '%" + text + "%' or short_name like '%" 
-                + text+ "%' or official_name like '%" + text +"%' or phone_no like '%" 
-                + text + "%' or mobile_no like '%" + text+ "%' or order_phone_no like '%" + text + "%'";
-        try{
+        String sqlQuery = "SELECT * FROM 82wafoodgo.fg_suppliers where supplier_name like '%" + text + "%' or short_name like '%"
+                + text + "%' or official_name like '%" + text + "%' or phone_no like '%"
+                + text + "%' or mobile_no like '%" + text + "%' or order_phone_no like '%" + text + "%'";
+        try {
             Query query = session.createSQLQuery(sqlQuery).addEntity(Supplier.class);;
             List<Supplier> list = (List<Supplier>) query.list();
             trans.commit();
-            for( Supplier supplier: list){
+            for (Supplier supplier : list) {
                 SupplierView supplierView = new SupplierView();
                 supplierView = getSupplierView1(supplier.getSuppl_id());
                 lstSupplierView.add(supplierView);
             }
-        } catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println("Loi Ne");
             System.out.println(ex);
         }
         return lstSupplierView;
     }
+
+    /**
+     * Lucas - Get list supplier from supplierID of manager
+     **/
+    public List<Supplier> fGetListSupplierFromSuppIDManager(int supplId) {
+        List<Supplier> lstSupplier = new ArrayList<Supplier>();
+        List<SupplierWork> lstSupplierWork = getListSupplierWorkOfManager(supplId);
+        for (SupplierWork supplierWork : lstSupplierWork) {
+            Supplier supplier = new Supplier();
+            supplier = getSupplier(supplierWork.getSuppl_id() + "");
+            lstSupplier.add(supplier);
+        }
+        return lstSupplier;
+    }
+
     public List<SupplierBank> getListSupplierBank(int supplId) {
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
@@ -1026,5 +1045,20 @@ public class SupplierService implements ISupplierService {
             trans.rollback();
         }
         return suppliers;
+    }
+    
+    /**
+     * Lucas - Get list supplier from userID
+     **/
+    public List<Supplier> fGetListSupplierFromUserName(String username){
+        List<Supplier> lstSupplier = new ArrayList<Supplier>();
+        List<SupplierUser> lstSupplierUser = new ArrayList<SupplierUser>();
+        lstSupplierUser = getListSupplierUser(username);
+        for (SupplierUser supplierUser: lstSupplierUser) {
+            Supplier supplier = new Supplier();
+            supplier = getSupplier(supplierUser.getSuppl_id()+"");
+            lstSupplier.add(supplier);
+        }
+        return lstSupplier;
     }
 }

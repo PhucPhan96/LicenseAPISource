@@ -26,6 +26,7 @@ import nfc.model.Supplier;
 import nfc.model.SupplierAddress;
 import nfc.model.SupplierCategories;
 import nfc.model.SupplierUser;
+import nfc.model.SupplierWork;
 import nfc.model.User;
 import nfc.model.ViewModel.OrderView;
 import nfc.model.ViewModel.SupplierAddressView;
@@ -231,8 +232,32 @@ public class OrderService implements IOrderService{
         trans.commit();
         return order;
     }
-        
-        
+    /**
+     * Lucas - Get List Order From SupplierID By Filter date, status (All Information)
+     **/
+    public List<Order> fGetListOrderByFilter(int[] suppliers, String fromDate, String toDate, String status) {
+        List<Order> lstOrder = new ArrayList<Order>();
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        for (int supplId : suppliers) {
+            System.out.println(supplId);
+            String sqlQuery = "SELECT * FROM 82wafoodgo.fg_orders where suppl_id = '" + supplId + "' and order_status = '" + status
+                    + "' and order_date >= '" + fromDate + "' and order_date <= '" + toDate + "';";
+            List<Order> lstOrderTemp = new ArrayList<Order>();
+            try {
+                Query query = session.createSQLQuery(sqlQuery).addEntity(Order.class);;
+                lstOrderTemp = (List<Order>) query.list();
+            } catch (Exception ex) {
+                System.out.println("Loi Ne");
+                System.out.println(ex);
+            }
+            for (Order order: lstOrderTemp) {
+                lstOrder.add(order);
+            }
+        }
+        trans.commit();
+        return lstOrder;
+    }    
     public Order getLastOrder(){
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();

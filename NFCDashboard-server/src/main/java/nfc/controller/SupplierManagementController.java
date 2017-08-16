@@ -8,6 +8,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.Charset;
 import nfc.model.Code;
+import nfc.model.PKModel.SupplierUserPK;
 import nfc.model.Supplier;
 import nfc.model.SupplierFavorite;
 import nfc.model.SupplierUser;
@@ -265,8 +266,6 @@ public class SupplierManagementController {
     //Lucas
     @RequestMapping(value = "app/suppliers/getlstbylocation/{long}/{lat}", method = RequestMethod.GET)
     public List<SupplierView> getListSupplierByLocation(@PathVariable("long") String longT, @PathVariable("lat") String lat) {
-        System.out.println(longT);
-        System.out.println(lat);
         List<SupplierView> suppliers = supplierDAO.getListSupplierByAddress(longT, lat);
         return suppliers;
     }
@@ -274,5 +273,18 @@ public class SupplierManagementController {
     public List<SupplierView> getListSupplierByTextInput(@RequestBody Search search) throws UnsupportedEncodingException {
         List<SupplierView> lstsuppliers = supplierDAO.getListSupplierViewByTextInput(search.getText());
         return lstsuppliers;
-    }  
+    }
+    @RequestMapping(value = "app/suppliers/getlstsupplierbymanagerid/{id}", method = RequestMethod.GET)
+    public List<Supplier> getListSupplierByManagerId(@PathVariable("id") int id) {
+        List<Supplier> lstSupplier = supplierDAO.fGetListSupplierFromSuppIDManager(id);
+        return lstSupplier;
+    }
+    @RequestMapping(value = "supplier/getlistupplierfromtoken", method = RequestMethod.GET)
+    public List<Supplier> getListSupplierByUserName(HttpServletRequest request) {
+        String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        System.out.println(username);
+        List<Supplier> lstSupplier = supplierDAO.fGetListSupplierFromUserName(username);
+        return lstSupplier;
+    }
 }
