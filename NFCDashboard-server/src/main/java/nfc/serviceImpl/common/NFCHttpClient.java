@@ -15,6 +15,7 @@ import org.apache.commons.httpclient.NameValuePair;;
  * @author Admin
  */
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -30,19 +31,20 @@ public class NFCHttpClient {
         return SingletonHelper.INSTANCE;
     }
     
-    public JSONObject  sendPost(JSONObject infoRequest, NameValuePair[] data){
+    public JSONObject  sendPost(JSONObject infoRequest, JSONObject json){
         JSONObject  response= new JSONObject ();
-        PostMethod post = new PostMethod(infoRequest.get("url").toString());
-        post.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        if(infoRequest.get("isAuthorization").toString() == "true" ){
-            post.setRequestHeader("Authorization", "bearer " + infoRequest.get("access_token").toString());
-        }
-        post.setQueryString(data);
-        try {
-//			InputStream in = post.getResponseBodyAsStream();
+        try{
+            PostMethod post = new PostMethod(infoRequest.get("url").toString());
+            StringRequestEntity requestEntity = new StringRequestEntity(json.toJSONString(),"application/json","UTF-8");
+            if(infoRequest.get("isAuthorization").toString() == "true" ){
+                post.addRequestHeader("Authorization", "bearer " + infoRequest.get("access_token").toString());
+            }
+            else{
+                post.setRequestEntity(requestEntity);
+            }
+            post.setRequestEntity(requestEntity);
             HttpClient client = new HttpClient();
             int statusCode = client.executeMethod(post);
-
             log.info("status code: " + statusCode);
             log.info("status text: " + HttpStatus.getStatusText(statusCode));
             log.info("response body: " + post.getResponseBodyAsString());

@@ -24,6 +24,12 @@ import java.util.Date;
 public class Utils {
     public static String appId="e6271952-d4b9-4ed3-b83b-63a56d47a713";
     public static String uploadUrl="/uploads/images/";
+    public static String ORDER_FAILED = "FAILED";
+    public static String ORDER_PAID = "PAID";
+    public static String ORDER_COOKING = "COOKING";
+    public static String ORDER_COMPLETE = "COMPLETE";
+    public static String ORDER_CANCEL = "CANCEL";
+    public static String ORDER_REQUEST_CANCEL = "REQUEST_CANCEL";
     
     public static long orderId = -1;
     
@@ -125,4 +131,10 @@ public class Utils {
         return passwordEncoder.encode(password);
     }
     
+    public static String getCurrentDateYYYYMMDD(){
+        Date date = new Date();
+        String modifiedDate= new SimpleDateFormat("yyyy-MM-dd").format(date);
+        return modifiedDate;
+    }
+        
 }

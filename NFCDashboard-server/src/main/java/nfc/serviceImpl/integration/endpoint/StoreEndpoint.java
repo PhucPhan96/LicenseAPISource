@@ -20,13 +20,13 @@ import org.springframework.messaging.Message;
 public class StoreEndpoint {
     
     public void processMessage(Message<OrderView> message) {
-        OrderView orderView =  message.getPayload();
-        OrderMessage orderMessage = new OrderMessage(orderView.getOrder().getSuppl_id());
-        orderMessage.setCustomer_name(orderView.getCustomer_name());
-        orderMessage.setLstOrderDetail(orderView.getLstOrderDetail());
-        orderMessage.setOrder(orderView.getOrder());
-        DataQueue.getInstance().addDataQueue(orderMessage);
-        System.err.println("order from store endpoint " + orderView.getClass());
+//        OrderView orderView =  message.getPayload();
+//        OrderMessage orderMessage = new OrderMessage(orderView.getOrder().getSuppl_id());
+//        orderMessage.setCustomer_name(orderView.getCustomer_name());
+//        orderMessage.setLstOrderDetail(orderView.getLstOrderDetail());
+//        orderMessage.setOrder(orderView.getOrder());
+//        DataQueue.getInstance().addDataQueue(orderMessage);
+//        System.err.println("order from store endpoint " + orderView.getClass());
         //logger.debug("In StoreEndpoint.  title='{}'  quantity={}  orderType={}", 
 //                new Object[] { order.getTitle(), 
 //                               order.getQuantity(),

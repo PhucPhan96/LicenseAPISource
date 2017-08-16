@@ -19,4 +19,5 @@ public interface IDeliveryService {
     boolean insertDeliveryView(DeliveryView deliveryView);
     boolean updateDeliveryView(DeliveryView deliveryView);
     boolean deleteDeliveryView(int deliveryId);
+    Delivery getDeliveryFromStore(int storeId);
 }

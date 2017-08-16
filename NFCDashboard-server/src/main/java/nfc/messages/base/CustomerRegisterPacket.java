@@ -9,19 +9,15 @@ package nfc.messages.base;
  *
  * @author Admin
  */
-public class RegisterPacket{
-    private String userId;
+public class CustomerRegisterPacket {
+    
+    private String uuid;
 
-    public String getUserId() {
-        return userId;
+    public String getUuid() {
+        return uuid;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
-
-    
-    
 }
-
-	

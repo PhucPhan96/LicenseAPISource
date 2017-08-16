@@ -5,12 +5,15 @@
  */
 package nfc.serviceImpl.integration.endpoint;
 
+import nfc.messages.OrderMessage;
 import nfc.model.Order;
 import nfc.model.PaymentOrderHistory;
 import nfc.model.ViewModel.OrderView;
 import nfc.service.IOrderService;
+import nfc.service.IUserService;
 import nfc.serviceImpl.common.SpeedPayInformation;
 import nfc.serviceImpl.payment.PaymentFactory;
+import nfc.socket.DataQueue;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,16 +24,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class PaymentServiceEndpoint {
     @Autowired
     private IOrderService orderDAO;
+    @Autowired
+    private IUserService userDAO;
     
     public OrderView payment(OrderView orderView)
     {
         JSONObject resultPayment = PaymentFactory.getPaymentApi(SpeedPayInformation.PaymentAPI.SPEED_PAY).payment(orderView.getPayment_request());
+        Order order = orderView.getOrder();
         if(resultPayment.containsKey("success") && resultPayment.get("success") == "true"){
-            Order order = orderView.getOrder();
             savePaymentOrderHistory(order.getOrder_id(), resultPayment);
             updatePaymentStatus(order.getOrder_id(), "PAID");
             order.setOrder_status("PAID");
+            sendOrderToStore(orderView);
         }   
+        else{
+            order.setOrder_status("FAILD");
+        }
         return orderView;
     }
     
@@ -48,4 +57,11 @@ public class PaymentServiceEndpoint {
         orderDAO.updateOrderStatus(orderId, status);
     }
     
+    private void sendOrderToStore(OrderView orderView){
+        OrderMessage orderMessage = new OrderMessage(userDAO.getUserIdOfSupplier(orderView.getOrder().getSuppl_id()));
+        //orderMessage.setCustomer_name(orderView.getCustomer_name());
+        orderMessage.setLstOrderDetail(orderView.getLstOrderDetail());
+        orderMessage.setOrder(orderView.getOrder());
+        DataQueue.getInstance().addDataQueue(orderMessage);
+    }
 }

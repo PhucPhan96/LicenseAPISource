@@ -19,5 +19,7 @@ public interface IOrderService {
         Order getLastOrder();
         boolean savePaymentOrderHistory(PaymentOrderHistory paymentOrderHistory);
         boolean updateOrderStatus(String orderId, String status);
+        PaymentOrderHistory getPaymentOrderHistory(String orderId);
+        List<Order> getListOrderAllStoreOfUser(String userId);
         List<Order> fGetListOrderByFilter(int[] suppliers, String fromDate, String toDate, String status);
 }

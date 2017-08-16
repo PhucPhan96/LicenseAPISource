@@ -20,20 +20,20 @@ public class OrderMessage extends StoreBasePacket{
     
     private Order order = new Order();
     private List<OrderDetail> lstOrderDetail = new ArrayList<OrderDetail>();
-    private String customer_name;
+    //private String customer_name;
     
     
-    public OrderMessage(int store_id) {
-        super(store_id);
+    public OrderMessage(String user_id) {
+        super(user_id);
         super.pkt_type = PacketType.ORDER_DATA;
     }   
 	
-    public String getCustomer_name() {
-            return customer_name;
-    }
-    public void setCustomer_name(String customer_name) {
-            this.customer_name = customer_name;
-    }
+//    public String getCustomer_name() {
+//            return customer_name;
+//    }
+//    public void setCustomer_name(String customer_name) {
+//            this.customer_name = customer_name;
+//    }
     public Order getOrder() {
             return order;
     }

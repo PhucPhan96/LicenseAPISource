@@ -103,7 +103,6 @@ public class AccountController {
         // Reload password post-security so we can generate token
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         final String token = jwtTokenUtil.generateToken(userDetails);
-
         // create user model
         JwtUser jwtUser = (JwtUser) userDetails;
         UserModelLogin user = new UserModelLogin();
@@ -120,6 +119,7 @@ public class AccountController {
         user.setRoles(roles);
         // Return the token
         JwtAuthenticationResponse response = new JwtAuthenticationResponse(token, user);
+        response.setExpired(jwtTokenUtil.getExpirationDateFromToken(token));
         response.setResultCode(BaseResponse.OK);
         return ResponseEntity.ok(response);
     }
