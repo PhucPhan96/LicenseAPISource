@@ -3,13 +3,15 @@ package nfc.model.ViewModel;
 import java.util.List;
 
 import nfc.model.AttachFile;
+import nfc.model.Supplier;
 import nfc.model.ThreadModel;
 import nfc.model.User;
 
 public class ThreadView {
 	private ThreadModel thread;
 	private String username;
-	private List<AttachFile> lstAttachFile;
+	private List<AttachFile> lstAttachFile;      
+        
 	public ThreadModel getThread() {
 		return thread;
 	}

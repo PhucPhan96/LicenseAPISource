@@ -3,6 +3,8 @@ package nfc.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import nfc.model.ThreadModel;
+import nfc.model.ViewModel.ThreadSupplierUser;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,5 +51,40 @@ public class ThreadManagementController {
     public @ResponseBody String deletePaymentView(@PathVariable("id") String threadId){
         String data = threadDAO.deleteThread(threadId) + "";
         return "{\"result\":\"" + data + "\"}";
+    }
+    @RequestMapping(value="thread/getListThreadStorebyID/{suppl_id}", method=RequestMethod.GET)
+    public  List<ThreadSupplierUser> getListThreadStorebyID(@PathVariable("suppl_id") int suppl_id){               
+        return threadDAO.getListThreadStorebyID(suppl_id);
+    }
+    @RequestMapping(value="thread/getListThreadStoreSmall/{suppl_id}/{thread_id}", method=RequestMethod.GET)
+    public  List<ThreadSupplierUser> getListThreadStoreSmall(@PathVariable("suppl_id") int suppl_id,
+            @PathVariable("thread_id") String thread_id){
+        System.out.print("list Smallthread" + threadDAO.getListThreadStoreSmall(suppl_id,thread_id));      
+        return threadDAO.getListThreadStoreSmall(suppl_id,thread_id);
+    }
+    @RequestMapping(value="thread/updateThreadSmall", method=RequestMethod.PUT)
+    public @ResponseBody String updateThreadSmall(@RequestBody nfc.model.Thread thread){
+        System.out.print("Vao Update Thread" +thread);
+        String data = threadDAO.updateThreadStoreSmall(thread) + "";          
+        return "{\"result\":\"" + data + "\"}";
+    }
+    @RequestMapping(value="thread/deleteThreadSmall/{threadId}", method=RequestMethod.DELETE)
+    public @ResponseBody String deleteThreadSmall(@PathVariable("threadId") String threadId){
+         System.out.print("Vao Delete Thread" +threadId);
+        String data = threadDAO.deleteThreadSmall(threadId) + "";
+        return "{\"result\":\"" + data + "\"}";
+    }
+    @RequestMapping(value="thread/insertThreadStore", method=RequestMethod.POST)
+    public @ResponseBody nfc.model.Thread insertThreadStore(@RequestBody nfc.model.Thread thread){
+        return threadDAO.insertThreadStore(thread);
+    }
+    @RequestMapping(value="thread/getBoardIDbySupllierID/{suppl_id}", method=RequestMethod.GET)
+    public  int getBoardIDbySupllierID(@PathVariable("suppl_id") int suppl_id){               
+        return threadDAO.getBoardIDbySupllierID(suppl_id);
+    }
+    @RequestMapping(value="thread/getListThreadNoReview/{suppl_id}", method=RequestMethod.GET)
+    public  List<ThreadSupplierUser> getListThreadNoReview(@PathVariable("suppl_id") int suppl_id){ 
+        System.out.print("Vao No Answer Thread"+ threadDAO.getListThreadNoReview(suppl_id));
+        return threadDAO.getListThreadNoReview(suppl_id);
     }
 }
