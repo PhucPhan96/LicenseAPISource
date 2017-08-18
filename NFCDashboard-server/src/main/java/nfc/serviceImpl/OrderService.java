@@ -30,6 +30,7 @@ import nfc.model.SupplierUser;
 import nfc.model.SupplierWork;
 import nfc.model.User;
 import nfc.model.Filter;
+import nfc.model.UserAddress;
 import nfc.model.ViewModel.OrderView;
 import nfc.model.ViewModel.SupplierAddressView;
 import nfc.model.ViewModel.UserAddressView;
@@ -302,7 +303,52 @@ public class OrderService implements IOrderService {
         trans.commit();
         return lstOrder;
     }
-
+    public List<Order> fGetListOrderByFilterWithAddress(Filter filter) {
+        List<Order> lstOrderTemp = new ArrayList<Order>();
+        List<Order> lstOrder = new ArrayList<Order>();
+        List<UserAddress> lstUserAddress = new ArrayList<UserAddress>();
+        lstUserAddress = userDAO.getListUserByAddress(filter.getAddress());
+        lstOrderTemp = fGetListOrderByFilter(filter);
+        for (UserAddress userAdd: lstUserAddress) {
+            for (Order order: lstOrderTemp) {
+                if (userAdd.getUser_id().equalsIgnoreCase(order.getUser_id())) {
+                    lstOrder.add(order);
+                }
+            }
+        }
+        return lstOrder;
+    }
+    public List<Order> fGetListOrderByFilterWithPhone(Filter filter) {
+        List<Order> lstOrderTemp = new ArrayList<Order>();
+        List<Order> lstOrder = new ArrayList<Order>();
+        List<User> lstUser = new ArrayList<User>();
+        lstUser = userDAO.getListUserByLikePhone(filter.getPhone_num());
+        lstOrderTemp = fGetListOrderByFilter(filter);
+        for (User user: lstUser) {
+            for (Order order: lstOrderTemp) {
+                if (user.getUser_id().equalsIgnoreCase(order.getUser_id())) {
+                    lstOrder.add(order);
+                }
+            }
+        }
+        return lstOrder;
+    }
+    public List<Order> fGetListOrderByFilterWithPhoneAndAddress(Filter filter) {
+        List<Order> lstOrderTemp = new ArrayList<Order>();
+        List<Order> lstOrder = new ArrayList<Order>();
+        List<User> lstUser = new ArrayList<User>();
+        lstUser = userDAO.getListUserByLikePhoneAndAddress(filter.getPhone_num(), filter.getAddress());
+        lstOrderTemp = fGetListOrderByFilter(filter);
+        for (User user: lstUser) {
+            for (Order order: lstOrderTemp) {
+                if (user.getUser_id().equalsIgnoreCase(order.getUser_id())) {
+                    lstOrder.add(order);
+                }
+            }
+        }
+        return lstOrder;
+    }
+    
     public Order getLastOrder() {
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();

@@ -189,11 +189,30 @@ public class OrderManagementController {
         orderGateway.sendOrder(orderView);
         return orderGateway.receive().getOrder().getSuppl_id() + "";
     }
+    //Lucas
     @RequestMapping(value = "app/order/getlistorderbyfilter", method = RequestMethod.POST)
     public List<Order> getListOrderByFilter(@RequestBody Filter filter) {
         List<Order> lstOrder = new ArrayList<Order>();
-        lstOrder = orderDAO.fGetListOrderByFilter(filter);
-        return lstOrder;
+        if (filter.getAddress().equalsIgnoreCase("") && filter.getPhone_num().equalsIgnoreCase("")) {
+            System.out.println("Khong Co Dia Chi Va SDT");
+            lstOrder = orderDAO.fGetListOrderByFilter(filter);
+            return lstOrder;
+        }
+        else{
+            if (filter.getAddress().equalsIgnoreCase("")) {
+                System.out.println("Khong Co Dia Chi");
+                lstOrder = orderDAO.fGetListOrderByFilterWithPhone(filter);
+                return lstOrder;
+            } else if (filter.getPhone_num().equalsIgnoreCase("")){
+                System.out.println("Khong Co SDT");
+                lstOrder = orderDAO.fGetListOrderByFilterWithAddress(filter);
+                return lstOrder;
+            } else{
+                System.out.println("Co Dia Chi Va SDT");
+                lstOrder = orderDAO.fGetListOrderByFilterWithPhoneAndAddress(filter);
+                return lstOrder;
+            }
+        }
     }
     
     

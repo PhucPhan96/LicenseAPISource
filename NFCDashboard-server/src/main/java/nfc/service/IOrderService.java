@@ -23,4 +23,7 @@ public interface IOrderService {
         PaymentOrderHistory getPaymentOrderHistory(String orderId);
         List<Order> getListOrderAllStoreOfUser(String userId);
         List<Order> fGetListOrderByFilter(Filter filter);
+        List<Order> fGetListOrderByFilterWithPhoneAndAddress(Filter filter);
+        List<Order> fGetListOrderByFilterWithPhone(Filter filter);
+        List<Order> fGetListOrderByFilterWithAddress(Filter filter);
 }
