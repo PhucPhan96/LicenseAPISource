@@ -33,10 +33,8 @@ public class TextManagementController {
     }
 
     @RequestMapping(value = "texts/getListTextByType/{text_type}", method = RequestMethod.GET)
-    public List<Text> getListTextByType(@PathVariable("text_type") String text_type) {
-        System.out.println("Value getListTextByType:");
+    public List<Text> getListTextByType(@PathVariable("text_type") String text_type) {   
         List<Text> texts = textDAO.getListTextByType(text_type);
-
         return texts;
     }
 
@@ -57,8 +55,7 @@ public class TextManagementController {
     @RequestMapping(value = "texts/insert", method = RequestMethod.POST)
     public @ResponseBody String insertText(@RequestBody Text text) {
         System.out.println("Value insertText:");
-        String data = textDAO.insertText(text) + "";
-         
+        String data = textDAO.insertText(text) + "";         
         return "{\"result\":\"" + data + "\"}";
         
     } 
