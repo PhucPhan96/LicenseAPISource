@@ -34,6 +34,7 @@ public class Product {
     private String prod_origins;
     private int min_order_qty;
     private Boolean is_used;
+    private String calculatedDate;
     /*private Category category;
     @ManyToOne
     @JoinColumn(name="cate_id")
@@ -47,6 +48,14 @@ public class Product {
     public void setCategory(Category category) {
             this.category = category;
     }*/
+
+    public String getCalculatedDate() {
+        return calculatedDate;
+    }
+
+    public void setCalculatedDate(String calculatedDate) {
+        this.calculatedDate = calculatedDate;
+    }
 
     /*private Set<AttachFile> attachFiles = new HashSet<AttachFile>();
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
