@@ -13,6 +13,7 @@ import nfc.model.SupplierUser;
 import nfc.model.SupplierWork;
 import nfc.model.SupplierFavorite;
 import nfc.model.ViewModel.BillHistory;
+import nfc.model.ViewModel.BillSupplierInformation;
 import nfc.model.ViewModel.SupplierAppView;
 import nfc.model.ViewModel.SupplierView;
 
@@ -58,4 +59,6 @@ public interface ISupplierService {
         List<SupplierView> getListSupplierViewByTextInput(String text);
         List<Supplier> fGetListSupplierFromSuppIDManager(int supplId);
         List<Supplier> fGetListSupplierFromUserName(String userID);
+        
+        BillSupplierInformation getBillSupplierInformation(String userId);
 }

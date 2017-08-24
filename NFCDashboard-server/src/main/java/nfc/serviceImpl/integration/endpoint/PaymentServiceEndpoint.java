@@ -12,6 +12,7 @@ import nfc.model.ViewModel.OrderView;
 import nfc.service.IOrderService;
 import nfc.service.IUserService;
 import nfc.serviceImpl.common.SpeedPayInformation;
+import nfc.serviceImpl.common.Utils;
 import nfc.serviceImpl.payment.PaymentFactory;
 import nfc.socket.DataQueue;
 import org.json.simple.JSONObject;
@@ -38,7 +39,10 @@ public class PaymentServiceEndpoint {
             sendOrderToStore(orderView);
         }   
         else{
-            order.setOrder_status("FAILD");
+            System.err.println("payment failed");
+            //order.setOrder_status("FAILD");
+            orderDAO.updateOrderStatus(order.getOrder_id(), "PAYFAIL");
+            sendOrderToStore(orderView);
         }
         return orderView;
     }

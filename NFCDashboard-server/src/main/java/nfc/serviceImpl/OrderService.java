@@ -17,6 +17,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.core.ObjectCodec;
+import nfc.messages.filters.BillRequestFilter;
 import nfc.messages.filters.StatisticRequestFilter;
 
 import nfc.model.Category;
@@ -47,8 +48,6 @@ public class OrderService implements IOrderService{
     private ISupplierService supplierDAO;
 
     private SessionFactory sessionFactory;
-    private long orderId = -1;
-    private String dateGenerateOrderId;
 
     public void setSessionFactory(SessionFactory sessionFactory) {
             this.sessionFactory = sessionFactory;
@@ -62,12 +61,12 @@ public class OrderService implements IOrderService{
         }
     }
     public boolean insertOrderView(OrderView orderView) {
+        
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
         try
         {
-            
-            String orderIdDesc = generateOrderId();
+            String orderIdDesc = generateOrderId(session);
             orderView.getOrder().setOrder_id(orderIdDesc);
             setupCustomerInformationForOrder(session, orderView);
             session.save(orderView.getOrder());
@@ -91,22 +90,23 @@ public class OrderService implements IOrderService{
     }
     
     private void insertCustomer(Session session, Customer customer){
-        if(!isCustomerExist(session, customer)){
+        Customer cus = getCustomerExist(session, customer);
+        if(cus == null){
             session.save(customer);
+        }
+        else{
+            customer = cus;
         }
     }
     
-    private boolean isCustomerExist(Session session, Customer customer){
+    private Customer getCustomerExist(Session session, Customer customer){
         Criteria criteria = session.createCriteria(Customer.class);
         criteria.add(Restrictions.eq("customer_phone", customer.getCustomer_phone()));
         criteria.add(Restrictions.eq("customer_email", customer.getCustomer_email()));
         criteria.add(Restrictions.eq("customer_address", customer.getCustomer_address()));
         criteria.add(Restrictions.eq("customer_name", customer.getCustomer_name()));
         Customer cus = (Customer)criteria.uniqueResult();
-        if(cus == null){
-            return false;
-        }
-        return true;
+        return cus;
     }
 
     public boolean updateOrderView(OrderView orderView) {
@@ -297,40 +297,35 @@ public class OrderService implements IOrderService{
         trans.commit();
         return lstOrder;
     }    
-    public Order getLastOrder(){
-        Session session = this.sessionFactory.getCurrentSession();
-        Transaction trans = session.beginTransaction();
+    public Order getLastOrder(Session session){
+        //Session session = this.sessionFactory.getCurrentSession();
+        //Transaction trans = session.beginTransaction();
         Order order = new Order();
         try{
-            Query query = session.createSQLQuery("SELECT * FROM 82wafoodgo.fg_orders order by order_id desc limit 1")
+            Query query = session.createSQLQuery("SELECT * FROM 82wafoodgo.fg_orders order by order_date desc limit 1")
                           .addEntity(Order.class);
             order = (Order) query.uniqueResult();
-            trans.commit();
+            //trans.commit();
         }
         catch(Exception ex){
-            trans.rollback();
+            //trans.rollback();
+            System.err.println("Error last order " + ex.getMessage());
         }
         return order;
     }
     
-    public String generateOrderId(){
-        SimpleDateFormat df = new SimpleDateFormat("yymmdd");
+    public String generateOrderId(Session session){
+        long orderId = -1;
+        SimpleDateFormat df = new SimpleDateFormat("yyMMdd");
         String orderIdGenerated = df.format(new java.util.Date());
-        if(orderId == -1){
-            Order lastOrder = getLastOrder();
-            if(lastOrder != null && lastOrder.getOrder_id().substring(0, 6) == orderIdGenerated){
-                orderId = Long.parseLong(lastOrder.getOrder_id().substring(6));
-                dateGenerateOrderId = orderIdGenerated;
-            }
-            else{
-                orderId = 0;
-                dateGenerateOrderId = orderIdGenerated;
-            }
-            
+        Order lastOrder = getLastOrder(session);
+        System.err.println(lastOrder.getOrder_id().substring(0, 6));
+        System.err.println(orderIdGenerated);
+        if(lastOrder != null && lastOrder.getOrder_id().substring(0, 6).equals(orderIdGenerated)){
+            orderId = Long.parseLong(lastOrder.getOrder_id().substring(6));
         }
-        else if(dateGenerateOrderId != orderIdGenerated){
+        else{
             orderId = 0;
-            dateGenerateOrderId = orderIdGenerated;
         }
         orderId = orderId + 1;
         if(orderId < 10){
@@ -409,7 +404,7 @@ public class OrderService implements IOrderService{
         Transaction trans = session.beginTransaction();
         List<Order> orders = new ArrayList<>();
         try{
-            Query query = session.createSQLQuery("select o.*, s.supplier_name from fg_orders o inner join fg_supplier_users su on o.suppl_id = su.suppl_id inner join fg_suppliers s on s.suppl_id = su.suppl_id where su.user_id='" + userId + "' and order_date >= current_date() order by o.order_date desc")
+            Query query = session.createSQLQuery("select o.*, s.supplier_name, s.address from fg_orders o inner join fg_supplier_users su on o.suppl_id = su.suppl_id inner join fg_suppliers s on s.suppl_id = su.suppl_id where su.user_id='" + userId + "' and order_date >= current_date() order by o.order_date desc")
                                   .setResultTransformer(Transformers.aliasToBean(Order.class));
             orders = (List<Order>) query.list();
             trans.commit();
@@ -436,8 +431,26 @@ public class OrderService implements IOrderService{
         Transaction trans = session.beginTransaction();
         List<Order> orders = new ArrayList<>();
         try{
-            Query query = session.createSQLQuery("select * from fg_orders where find_in_set(suppl_id,'" + filter.getStoreIds() + "') and order_date >= '" + Utils.convertDateToString(filter.getDateFrom())+ "' and order_date <= '" + Utils.convertDateToString(filter.getDateTo())+ "'")
-                                  .setResultTransformer(Transformers.aliasToBean(Order.class));
+            Query query = session.createSQLQuery("select * from fg_orders where find_in_set(suppl_id,'" + filter.getStoreIds() + "') and order_date >= '" + Utils.convertDateToString(filter.getDateFrom())+ "' and order_date <= '" + Utils.convertDateToString(filter.getDateTo())+ "' and (order_status = 'CANCEL' or order_status = 'COMPLETE') order by order_date")
+                            .setResultTransformer(Transformers.aliasToBean(Order.class));
+            orders = (List<Order>) query.list();
+            trans.commit();
+        }
+        catch(Exception ex){
+            System.err.println("error " + ex.getMessage());
+            trans.rollback();
+        }
+        return orders;
+    }
+    
+    
+    public List<Order> getListOrderOfBill(BillRequestFilter filter){
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        List<Order> orders = new ArrayList<>();
+        try{
+            Query query = session.createSQLQuery("select o.*, s.supplier_name from fg_orders o inner join fg_supplier_users su on o.suppl_id = su.suppl_id inner join fg_suppliers s on s.suppl_id = su.suppl_id where su.user_id = '" + filter.getUserId() + "' and order_date >= '" + filter.getDateFrom()+ "' and order_date <= '" + filter.getDateTo()+ "' and order_status = 'COMPLETE'")
+                            .setResultTransformer(Transformers.aliasToBean(Order.class));
             orders = (List<Order>) query.list();
             trans.commit();
         }

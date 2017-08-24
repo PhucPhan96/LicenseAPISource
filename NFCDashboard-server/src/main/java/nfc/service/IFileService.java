@@ -10,4 +10,5 @@ public interface IFileService {
 	boolean saveFile(AttachFile file);
 	AttachFile getAttachFile(int fileId);
 	AttachFile getAttachFileWithSession(int fileId,Session session);
+        boolean deleteFile(String url);
 }

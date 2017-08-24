@@ -34,6 +34,8 @@ public class Order {
     private String phone_uuid;
     private String supplier_name;
     private String customer_id;
+    private BigDecimal online_fee;
+    private BigDecimal discount_coupon;
     /*private List<OrderDetail> orderDetails;
     public List<OrderDetail> getOrderDetails() {
             return orderDetails;
@@ -171,7 +173,24 @@ public class Order {
     public void setCustomer_id(String customer_id) {
         this.customer_id = customer_id;
     }
-        
+
+    @Column(name="online_fee")
+    public BigDecimal getOnline_fee() {
+        return online_fee;
+    }
+
+    public void setOnline_fee(BigDecimal online_fee) {
+        this.online_fee = online_fee;
+    }
+
+    @Column(name="discount_coupon")
+    public BigDecimal getDiscount_coupon() {
+        return discount_coupon;
+    }
+
+    public void setDiscount_coupon(BigDecimal discount_coupon) {
+        this.discount_coupon = discount_coupon;
+    }
     
         
 }

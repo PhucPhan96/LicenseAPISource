@@ -286,4 +286,5 @@ public class SupplierManagementController {
         List<Supplier> lstSupplier = supplierDAO.fGetListSupplierFromUserName(username);
         return lstSupplier;
     }
+    
 }

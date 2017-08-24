@@ -61,4 +61,7 @@
          <bean id="textDAO" class="nfc.serviceImpl.TextService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
+         <bean id="discountDAO" class="nfc.serviceImpl.DiscountService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
 </beans>

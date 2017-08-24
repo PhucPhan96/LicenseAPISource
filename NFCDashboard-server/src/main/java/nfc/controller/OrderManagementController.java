@@ -200,6 +200,7 @@ public class OrderManagementController {
     
     @RequestMapping(value="/order/customer", method = RequestMethod.POST)
     public BaseResponse customerOrder(@RequestBody OrderView orderView) {
+        System.err.println("Vao order view ne");
         BaseResponse baseResponse = new BaseResponse();
         orderGateway.sendOrder(orderView);
         if(orderGateway.receive().getOrder().getOrder_status().equals(Utils.ORDER_FAILED)){
@@ -242,20 +243,22 @@ public class OrderManagementController {
     
     @RequestMapping(value="/order/send/store/test", method = RequestMethod.GET)
     public String sendOrderToStoreTest() {
-        Order order = new Order();
-        order.setSupplier_name("Store Example");
-        order.setOrder_amt(BigDecimal.valueOf(1000));
-        order.setOrder_date(new java.util.Date());
-        order.setOrder_id("2017081140000001");
-        order.setOrder_status(Utils.ORDER_PAID);
-        order.setProd_amt(BigDecimal.valueOf(900));
-        order.setTax_amt(BigDecimal.valueOf(12));
-        order.setDisc_amt(BigDecimal.valueOf(11));
-    	OrderMessage orderMessage = new OrderMessage("e56f5a26-2272-410d-9713-4e4a54093d88");
-        //orderMessage.setCustomer_name("Nguyen Van A");
-        orderMessage.setOrder(order);
-        DataQueue.getInstance().addDataQueue(orderMessage);
-        return "Okie";
+        String data = "10%";
+        return data.substring(0, data.lastIndexOf("%"));
+//        Order order = new Order();
+//        order.setSupplier_name("Store Example");
+//        order.setOrder_amt(BigDecimal.valueOf(1000));
+//        order.setOrder_date(new java.util.Date());
+//        order.setOrder_id("2017081140000001");
+//        order.setOrder_status(Utils.ORDER_PAID);
+//        order.setProd_amt(BigDecimal.valueOf(900));
+//        order.setTax_amt(BigDecimal.valueOf(12));
+//        order.setDisc_amt(BigDecimal.valueOf(11));
+//    	OrderMessage orderMessage = new OrderMessage("e56f5a26-2272-410d-9713-4e4a54093d88");
+//        //orderMessage.setCustomer_name("Nguyen Van A");
+//        orderMessage.setOrder(order);
+//        DataQueue.getInstance().addDataQueue(orderMessage);
+//        return "Okie";
     }
     
     @RequestMapping(value="/order/send/status/test", method = RequestMethod.GET)

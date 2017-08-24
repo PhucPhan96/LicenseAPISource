@@ -2,6 +2,7 @@ package nfc.model.ViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import nfc.messages.SpeedPayRequest;
 import nfc.messages.base.PaymentRequestPacket;
 import nfc.model.Customer;
 
@@ -12,7 +13,7 @@ public class OrderView {
     
     private Order order = new Order();
     private List<OrderDetail> lstOrderDetail = new ArrayList<OrderDetail>();
-    private PaymentRequestPacket payment_request;
+    private SpeedPayRequest payment_request;
     private Customer customer;
 
     public Customer getCustomer() {
@@ -38,11 +39,11 @@ public class OrderView {
         this.lstOrderDetail = lstOrderDetail;
     }
         
-    public PaymentRequestPacket getPayment_request() {
+    public SpeedPayRequest getPayment_request() {
         return payment_request;
     }
 
-    public void setPayment_request(PaymentRequestPacket payment_request) {
+    public void setPayment_request(SpeedPayRequest payment_request) {
         this.payment_request = payment_request;
     }
     

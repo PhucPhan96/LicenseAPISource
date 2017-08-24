@@ -60,8 +60,10 @@ import com.mysql.jdbc.Util;
 import java.math.BigDecimal;
 import nfc.model.SupplierBank;
 import nfc.model.PKModel.SupplierUserPK;
+import nfc.model.ViewModel.BillSupplierInformation;
 
 import nfc.model.ViewModel.SupplierAttachFileView;
+import org.hibernate.transform.Transformers;
 
 public class SupplierService implements ISupplierService {
 
@@ -1073,5 +1075,23 @@ public class SupplierService implements ISupplierService {
 //            lstSupplier.add(supplier);
 //        }
 //        return lstSupplier;
+    }
+    
+    public BillSupplierInformation getBillSupplierInformation(String userId){
+        
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        BillSupplierInformation billSupplierInformation = new BillSupplierInformation();
+        try{
+            Query query = session.createSQLQuery("select s.supplier_name, s.address, CONCAT_WS(' ', u.first_name, u.middle_name, u.last_name) as ownername from fg_suppliers s join fg_supplier_users su on  s.suppl_id = su.suppl_id join fg_users u on su.user_id = u.user_id where u.user_id = '" + userId + "' limit 1")
+                            .setResultTransformer(Transformers.aliasToBean(BillSupplierInformation.class));
+            billSupplierInformation = (BillSupplierInformation) query.uniqueResult();
+            trans.commit();
+        }
+        catch(Exception ex){
+            System.err.println("error " + ex.getMessage());
+            trans.rollback();
+        }
+        return billSupplierInformation;
     }
 }

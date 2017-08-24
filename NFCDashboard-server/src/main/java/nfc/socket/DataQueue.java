@@ -123,7 +123,7 @@ public class DataQueue {
                     }
                     StoreBasePacket order = (StoreBasePacket)dataQueue.removeFirst();
                     List<String> keys = keymap.getKey(order.getUserId());
-                    System.err.println("keys " +  keys.size());
+                    System.err.println(keys);
                     if(keys!=null && keys.size() > 0){
                         sendPendingData(order.getUserId());
                         sendDataToClient(order.getUserId(), order);

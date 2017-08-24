@@ -34,7 +34,7 @@ public class SpeedPayPayment implements IPayment{
         
     public JSONObject payment(PaymentRequestPacket paymentRequest) {
         SpeedPayRequest speedPayRequest = (SpeedPayRequest) paymentRequest;
-        
+        System.err.println("infor " + speedPayRequest.getCard_no());
         JSONObject requestData = new JSONObject();
         requestData.put("card_no", speedPayRequest.getCard_no());
         requestData.put("card_ymd", speedPayRequest.getCard_ymd());

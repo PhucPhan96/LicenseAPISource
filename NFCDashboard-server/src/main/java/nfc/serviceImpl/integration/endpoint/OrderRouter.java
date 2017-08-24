@@ -15,6 +15,7 @@ import nfc.serviceImpl.common.Utils;
 public class OrderRouter {
     
     public String routeOrder(OrderView orderView) {
+        System.err.println("vao nay chu");
         String result = "paymentOutputChannel"; 
         if(orderView.getOrder().getOrder_status().trim().equals(Utils.ORDER_FAILED)){
             result = "paymentOutputChannel";
