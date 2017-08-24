@@ -64,4 +64,10 @@
          <bean id="discountDAO" class="nfc.serviceImpl.DiscountService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
+          <bean id="productStoreDAO" class="nfc.serviceImpl.ProductStoreService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
+         <bean id="businessDayDAO" class="nfc.serviceImpl.BusinessDayService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
 </beans>
