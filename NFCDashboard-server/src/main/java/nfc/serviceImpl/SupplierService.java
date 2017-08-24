@@ -58,12 +58,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.mysql.jdbc.Util;
 import java.math.BigDecimal;
+import nfc.model.Mail;
 import nfc.model.SupplierBank;
 import nfc.model.PKModel.SupplierUserPK;
 import nfc.model.ViewModel.BillSupplierInformation;
 
 import nfc.model.ViewModel.SupplierAttachFileView;
 import org.hibernate.transform.Transformers;
+import nfc.service.IMailService;
 
 public class SupplierService implements ISupplierService {
 
@@ -84,7 +86,8 @@ public class SupplierService implements ISupplierService {
     private ICategoryService categoryDAO;
     @Autowired
     private IBoardService boardDAO;
-
+    @Autowired
+    private IMailService mailDAO;
     private SessionFactory sessionFactory;
 
     public void setSessionFactory(SessionFactory sessionFactory) {
@@ -355,7 +358,17 @@ public class SupplierService implements ISupplierService {
         }
         return lstSupplier;
     }
-
+    /**
+     * Lucas - Send email to sysadmin
+     **/
+    public String fSendMailToSysAdmin(Mail mail){
+        String fromAdd = mail.getFromAdd();
+        String toAdd = mail.getToAdd();
+        String title = mail.getTitle();
+        String content = mail.getContent();
+        String result = mailDAO.sendSimpleMail(fromAdd, toAdd, title, content) + "";
+        return result;
+    }
     public List<SupplierBank> getListSupplierBank(int supplId) {
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();

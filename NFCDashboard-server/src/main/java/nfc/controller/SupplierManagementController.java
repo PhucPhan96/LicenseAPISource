@@ -8,6 +8,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.Charset;
 import nfc.model.Code;
+import nfc.model.Mail;
 import nfc.model.PKModel.SupplierUserPK;
 import nfc.model.Supplier;
 import nfc.model.SupplierFavorite;
@@ -20,6 +21,7 @@ import nfc.service.ISupplierService;
 import nfc.serviceImpl.Security.JwtTokenUtil;
 import nfc.serviceImpl.common.Utils;
 import nfc.model.Search;
+import nfc.service.IMailService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,7 +43,8 @@ public class SupplierManagementController {
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
-
+    @Autowired
+    private IMailService mailDAO;
     @RequestMapping(value = "supplier", method = RequestMethod.GET)
     public List<Supplier> getSupplier() {
         List<Supplier> supplier = supplierDAO.getListSupplier();
@@ -258,8 +261,7 @@ public class SupplierManagementController {
     }
     //Lucas
     @RequestMapping(value = "supplier/changeOrderPhoneNumber", method = RequestMethod.POST)
-    public @ResponseBody
-    String ChangePasswordUser(@RequestBody String[] temp) {
+    public @ResponseBody String ChangePasswordUser(@RequestBody String[] temp) {
         String data = supplierDAO.ChangeOrderPhoneNumberSupplier(temp[0], temp[1]) + "";
         return "{\"result\":\"" + data + "\"}";
     }
@@ -268,6 +270,14 @@ public class SupplierManagementController {
     public List<SupplierView> getListSupplierByLocation(@PathVariable("long") String longT, @PathVariable("lat") String lat) {
         List<SupplierView> suppliers = supplierDAO.getListSupplierByAddress(longT, lat);
         return suppliers;
+    }
+    // Lucas - Send Mail
+    @RequestMapping(value = "app/suppliers/sendmailfromsuppliertonfc", method = RequestMethod.POST)
+    public @ResponseBody String fSendEmailToSysAdmin(@RequestBody Mail mail) {
+        System.out.println("Vao Ne");
+        String data = supplierDAO.fSendMailToSysAdmin(mail);
+        System.out.println(data);
+        return "{\"result\":\"" + data + "\"}";
     }
     @RequestMapping(value = "app/suppliers/searchsupplierbytextinput", method = RequestMethod.POST)
     public List<SupplierView> getListSupplierByTextInput(@RequestBody Search search) throws UnsupportedEncodingException {

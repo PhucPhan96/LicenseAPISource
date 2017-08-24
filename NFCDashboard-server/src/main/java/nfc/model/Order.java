@@ -43,6 +43,7 @@ public class Order {
     public void setOrderDetails(List<OrderDetail> orderDetails) {
             this.orderDetails = orderDetails;
     }*/
+    
     @Id
     @Column(name="order_id")
     //@GeneratedValue
@@ -172,17 +173,7 @@ public class Order {
 
     public void setCustomer_id(String customer_id) {
         this.customer_id = customer_id;
-    }
-
-    @Column(name="online_fee")
-    public BigDecimal getOnline_fee() {
-        return online_fee;
-    }
-
-    public void setOnline_fee(BigDecimal online_fee) {
-        this.online_fee = online_fee;
-    }
-
+    }    
     @Column(name="discount_coupon")
     public BigDecimal getDiscount_coupon() {
         return discount_coupon;
@@ -192,5 +183,12 @@ public class Order {
         this.discount_coupon = discount_coupon;
     }
     
-        
+    @Column(name="online_fee")
+    public BigDecimal getOnline_fee() {
+        return online_fee;
+    }
+    
+    public void setOnline_fee(BigDecimal online_fee) {
+        this.online_fee = online_fee;
+    }
 }

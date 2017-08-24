@@ -70,4 +70,7 @@
          <bean id="businessDayDAO" class="nfc.serviceImpl.BusinessDayService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
+         <bean id="bannerDAO" class="nfc.serviceImpl.BannerService">
+	     <property name="sessionFactory" ref="mySessionFactory" />
+	 </bean>
 </beans>

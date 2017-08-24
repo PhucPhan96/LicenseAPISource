@@ -33,4 +33,7 @@ public interface IUserService {
         List<User> getListUserOfRole(int roleId);
         String getUserIdOfSupplier(int supplierId);
         List<User> getListUserByPhoneNumber( String phoneNum);
+        List<User> getListUserByLikePhone(String phone);
+        List<UserAddress> getListUserByAddress(String address);
+        List<User> getListUserByLikePhoneAndAddress(String phone, String address);
 }

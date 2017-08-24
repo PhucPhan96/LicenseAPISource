@@ -4,6 +4,7 @@ import java.util.List;
 import org.hibernate.Session;
 
 import nfc.model.Address;
+import nfc.model.Mail;
 import nfc.model.Order;
 import nfc.model.PKModel.SupplierUserPK;
 import nfc.model.Supplier;
@@ -61,4 +62,5 @@ public interface ISupplierService {
         List<Supplier> fGetListSupplierFromUserName(String userID);
         
         BillSupplierInformation getBillSupplierInformation(String userId);
+        String fSendMailToSysAdmin(Mail mail);
 }
