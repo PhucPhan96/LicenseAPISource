@@ -36,6 +36,8 @@ import nfc.model.UserAddress;
 import nfc.model.ViewModel.OrderView;
 import nfc.model.ViewModel.SupplierAddressView;
 import nfc.model.ViewModel.UserAddressView;
+import nfc.model.ViewModel.VATReport;
+import nfc.model.ViewModel.VATReportInformation;
 import nfc.service.IOrderService;
 import nfc.service.ISupplierService;
 import nfc.service.IUserService;
@@ -501,6 +503,40 @@ public class OrderService implements IOrderService {
             trans.rollback();
         }
         return orders;
+    }
+    
+    public VATReport getVATReport(BillRequestFilter filter){
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        VATReport report = new VATReport();
+        try{
+            Query query = session.createSQLQuery("select IFNULL(sum(o.prod_amt), 0) as prod_amt, IFNULL(sum(o.tax_amt), 0) as tax_amt from fg_orders o inner join fg_supplier_users su on o.suppl_id = su.suppl_id where su.user_id = '" + filter.getUserId() + "' and order_date >= '" + filter.getDateFrom()+ "' and order_date <= '" + filter.getDateTo()+ "' and order_status = 'COMPLETE'")
+                            .setResultTransformer(Transformers.aliasToBean(VATReport.class));
+            report = (VATReport) query.uniqueResult();
+            trans.commit();
+        }
+        catch(Exception ex){
+            System.err.println("error " + ex.getMessage());
+            trans.rollback();
+        }
+        return report;
+    }
+    
+    public List<VATReportInformation> getListVATReportFromOrder(BillRequestFilter filter){
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        List<VATReportInformation> vatReports = new ArrayList<>();
+        try{
+            Query query = session.createSQLQuery("select o.order_date, o.prod_amt, o.disc_amt, s.supplier_name, (select a.address from fg_user_address ud join fg_address a on ud.addr_id = a.addr_id where ud.user_id = o.user_id and ud.is_deliver = 1 limit 1) as  user_address, (select c.customer_address from fg_customers c where c.customer_id = o.customer_id) as customer_address from fg_orders o inner join fg_supplier_users su on o.suppl_id = su.suppl_id inner join fg_suppliers s on s.suppl_id = su.suppl_id where su.user_id = '" + filter.getUserId() + "' and order_date >= '" + filter.getDateFrom()+ "' and order_date <= '" + filter.getDateTo()+ "' and order_status = 'COMPLETE'")
+                            .setResultTransformer(Transformers.aliasToBean(VATReportInformation.class));
+            vatReports = (List<VATReportInformation>) query.list();
+            trans.commit();
+        }
+        catch(Exception ex){
+            System.err.println("error " + ex.getMessage());
+            trans.rollback();
+        }
+        return vatReports;
     }
     
 }
