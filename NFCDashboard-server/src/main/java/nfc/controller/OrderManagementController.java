@@ -16,6 +16,7 @@ import nfc.messages.OrderStatusRequest;
 import nfc.messages.SpeedPayRequest;
 import nfc.messages.base.BasePacket;
 import nfc.messages.base.PaymentRequestPacket;
+import nfc.messages.filters.BillRequestFilter;
 import nfc.messages.filters.StatisticRequestFilter;
 
 import nfc.model.Code;
