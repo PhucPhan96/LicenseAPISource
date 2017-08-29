@@ -50,7 +50,7 @@ public class Category{
 		return cate_img_id;
 	}
 	public void setCate_img_id(Integer cate_img_id) {
-		this.cate_img_id = cate_img_id;
+            this.cate_img_id = cate_img_id;
 	}
 	@Column(name="cate_name")
 	public String getCate_name() {

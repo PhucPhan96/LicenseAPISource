@@ -62,5 +62,4 @@ public interface ISupplierService {
         List<Supplier> fGetListSupplierFromUserName(String userID);
         
         BillSupplierInformation getBillSupplierInformation(String userId);
-        String fSendMailToSysAdmin(Mail mail);
 }

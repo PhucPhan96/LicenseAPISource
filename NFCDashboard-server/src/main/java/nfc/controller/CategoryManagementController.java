@@ -28,74 +28,68 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class CategoryManagementController {
-	@Autowired
-	private ICategoryService categoryDAO;
-	@Autowired
-	private IFileService fileDAO;
-	@Value("Authorization")
+    @Autowired
+    private ICategoryService categoryDAO;
+    @Autowired
+    private IFileService fileDAO;
+    @Value("Authorization")
     private String tokenHeader;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
     
-	@RequestMapping(value="category",method=RequestMethod.GET)
-	public List<Category> getListCategory(HttpServletRequest request){
-		String token = request.getHeader(tokenHeader);
+    @RequestMapping(value="category",method=RequestMethod.GET)
+    public List<Category> getListCategory(HttpServletRequest request){
+        String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
-		List<Category> category = categoryDAO.getListCategory(username);
-		return category;
-		//return Utils.convertObjectToJsonString(category);
-	} 
-	@RequestMapping(value="category/{type}", method=RequestMethod.GET)
-	public @ResponseBody List<Category> getListCategoryFilterType(@PathVariable("type") String type){
-		List<Category> category = categoryDAO.getListCategoryFilterType(type);
-		System.out.println(category.size());
-		return category;
-		//return Utils.convertObjectToJsonString(category);
-	}
-	@RequestMapping(value="app/category/view/{type}", method=RequestMethod.GET)
-	public @ResponseBody List<CategoryView> getListCategoryViewFilterType(@PathVariable("type") String type){
-		List<CategoryView> categoryView = categoryDAO.getListCategoryView(type);
-		return categoryView;
-		//return Utils.convertObjectToJsonString(categoryView);
-	}
-	@RequestMapping(value="category/add", method=RequestMethod.POST)
-	public @ResponseBody String insertCategory(@RequestBody Category cate){
-		cate.setApp_id(Utils.appId);
-		Date date = new Date();
-		cate.setCreated_date(date);
-		System.out.println(cate.getCate_name());
-		String data = categoryDAO.insertCategory(cate)+"";
-		return "{\"result\":\"" + data + "\"}";
-	}
-	@RequestMapping(value="category/edit", method=RequestMethod.PUT)
-	public @ResponseBody String editCategory(@RequestBody Category cate){
-		String data = categoryDAO.updateCategory(cate)+"";
-		return "{\"result\":\"" + data + "\"}";
-	}
-	@RequestMapping(value="category/delete/{id}", method=RequestMethod.DELETE)
-	public @ResponseBody String deleteCategory(@PathVariable("id") String cateID){
-		String data = categoryDAO.deleteCategory(cateID)+"";
-		return "{\"result\":\"" + data + "\"}";
-	}
-	@RequestMapping(value="category/getCate/{id}", method=RequestMethod.GET)
-	public Category getCategory(@PathVariable("id") String cateID){
-		Category category = categoryDAO.getCategory(cateID);
-		return category;
-		//return Utils.convertObjectToJsonString(category);
-	} 
-	@RequestMapping(value="category/getFile/{id}", method=RequestMethod.GET)
-	public String getCategory(@PathVariable("id") int fileId){
-		System.out.println("FileId " + fileId);
-		AttachFile file = fileDAO.getAttachFile(fileId);
-		System.out.println(file.getFile_path());
-		//return file;
-		return Utils.convertObjectToJsonString(file);
-	} 
-	@RequestMapping(value="app/product/store/{id}", method=RequestMethod.GET)
-	public List<SupplierProductView> getProductOfStore(@PathVariable("id") int supplierId){
-		List<SupplierProductView> lstSupplierProductView = categoryDAO.getListProductOfCategory(supplierId);
-		return lstSupplierProductView;
-		//return Utils.convertObjectToJsonString(lstSupplierProductView);
-	} 
+        List<Category> category = categoryDAO.getListCategory(username);
+        return category;
+    } 
+    @RequestMapping(value="category/{type}", method=RequestMethod.GET)
+    public @ResponseBody List<Category> getListCategoryFilterType(@PathVariable("type") String type){
+        List<Category> category = categoryDAO.getListCategoryFilterType(type);
+        System.out.println(category.size());
+        return category;
+    }
+    @RequestMapping(value="app/category/view/{type}", method=RequestMethod.GET)
+    public @ResponseBody List<CategoryView> getListCategoryViewFilterType(@PathVariable("type") String type){
+        List<CategoryView> categoryView = categoryDAO.getListCategoryView(type);
+        return categoryView;
+    }
+    @RequestMapping(value="category/add", method=RequestMethod.POST)
+    public @ResponseBody String insertCategory(@RequestBody Category cate){
+        cate.setApp_id(Utils.appId);
+        Date date = new Date();
+        cate.setCreated_date(date);
+        System.out.println(cate.getCate_name());
+        String data = categoryDAO.insertCategory(cate)+"";
+        return "{\"result\":\"" + data + "\"}";
+    }
+    @RequestMapping(value="category/edit", method=RequestMethod.PUT)
+    public @ResponseBody String editCategory(@RequestBody Category cate){
+        String data = categoryDAO.updateCategory(cate)+"";
+        return "{\"result\":\"" + data + "\"}";
+    }
+    @RequestMapping(value="category/delete/{id}", method=RequestMethod.DELETE)
+    public @ResponseBody String deleteCategory(@PathVariable("id") String cateID){
+        String data = categoryDAO.deleteCategory(cateID)+"";
+        return "{\"result\":\"" + data + "\"}";
+    }
+    @RequestMapping(value="category/getCate/{id}", method=RequestMethod.GET)
+    public Category getCategory(@PathVariable("id") String cateID){
+        Category category = categoryDAO.getCategory(cateID);
+        return category;
+    } 
+    @RequestMapping(value="category/getFile/{id}", method=RequestMethod.GET)
+    public String getCategory(@PathVariable("id") int fileId){
+        System.out.println("FileId " + fileId);
+        AttachFile file = fileDAO.getAttachFile(fileId);
+        System.out.println(file.getFile_path());
+        return Utils.convertObjectToJsonString(file);
+    } 
+    @RequestMapping(value="app/product/store/{id}", method=RequestMethod.GET)
+    public List<SupplierProductView> getProductOfStore(@PathVariable("id") int supplierId){
+        List<SupplierProductView> lstSupplierProductView = categoryDAO.getListProductOfCategory(supplierId);
+        return lstSupplierProductView;
+    } 
 
 }
