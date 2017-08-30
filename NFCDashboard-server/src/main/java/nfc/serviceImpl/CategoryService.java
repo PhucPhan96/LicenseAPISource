@@ -28,6 +28,7 @@ import nfc.service.IUserService;
 import nfc.service.common.ICommonService;
 import nfc.serviceImpl.common.Utils;
 import nfc.model.AttachFile;
+import nfc.model.ViewModel.ProductView;
 
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
@@ -209,12 +210,12 @@ public class CategoryService implements ICategoryService{
 		return results;
 	}
         
-	private List<Product> getListProductOfCategoryProduct(int cate){
+	private List<Product> getListProductOfCategoryProduct(int cate, int suppl_id){
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
                 List<Product> results = new ArrayList<Product>();
 		try{
-                    String sql = "SELECT * FROM fg_products p INNER JOIN fg_product_categories pc ON p.prod_id = pc.prod_id WHERE pc.cate_id = "+cate;
+                    String sql = "SELECT * FROM fg_products p INNER JOIN fg_product_categories pc ON p.prod_id = pc.prod_id WHERE pc.cate_id = "+cate + " and p.suppl_id = " + suppl_id;
                     SQLQuery query = session.createSQLQuery(sql);
                     query.addEntity(Product.class);
                     results = query.list();
@@ -225,7 +226,15 @@ public class CategoryService implements ICategoryService{
                 }
 		return results;
 	}
-	
+	private List<ProductView> fGetLstProductView(List<Product> lstProduct){
+            List<ProductView> lstProd = new ArrayList<ProductView>();
+            for (Product prod: lstProduct) {
+                ProductView productView = new ProductView();
+                productView = productDAO.getProductView(prod.getProd_id());
+                lstProd.add(productView);
+            }
+            return lstProd;
+        }
 	@Override
 	public List<SupplierProductView> getListProductOfCategory(int supplierId) {
 		List<SupplierProductView> lstSupplierProductView = new ArrayList<SupplierProductView>();
@@ -237,7 +246,9 @@ public class CategoryService implements ICategoryService{
 		{
 			SupplierProductView supplierProductView = new SupplierProductView();
 			supplierProductView.setCategory(category);
-			supplierProductView.setProducts(getListProductOfCategoryProduct(category.getCate_id()));
+                        List<Product> lstTemp = getListProductOfCategoryProduct(category.getCate_id(), supplierId);
+                        List<ProductView> lstTemp2= fGetLstProductView(lstTemp);
+			supplierProductView.setProducts(lstTemp2);
 			lstSupplierProductView.add(supplierProductView);
 		}
 		/*List<Product> lstProdduct = productDAO.getListProduct(supplierId);
