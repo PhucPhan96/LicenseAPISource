@@ -96,9 +96,9 @@ public class SupplierManagementController {
         return lstSupplierView;
     }
 
-    @RequestMapping(value = "app/supplier/{id}", method = RequestMethod.GET)
-    public List<SupplierAppView> getListSupplierViewOfCategory(@PathVariable("id") int categoryId) {
-        List<SupplierAppView> lstSupplierView = supplierDAO.getListSupplierViewOfCategory(categoryId);
+    @RequestMapping(value = "app/supplier/{id}/{type}", method = RequestMethod.GET)
+    public List<SupplierAppView> getListSupplierViewOfCategory(@PathVariable("id") String categoryId, @PathVariable("type") String storeType) {
+        List<SupplierAppView> lstSupplierView = supplierDAO.getListSupplierViewOfCategory(categoryId, storeType);
         return lstSupplierView;
     }
 
@@ -271,14 +271,7 @@ public class SupplierManagementController {
         List<SupplierView> suppliers = supplierDAO.getListSupplierByAddress(longT, lat);
         return suppliers;
     }
-    // Lucas - Send Mail
-    @RequestMapping(value = "app/suppliers/sendmailfromsuppliertonfc", method = RequestMethod.POST)
-    public @ResponseBody String fSendEmailToSysAdmin(@RequestBody Mail mail) {
-        System.out.println("Vao Ne");
-        String data = supplierDAO.fSendMailToSysAdmin(mail);
-        System.out.println(data);
-        return "{\"result\":\"" + data + "\"}";
-    }
+    
     @RequestMapping(value = "app/suppliers/searchsupplierbytextinput", method = RequestMethod.POST)
     public List<SupplierView> getListSupplierByTextInput(@RequestBody Search search) throws UnsupportedEncodingException {
         List<SupplierView> lstsuppliers = supplierDAO.getListSupplierViewByTextInput(search.getText());

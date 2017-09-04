@@ -11,6 +11,7 @@ public class SupplierAppView {
 	private Supplier supplier = new Supplier();
 	private SupplierWork supplierWork = new SupplierWork();
 	private List<AttachFile> images = new ArrayList<AttachFile>();
+        private int reviewCount;
 	/*private List<Role> roles;*/
 	//private Supplier supplierManage;
 	public Supplier getSupplier() {
@@ -31,4 +32,13 @@ public class SupplierAppView {
 	public void setImages(List<AttachFile> images) {
 		this.images = images;
 	}
+
+    public int getReviewCount() {
+        return reviewCount;
+    }
+
+    public void setReviewCount(int reviewCount) {
+        this.reviewCount = reviewCount;
+    }
+        
 }

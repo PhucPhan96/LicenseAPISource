@@ -30,11 +30,11 @@
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
             <property name="host" value="smtp.gmail.com" />
             <property name="port" value="587" />
-            <property name="username" value="kjncunn@gmail.com" />
-            <property name="password" value="tinhyeutrongem" />
+<!--            <property name="username" value="kjncunn@gmail.com" />
+            <property name="password" value="tinhyeutrongem" />-->
             <property name="javaMailProperties">
                <props>
-                  <prop key="mail.smtp.auth">true</prop>
+                  <prop key="mail.smtp.auth">false</prop>
                   <prop key="mail.smtp.starttls.enable">true</prop>
                   <prop key="mail.smtp.ssl.trust">smtp.gmail.com</prop>
                 </props>
@@ -49,7 +49,7 @@
 
     <!--CONFIG SCHEDULE-->
     
-    <bean id="loginPaymentAPI" class="nfc.schedule.LoginPaymentAPI"/>
+<!--    <bean id="loginPaymentAPI" class="nfc.schedule.LoginPaymentAPI"/>
     
     <bean id="jobLoginPayment" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject" ref="loginPaymentAPI"/>
@@ -57,22 +57,21 @@
     </bean>
     
     <bean id="loginPaymentAPITrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
-        <!-- see the example of method invoking job above -->
+        
         <property name="jobDetail" ref="jobLoginPayment"/>
-        <!-- 10 seconds -->
-<!--        <property name="startDelay" value="10000"/>-->
-        <!-- repeat every 50 seconds -->
+       
         <property name="repeatInterval" value="5000"/>
     </bean>
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
-<!--                <ref bean="cronTrigger"/>-->
                 <ref bean="loginPaymentAPITrigger"/>
             </list>
         </property>
-    </bean>
-    
+    </bean>-->
+     <!-- 10 seconds -->
+<!--        <property name="startDelay" value="10000"/>-->
+        <!-- repeat every 50 seconds -->
     <!--END CONFIG SCHEDULE-->
         
    <mvc:resources mapping="/resources/**" location="/assets/"/>

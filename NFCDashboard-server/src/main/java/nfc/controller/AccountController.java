@@ -165,7 +165,6 @@ public class AccountController {
     @RequestMapping(value = "/app/user/forgotPasword", method = RequestMethod.POST)
     public ResponseEntity<?> forgotPasword(@RequestBody User user) {
     	String body = userDAO.forgotPassword(user);
-    	System.out.println("Vao ham forgotPassword");
     	if(body.contains(":"))
     	{	
     		String username = body.split(":")[0];

@@ -11,6 +11,6 @@ package nfc.schedule;
  */
 public class LoginPaymentAPI {
     public void doLogin(){
-        //System.err.println("vao ne ku");
+        System.err.println("vao ne ku");
     }
 }

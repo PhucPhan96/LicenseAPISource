@@ -15,7 +15,7 @@ public class Program {
     private String app_id;
     private String prog_name;
     private String parent_prog_id;
-    private String display_seq;
+    private int display_seq;
     private String use_yn;
     private String program_url;
     private String program_class;
@@ -52,10 +52,10 @@ public class Program {
         this.parent_prog_id = parent_prog_id;
     }
     @Column(name="display_seq")
-    public String getDisplay_seq() {
+    public int getDisplay_seq() {
         return display_seq;
     }
-    public void setDisplay_seq(String display_seq) {
+    public void setDisplay_seq(int display_seq) {
         this.display_seq = display_seq;
     }
     @Column(name="use_yn")

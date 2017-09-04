@@ -28,7 +28,7 @@ public class JwtUserFactory {
                 user.getPassword(),
                 mapToGrantedAuthorities(roles),
                 //user.getIs_active()==1?true:false,
-                user.getIs_active(),
+                (user.getIs_active()==true) && (user.getIs_lockedout()==false),
                 user.getLast_password_changed_date()
         );
     }
