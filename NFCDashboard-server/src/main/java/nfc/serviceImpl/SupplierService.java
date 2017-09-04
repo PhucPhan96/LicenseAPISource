@@ -43,7 +43,6 @@ import nfc.service.IOrderService;
 import nfc.service.IRoleService;
 import nfc.service.ISupplierService;
 import nfc.service.IUserService;
-import nfc.service.common.ICommonService;
 import nfc.serviceImpl.common.Utils;
 
 import org.hibernate.Criteria;
@@ -56,11 +55,8 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.mysql.jdbc.Util;
 import java.math.BigDecimal;
-import nfc.model.Mail;
 import nfc.model.SupplierBank;
-import nfc.model.PKModel.SupplierUserPK;
 import nfc.model.ViewModel.BillSupplierInformation;
 
 import nfc.model.ViewModel.SupplierAttachFileView;
@@ -75,8 +71,6 @@ public class SupplierService implements ISupplierService {
     @Autowired
     private IUserService userDAO;
     @Autowired
-    private IRoleService roleDAO;
-    @Autowired
     private ICodeService codeDAO;
     @Autowired
     private IFileService fileDAO;
@@ -86,8 +80,6 @@ public class SupplierService implements ISupplierService {
     private ICategoryService categoryDAO;
     @Autowired
     private IBoardService boardDAO;
-    @Autowired
-    private IMailService mailDAO;
     private SessionFactory sessionFactory;
 
     public void setSessionFactory(SessionFactory sessionFactory) {
@@ -244,7 +236,7 @@ public class SupplierService implements ISupplierService {
             trans.commit();
             for (SupplierWork supplierWork : list) {
                 System.out.println("Vao For ne");
-                SupplierWork supplierWorkWithDistance = getSupplierByLongLat(longT, latT, supplierWork.getSuppl_id() + "");
+                SupplierWork supplierWorkWithDistance = getSupplierByLongLat(longT == "undefined" ? "0": longT, latT == "undefined"?"0": latT, supplierWork.getSuppl_id() + "");
                 String distanceTemp = supplierWorkWithDistance.getDistance_in_km() + "";
                 BigDecimal mindistance = new BigDecimal(3);
                 if (distanceTemp.equalsIgnoreCase("null")) {
@@ -264,7 +256,7 @@ public class SupplierService implements ISupplierService {
             }
         } catch (Exception ex) {
             System.out.println("Loi roi");
-            System.out.println(ex);
+            System.out.println(ex.getMessage());
             trans.rollback();
         }
 
@@ -716,22 +708,43 @@ public class SupplierService implements ISupplierService {
         trans.commit();
         return list;
     }
-
-    public List<SupplierAppView> getListSupplierViewOfCategory(int categoryId) {
+    
+    private List<Supplier> getListSupplierFromCategory(String categoryId, String storeType){
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        List<Supplier> suppliers = new ArrayList<>();
+        try {
+            String sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id join fg_delivery d on d.delivery_id = sw.delivery_id where d.delivery_url !=  '#' and FIND_IN_SET(sc.cate_id,'"+categoryId+"')";
+            if(storeType == "NONDELIVERY"){
+                sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id join fg_delivery d on d.delivery_id = sw.delivery_id where d.delivery_url =  '#' and FIND_IN_SET(sc.cate_id,'"+categoryId+"')";
+            }
+            else if(storeType == "ALL"){
+                sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where FIND_IN_SET(sc.cate_id,'"+categoryId+"')";
+            }
+            suppliers = session.createSQLQuery(sql).addEntity(Supplier.class).list();
+            trans.commit();
+        } catch (Exception ex) {
+            trans.rollback();
+        }
+        return suppliers;
+    }
+    public List<SupplierAppView> getListSupplierViewOfCategory(String categoryId, String storeType) {
         List<SupplierAppView> lstSupplierAppView = new ArrayList<SupplierAppView>();
-        List<SupplierCategories> lstSupplierCategory = getListSupplierCategoryFromCategory(categoryId);
-        for (SupplierCategories supplierCategory : lstSupplierCategory) {
-            SupplierWork supplierWork = getSupplierWork(supplierCategory.getSuppl_id());
+        //List<SupplierCategories> lstSupplierCategory = getListSupplierCategoryFromCategory(categoryId);
+        List<Supplier> suppliers = getListSupplierFromCategory(categoryId, storeType);
+        for (Supplier supplier : suppliers) {
+            SupplierWork supplierWork = getSupplierWork(supplier.getSuppl_id());
             if (Integer.parseInt(supplierWork.getSuppl_role()) == 21) {
                 SupplierAppView supplierAppView = new SupplierAppView();
-                supplierAppView.setSupplier(getSupplier(supplierCategory.getSuppl_id() + ""));
+                supplierAppView.setSupplier(supplier);
                 supplierAppView.setSupplierWork(supplierWork);
-                List<SupplierImage> supplImgs = getListSupplierImage(supplierCategory.getSuppl_id());
+                List<SupplierImage> supplImgs = getListSupplierImage(supplier.getSuppl_id());
                 List<AttachFile> supplAttachFiles = new ArrayList<AttachFile>();
                 for (SupplierImage supImg : supplImgs) {
                     supplAttachFiles.add(fileDAO.getAttachFile(supImg.getImg_id()));
                 }
                 supplierAppView.setImages(supplAttachFiles);
+                supplierAppView.setReviewCount(boardDAO.getListThread(supplierWork.getBoard_id()).size());
                 lstSupplierAppView.add(supplierAppView);
             }
         }

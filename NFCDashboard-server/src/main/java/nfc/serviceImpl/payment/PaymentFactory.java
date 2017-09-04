@@ -17,14 +17,6 @@ import nfc.serviceImpl.common.Utils;
 public class PaymentFactory {
     private static final Logger log =  Logger.getLogger(PaymentFactory.class.toString());
     
-//    private static class SingletonHelper{
-//        private static final PaymentFactory INSTANCE = new PaymentFactory(); 
-//    }
-//    
-//    public static PaymentFactory getInstance(){
-//        return SingletonHelper.INSTANCE;
-//    }
-    
     static IPayment paymentAPI = null;
     public static IPayment getPaymentApi(SpeedPayInformation.PaymentAPI type){
         switch(type){

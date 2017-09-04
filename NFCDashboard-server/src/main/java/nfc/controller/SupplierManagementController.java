@@ -96,9 +96,9 @@ public class SupplierManagementController {
         return lstSupplierView;
     }
 
-    @RequestMapping(value = "app/supplier/{id}", method = RequestMethod.GET)
-    public List<SupplierAppView> getListSupplierViewOfCategory(@PathVariable("id") int categoryId) {
-        List<SupplierAppView> lstSupplierView = supplierDAO.getListSupplierViewOfCategory(categoryId);
+    @RequestMapping(value = "app/supplier/{id}/{type}", method = RequestMethod.GET)
+    public List<SupplierAppView> getListSupplierViewOfCategory(@PathVariable("id") String categoryId, @PathVariable("type") String storeType) {
+        List<SupplierAppView> lstSupplierView = supplierDAO.getListSupplierViewOfCategory(categoryId, storeType);
         return lstSupplierView;
     }
 

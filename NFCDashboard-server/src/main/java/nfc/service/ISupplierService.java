@@ -34,7 +34,7 @@ public interface ISupplierService {
 	boolean updateSupplierView(SupplierView supplierView);
 	boolean deleteSupplierView(int supplId, String username);
 	List<SupplierUser> getListSupplierUserId(String userId);
-	List<SupplierAppView> getListSupplierViewOfCategory(int categoryId);
+	List<SupplierAppView> getListSupplierViewOfCategory(String categoryId, String storeType);
 	List<SupplierCategories> getListSupplierCategory(int supplId);
 	String getSupplierFavorite(int supplId);
 	boolean insertSupplierFavorite(int supplId, String userId);
