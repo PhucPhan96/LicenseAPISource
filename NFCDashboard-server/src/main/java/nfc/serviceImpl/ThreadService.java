@@ -262,5 +262,14 @@ public class ThreadService implements IThreadService{
             return listThreadSupplierUser;
     } 
      
-    
+    public Object fGetReviewCount(int board_id){
+        Object reviewCount = new Object();
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        Query query = session.createSQLQuery(
+                "SELECT count(thread_id) as review_count FROM 82wafoodgo.fg_threads where board_id = " + board_id);
+        reviewCount = (Object) query.uniqueResult();
+        trans.commit();
+        return reviewCount;
+    }
 }

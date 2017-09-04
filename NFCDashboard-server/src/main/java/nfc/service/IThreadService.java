@@ -20,5 +20,5 @@ public interface IThreadService {
         nfc.model.Thread insertThreadStore(nfc.model.Thread thread);
         int getBoardIDbySupllierID(int suppl_id);
         List<ThreadSupplierUser>  getListThreadNoReview(int suppl_id);
-        
+        public Object fGetReviewCount(int board_id);
 }
