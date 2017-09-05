@@ -10,7 +10,16 @@ import nfc.model.User;
 public class ThreadView {
 	private ThreadModel thread;
 	private String username;
-	private List<AttachFile> lstAttachFile;      
+	private List<AttachFile> lstAttachFile;  
+        private String supplierName;
+
+        public String getSupplierName() {
+            return supplierName;
+        }
+
+        public void setSupplierName(String supplierName) {
+            this.supplierName = supplierName;
+        }
         
 	public ThreadModel getThread() {
 		return thread;
