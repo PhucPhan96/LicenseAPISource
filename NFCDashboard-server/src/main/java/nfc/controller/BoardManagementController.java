@@ -21,6 +21,7 @@ import nfc.serviceImpl.common.Utils;
 import nfc.model.Thread;
 import nfc.model.ViewModel.BoardView;
 import nfc.model.ViewModel.ProductView;
+import nfc.model.ViewModel.ThreadImageView;
 
 @RestController
 public class BoardManagementController {
@@ -94,8 +95,8 @@ public class BoardManagementController {
 		return threads;
 	}
 	@RequestMapping(value="app/thread/add", method=RequestMethod.POST)
-	public @ResponseBody String insertThread(@RequestBody Thread thread){
-		String data = boardDAO.insertThread(thread) + "";// .insertProductView(productView) + "";
+	public @ResponseBody String insertThread(@RequestBody ThreadImageView thread){
+		String data = boardDAO.insertThreadImageView(thread) + "";// .insertProductView(productView) + "";
 		return "{\"result\":\"" + data + "\"}";
 	}
 	

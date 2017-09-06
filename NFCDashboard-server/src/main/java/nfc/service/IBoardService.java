@@ -5,6 +5,7 @@ import java.util.List;
 import nfc.model.Board;
 import nfc.model.Thread;
 import nfc.model.ViewModel.BoardView;
+import nfc.model.ViewModel.ThreadImageView;
 
 public interface IBoardService {
 	boolean insertBoard(Board board);
@@ -19,4 +20,5 @@ public interface IBoardService {
 	boolean insertThread(Thread thread);
 	BoardView getBoardView (int boardId);
         Board getBoard(int boardId);
+        public boolean insertThreadImageView(ThreadImageView threadImgView);
 }

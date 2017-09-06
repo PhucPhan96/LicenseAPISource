@@ -29,6 +29,7 @@ import nfc.service.IFileService;
 import nfc.model.ViewModel.SupplierAddressView;
 import nfc.model.ViewModel.SupplierView;
 import nfc.model.ViewModel.BoardView;
+import nfc.model.ViewModel.ThreadImageView;
 import nfc.service.IUserService;
 import org.hibernate.criterion.Order;
 
@@ -79,7 +80,27 @@ public class BoardService implements IBoardService{
             trans.rollback();
             return false;
         }
+    }    
+    public boolean insertThreadImageView(ThreadImageView threadImgView) {
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        try{
+            ThreadImg threadImg = new ThreadImg();
+            session.save(threadImgView.getThread());
+            threadImg.setThread_id(threadImgView.getThread().getThread_id());
+            threadImg.setImg_id(threadImgView.getThread_img().getFile_id());
+            session.save(threadImg);
+            trans.commit();
+            return true;			
+        }
+        catch(Exception ex)
+        {
+            System.out.println("Error " + ex.getMessage());
+            trans.rollback();
+            return false;
+        }
     }
+    
     public List<Board> getListBoard(String userName)
     {
         Session session = this.sessionFactory.getCurrentSession();

@@ -739,9 +739,12 @@ public class SupplierService implements ISupplierService {
                 supplierAppView.setSupplier(supplier);
                 supplierAppView.setSupplierWork(supplierWork);
                 List<SupplierImage> supplImgs = getListSupplierImage(supplier.getSuppl_id());
-                List<AttachFile> supplAttachFiles = new ArrayList<AttachFile>();
+                List<SupplierAttachFileView> supplAttachFiles = new ArrayList<SupplierAttachFileView>();
                 for (SupplierImage supImg : supplImgs) {
-                    supplAttachFiles.add(fileDAO.getAttachFile(supImg.getImg_id()));
+                    SupplierAttachFileView splImageView = new SupplierAttachFileView();
+                    splImageView.setAttachFile(fileDAO.getAttachFile(supImg.getImg_id()));
+                    splImageView.setImageType(supImg.getImg_type());
+                    supplAttachFiles.add(splImageView);
                 }
                 supplierAppView.setImages(supplAttachFiles);
                 supplierAppView.setReviewCount(boardDAO.getListThread(supplierWork.getBoard_id()).size());
