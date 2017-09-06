@@ -64,4 +64,9 @@ public class TextManagementController {
 		String data = textDAO.deleteText(text_id)+"";
 		return "{\"result\":\"" + data + "\"}";
 	}
+    @RequestMapping(value = "app/texts/getListTextByTypeApp/{text_type}", method = RequestMethod.GET)
+    public List<Text> getListTextByTypeApp(@PathVariable("text_type") String text_type) {   
+        List<Text> texts = textDAO.getListTextByType(text_type);
+        return texts;
+    }
    }
