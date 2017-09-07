@@ -5,7 +5,9 @@
  */
 package nfc.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
+import nfc.model.SearchQA;
 import nfc.model.Text;
 import nfc.service.ITextService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +69,11 @@ public class TextManagementController {
     @RequestMapping(value = "app/texts/getListTextByTypeApp/{text_type}", method = RequestMethod.GET)
     public List<Text> getListTextByTypeApp(@PathVariable("text_type") String text_type) {   
         List<Text> texts = textDAO.getListTextByType(text_type);
+        return texts;
+    }
+    @RequestMapping(value = "app/texts/getListTextbyTextInput", method = RequestMethod.POST)
+    public List<Text> getListTextbyTextInput(@RequestBody SearchQA search)  throws UnsupportedEncodingException {   
+        List<Text> texts = textDAO.getListTextbyTextInput(search.getTextInput(),search.getText_type());
         return texts;
     }
    }
