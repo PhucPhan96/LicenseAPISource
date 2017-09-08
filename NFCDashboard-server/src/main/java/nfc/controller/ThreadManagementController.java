@@ -92,4 +92,10 @@ public class ThreadManagementController {
         Object reviewCount = threadDAO.fGetReviewCount(board_id);
         return reviewCount;
     }
+    @RequestMapping(value="app/thread/getListReview/{username}", method=RequestMethod.GET)
+    public  List<ThreadView> getListReview(@PathVariable("username") String username){ 
+        System.out.print("Vao getListReview"+ threadDAO.getListReview(username));
+        return threadDAO.getListReview(username);
+    }
+    
 }

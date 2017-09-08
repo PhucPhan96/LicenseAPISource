@@ -20,4 +20,5 @@ public interface ITextService {
     boolean updateText(Text text);
     boolean insertText(Text text);
     boolean deleteText(int text_id);
+    List<Text> getListTextbyTextInput(String textInput, String text_type);
 }

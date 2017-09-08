@@ -12,7 +12,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name="fg_threads")
 public class ThreadModel {
-	private int thread_id;
+	private String thread_id;
 	private String app_id;
 	private String writer_id;
 	private int parent_thread_id;
@@ -23,10 +23,10 @@ public class ThreadModel {
 	private int review_rank5;
 	@Id
 	@Column(name="thread_id")
-	public int getThread_id() {
+	public String getThread_id() {
 		return thread_id;
 	}
-	public void setThread_id(int thread_id) {
+	public void setThread_id(String thread_id) {
 		this.thread_id = thread_id;
 	}
 	@Column(name="app_id")

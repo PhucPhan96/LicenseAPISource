@@ -21,4 +21,6 @@ public interface IThreadService {
         int getBoardIDbySupllierID(int suppl_id);
         List<ThreadSupplierUser>  getListThreadNoReview(int suppl_id);
         public Object fGetReviewCount(int board_id);
+        List<ThreadView> getListReview(String username);
+        
 }

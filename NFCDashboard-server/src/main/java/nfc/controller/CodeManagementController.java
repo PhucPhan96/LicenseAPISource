@@ -52,4 +52,9 @@ public class CodeManagementController {
 		String data = codeDAO.deleteCode(groupCode, subCode)+ "";
 		return "{\"result\":\"" + data + "\"}";
 	}
+        @RequestMapping(value="app/codes/group/{groupCode}", method=RequestMethod.GET)
+	public List<Code> getListCodeByGroupCode(@PathVariable("groupCode") String groupCode){
+            System.out.println("List Code "+ codeDAO.getListCode(groupCode) );
+		return codeDAO.getListCode(groupCode);
+	}
 }
