@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import nfc.model.Code;
 import nfc.model.Mail;
 import nfc.model.PKModel.SupplierUserPK;
@@ -21,7 +22,9 @@ import nfc.service.ISupplierService;
 import nfc.serviceImpl.Security.JwtTokenUtil;
 import nfc.serviceImpl.common.Utils;
 import nfc.model.Search;
+import nfc.model.User;
 import nfc.service.IMailService;
+import nfc.service.IUserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,6 +48,9 @@ public class SupplierManagementController {
     private JwtTokenUtil jwtTokenUtil;
     @Autowired
     private IMailService mailDAO;
+    
+    @Autowired
+    private IUserService userDAO;
     @RequestMapping(value = "supplier", method = RequestMethod.GET)
     public List<Supplier> getSupplier() {
         List<Supplier> supplier = supplierDAO.getListSupplier();
@@ -288,6 +294,22 @@ public class SupplierManagementController {
         String username = jwtTokenUtil.getUsernameFromToken(token);
         List<Supplier> lstSupplier = supplierDAO.fGetListSupplierFromUserName(username);
         return lstSupplier;
+    }
+    
+    @RequestMapping(value = "app/user/getlistfavorite", method = RequestMethod.GET)
+    public List<SupplierView> getListSupplierFavorite(HttpServletRequest request) {
+        String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User users = userDAO.findUserByUserName(username);
+        String userid = users.getUser_id();
+        List<SupplierFavorite> lstSupplierFavo = userDAO.fGetListSupplierFavoriteByUserId(userid);
+        List<SupplierView> lstSupplierView = new ArrayList<SupplierView>();
+        for (SupplierFavorite supplier: lstSupplierFavo) {
+            SupplierView supplierView = new SupplierView();
+            supplierView = supplierDAO.getSupplierView(supplier.getSuppl_id());
+            lstSupplierView.add(supplierView);
+        }
+        return lstSupplierView;
     }
     
 }
