@@ -1,6 +1,7 @@
 package nfc.service;
 
 import java.util.List;
+import nfc.model.SupplierFavorite;
 
 import org.hibernate.Session;
 
@@ -8,6 +9,7 @@ import nfc.model.User;
 import nfc.model.UserAddress;
 import nfc.model.UserRegister;
 import nfc.model.UserRole;
+import nfc.model.ViewModel.SupplierView;
 
 public interface IUserService {
 	List<User> getListUser();
@@ -36,4 +38,6 @@ public interface IUserService {
         List<User> getListUserByLikePhone(String phone);
         List<UserAddress> getListUserByAddress(String address);
         List<User> getListUserByLikePhoneAndAddress(String phone, String address);
+        public List<SupplierFavorite> fGetListSupplierFavoriteByUserId(String userId);
+        
 }
