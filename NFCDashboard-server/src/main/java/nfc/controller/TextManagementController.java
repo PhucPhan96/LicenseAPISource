@@ -61,6 +61,13 @@ public class TextManagementController {
         return "{\"result\":\"" + data + "\"}";
         
     } 
+    @RequestMapping(value = "app/texts/insert", method = RequestMethod.POST)
+    public @ResponseBody String insertTextApp(@RequestBody Text text) {
+        System.out.println("Value insertText:");
+        String data = textDAO.insertText(text) + "";         
+        return "{\"result\":\"" + data + "\"}";
+        
+    } 
     @RequestMapping(value="texts/delete/{text_id}", method=RequestMethod.DELETE)
 	public @ResponseBody String deleteGroup(@PathVariable("text_id") int text_id){
 		String data = textDAO.deleteText(text_id)+"";
