@@ -56,8 +56,11 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
+import nfc.model.ProductOptional;
 import nfc.model.SupplierBank;
+import nfc.model.ViewModel.BillHistoryView;
 import nfc.model.ViewModel.BillSupplierInformation;
+import nfc.model.ViewModel.ProductOptionalBH;
 
 import nfc.model.ViewModel.SupplierAttachFileView;
 import org.hibernate.transform.Transformers;
@@ -929,27 +932,53 @@ public class SupplierService implements ISupplierService {
         }
     }
 
-    public List<BillHistory> getListBillHistory(String userID) {
+    public List<BillHistoryView> getListBillHistory(String userID) {
+        //List BillHistory
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
-        String sql = "SELECT o.order_id, o.order_date, o.deliver_date,	 o.order_status, o.prod_amt, o.app_id,od.prod_id,od.prod_qty,prod_name,s.suppl_id, s.supplier_name,p.unit_price FROM fg_orders o  INNER JOIN fg_order_details od ON o.order_id = od.order_id INNER JOIN	fg_products p ON od.prod_id = p.prod_id INNER JOIN fg_suppliers s ON	o.suppl_id = s.suppl_id WHERE o.user_id = '" + userID + "'";
-        SQLQuery query = session.createSQLQuery(sql);
-        List<BillHistory> results = query.list();
-        query.addEntity(BillHistory.class);
-        trans.commit();
-        return results;
+        String sql = "SELECT o.user_id ,o.order_id, o.order_date, o.deliver_date,o.order_status, o.prod_amt, o.app_id,od.prod_id,od.prod_qty,prod_name,s.suppl_id, s.supplier_name,p.unit_price,od.lstOption,od.lstQty_Option,o.order_amt FROM fg_orders o  INNER JOIN fg_order_details od ON o.order_id = od.order_id INNER JOIN	fg_products p ON od.prod_id = p.prod_id INNER JOIN fg_suppliers s ON	o.suppl_id = s.suppl_id WHERE o.user_id = '" + userID + "'";
+        List<BillHistory> listBillHistory  = session.createSQLQuery(sql).setResultTransformer(Transformers.aliasToBean(BillHistory.class)).list();
+                trans.commit();    
+             
+        List <ProductOptionalBH> listProductOption =  new ArrayList<ProductOptionalBH>();
+        List<BillHistoryView> listBillHistoryView = new ArrayList<BillHistoryView>();
+        for (BillHistory billHistory : listBillHistory) {
+            //Get list product option         
+            if(billHistory.getLstOption()!="null"){
+                 listProductOption = getListProductOptions(billHistory.getLstOption());
+            }             
+            //Set value for list BillHistoryView
+            BillHistoryView billHistoryView = new BillHistoryView();  
+            billHistoryView.setListProductOptions(listProductOption);
+            billHistoryView.setBillHistory(billHistory);
+            listBillHistoryView.add(billHistoryView);
+        }
+       
+        return listBillHistoryView;
     }
 
-    public List<BillHistory> getListSearchBillHistory(String userID, String dateFrom, String dateTo) {
+    public List<BillHistoryView> getListSearchBillHistory(String userID, String dateFrom, String dateTo) {
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
-        String sql = "SELECT o.order_id, o.order_date, o.deliver_date,	 o.order_status, o.prod_amt, o.app_id,od.prod_id,od.prod_qty,prod_name,s.suppl_id, s.supplier_name,p.unit_price FROM fg_orders o  INNER JOIN fg_order_details od ON o.order_id = od.order_id INNER JOIN	fg_products p ON od.prod_id = p.prod_id INNER JOIN fg_suppliers s ON	o.suppl_id = s.suppl_id WHERE o.user_id = '" + userID + "' AND o.order_date >= '" + dateFrom + "' AND o.order_date<='" + dateTo + "' ORDER BY o.order_date";
-        SQLQuery query = session.createSQLQuery(sql);
-        List<BillHistory> results = query.list();
-        query.addEntity(BillHistory.class);
-        trans.commit();
-        System.out.println("show result count:" + results.size());
-        return results;
+        String sql = "SELECT o.order_id, o.order_date, o.deliver_date,o.order_status, o.prod_amt, o.app_id,od.prod_id,od.prod_qty,prod_name,s.suppl_id, s.supplier_name,p.unit_price,od.lstOption,od.lstQty_Option,o.order_amt  FROM fg_orders o  INNER JOIN fg_order_details od ON o.order_id = od.order_id INNER JOIN	fg_products p ON od.prod_id = p.prod_id INNER JOIN fg_suppliers s ON	o.suppl_id = s.suppl_id WHERE o.user_id = '" + userID + "' AND o.order_date >= '" + dateFrom + "' AND o.order_date<='" + dateTo + "' ORDER BY o.order_date";
+        List<BillHistory> listBillHistory  = session.createSQLQuery(sql).setResultTransformer(Transformers.aliasToBean(BillHistory.class)).list();
+                trans.commit();    
+             
+        List <ProductOptionalBH> listProductOption =  new ArrayList<ProductOptionalBH>();
+        List<BillHistoryView> listBillHistoryView = new ArrayList<BillHistoryView>();
+        for (BillHistory billHistory : listBillHistory) {
+            //Get list product option         
+            if(billHistory.getLstOption()!="null"){
+                 listProductOption = getListProductOptions(billHistory.getLstOption());
+            }             
+            //Set value for list BillHistoryView
+            BillHistoryView billHistoryView = new BillHistoryView();  
+            billHistoryView.setListProductOptions(listProductOption);
+            billHistoryView.setBillHistory(billHistory);
+            listBillHistoryView.add(billHistoryView);
+        }
+       
+        return listBillHistoryView;
     }
 
     public List<Supplier> getListSupplierManage(int roleId) {
@@ -1112,5 +1141,22 @@ public class SupplierService implements ISupplierService {
             trans.rollback();
         }
         return billSupplierInformation;
+    }
+    
+       public List<ProductOptionalBH> getListProductOptions(String stringList) {
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();         
+        String sql = "SELECT * FROM fg_products WHERE  FIND_IN_SET(prod_id, '"+stringList+"')";
+        List<Product> listProduct = session.createSQLQuery(sql).addEntity(Product.class).list();     
+        trans.commit();
+        List <ProductOptionalBH> listProductOptional = new ArrayList<ProductOptionalBH>();         
+         for (Product product : listProduct){
+             ProductOptionalBH productOptional = new ProductOptionalBH();
+             productOptional.setProduct(product);
+             productOptional.setOptionalQuanlity("");
+             listProductOptional.add(productOptional);
+         } 
+               
+        return listProductOptional;
     }
 }

@@ -289,7 +289,14 @@ public class ThreadService implements IThreadService{
             for ( ThreadModel threadModel:listThreadModel){
                 ThreadView threadView = new ThreadView();
                 threadView.setThread(threadModel);
-                threadView.setSupplierName(getSupplierNameByThreadId(threadModel.getThread_id()));
+                //Get supplier name
+                String supplierName =""; 
+                System.out.println("list la"+getSupplierByThreadId(threadModel.getThread_id()).size());
+                if(getSupplierByThreadId(threadModel.getThread_id()).size()>0){
+                 supplierName= getSupplierByThreadId(threadModel.getThread_id()).get(0).getSupplier_name();
+                }                
+                threadView.setSupplierName(supplierName);                
+               
                 //threadView.setUsername(username);
                 threadView.setLstAttachFile(getListImageOfThread(threadModel.getThread_id()));
                 listThreadView.add(threadView);
@@ -300,14 +307,15 @@ public class ThreadService implements IThreadService{
         }       
         return listThreadView;
      }
-    public String getSupplierNameByThreadId (String thread_id){
-        String supplierName ="";
+    public List<Supplier> getSupplierByThreadId (String thread_id){
+    
          Session session = this.sessionFactory.getCurrentSession();
          Transaction trans = session.beginTransaction();
          List<Supplier> listSupplier = new ArrayList<Supplier>();
          listSupplier = session.createSQLQuery("SELECT s.* FROM fg_suppliers s INNER JOIN fg_supplier_work sw ON s.suppl_id = sw.suppl_id INNER JOIN fg_boards b ON sw.board_id = b.board_id INNER JOIN fg_threads t ON t.board_id = b.board_id WHERE thread_id='"+thread_id+"'").addEntity(Supplier.class).list();
          trans.commit(); 
-         supplierName = listSupplier.get(0).getSupplier_name();
-        return supplierName;
+         //supplierName = listSupplier.get(0).getSupplier_name();
+        
+        return listSupplier;
     }
 }

@@ -1,22 +1,60 @@
 package nfc.model.ViewModel;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
-import nfc.model.OrderDetail;
-import nfc.model.Product;
-import nfc.model.Supplier;
 
 public class BillHistory {
-	private int order_id;
-	public int getOrder_id() {
-		return order_id;
-	}
-	public void setOrder_id(int order_id) {
-		this.order_id = order_id;
-	}
+    private String user_id;
+    private String order_id;
+    private Date order_date;
+    private Date deliver_date;
+    private String order_status;
+    private BigDecimal prod_amt;
+    private String app_id;
+    private int prod_id;
+    private int prod_qty;
+    private String prod_name;    
+    private int suppl_id;  
+    private String supplier_name;
+    private BigDecimal unit_price;
+    private String lstOption;
+    private String lstQty_Option;
+    private BigDecimal order_amt;
+ 
+
+   
+
+    public String getOrder_id() {
+        return order_id;
+    }
+
+    public void setOrder_id(String order_id) {
+        this.order_id = order_id;
+    }
+    public BigDecimal getOrder_amt() {
+        return order_amt;
+    }
+
+    public void setOrder_amt(BigDecimal order_amt) {
+        this.order_amt = order_amt;
+    }
+
+    public String getLstOption() {
+        return lstOption;
+    }
+
+    public void setLstOption(String lstOption) {
+        this.lstOption = lstOption;
+    }
+
+    public String getLstQty_Option() {
+        return lstQty_Option;
+    }
+
+    public void setLstQty_Option(String lstQty_Option) {
+        this.lstQty_Option = lstQty_Option;
+    }
+	
 	public int getSuppl_id() {
 		return suppl_id;
 	}
@@ -83,22 +121,8 @@ public class BillHistory {
 	public void setSupplier_name(String supplier_name) {
 		this.supplier_name = supplier_name;
 	}
-	private int suppl_id;
-	private String user_id;
-	private String app_id;
-	private int prod_id;
-	private Date order_date;
-	private Date deliver_date;
-	private String order_status;
-	private BigDecimal prod_amt;
-	private int prod_qty;
-	private String prod_name;
-	private String supplier_name;
-	private BigDecimal unit_price;
-//	private List<Product> lstproduct = new ArrayList<Product>();
-//	private List<OrderDetail> lstOrderDetail = new ArrayList<OrderDetail>();
-//	private List<Supplier> listSupplier = new ArrayList<Supplier>();
-//	
+	
+	
 	public BigDecimal getUnit_price() {
 		return unit_price;
 	}

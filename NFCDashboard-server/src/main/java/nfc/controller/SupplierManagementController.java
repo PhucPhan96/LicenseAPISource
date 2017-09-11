@@ -10,6 +10,7 @@ import java.nio.charset.Charset;
 import nfc.model.Code;
 import nfc.model.Mail;
 import nfc.model.PKModel.SupplierUserPK;
+import nfc.model.Product;
 import nfc.model.Supplier;
 import nfc.model.SupplierFavorite;
 import nfc.model.SupplierUser;
@@ -21,6 +22,8 @@ import nfc.service.ISupplierService;
 import nfc.serviceImpl.Security.JwtTokenUtil;
 import nfc.serviceImpl.common.Utils;
 import nfc.model.Search;
+import nfc.model.ViewModel.BillHistoryView;
+import nfc.model.ViewModel.ProductOptionalBH;
 import nfc.service.IMailService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -239,17 +242,17 @@ public class SupplierManagementController {
     //Get List Bill History
     @RequestMapping(value = "app/billHistory/{userID}", method = RequestMethod.GET)
     public @ResponseBody
-    List<BillHistory> getListBillHistory(@PathVariable("userID") String userID) {
+    List<BillHistoryView> getListBillHistory(@PathVariable("userID") String userID) {
         System.out.println("run getListBillHistory");
-        List<BillHistory> listBillHistory = supplierDAO.getListBillHistory(userID);
-        return listBillHistory;
+        List<BillHistoryView> listBillHistoryView= supplierDAO.getListBillHistory(userID);
+        return listBillHistoryView;
     }
 
     //Get List Search Bill History
     @RequestMapping(value = "app/searchBillHistory/{userID}/{dateFrom}/{dateTo}", method = RequestMethod.GET)
     public @ResponseBody
-    List<BillHistory> getListSearchBillHistory(@PathVariable("userID") String userID, @PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) {
-        List<BillHistory> listBillHistory = supplierDAO.getListSearchBillHistory(userID, dateFrom, dateTo);
+    List<BillHistoryView> getListSearchBillHistory(@PathVariable("userID") String userID, @PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) {
+        List<BillHistoryView> listBillHistory = supplierDAO.getListSearchBillHistory(userID, dateFrom, dateTo);
         System.out.println("show list search BillHistory" + listBillHistory.size());
         return listBillHistory;
     }
@@ -259,6 +262,7 @@ public class SupplierManagementController {
         List<Supplier> suppliers = supplierDAO.getListSupplierFromRoles(roleJoin);
         return suppliers;
     }
+    
     //Lucas
     @RequestMapping(value = "supplier/changeOrderPhoneNumber", method = RequestMethod.POST)
     public @ResponseBody String ChangePasswordUser(@RequestBody String[] temp) {
@@ -289,5 +293,12 @@ public class SupplierManagementController {
         List<Supplier> lstSupplier = supplierDAO.fGetListSupplierFromUserName(username);
         return lstSupplier;
     }
-    
+     //Get List Product Optional
+    @RequestMapping(value = "app/getListProductOptions/{stringList}", method = RequestMethod.GET)
+    public @ResponseBody
+    List<ProductOptionalBH> getListProductOptions(@PathVariable("stringList") String stringList) {
+        List<ProductOptionalBH> listProductOptional = supplierDAO.getListProductOptions(stringList);
+        System.out.println("show list search BillHistory" + listProductOptional.size());
+        return listProductOptional;
+    }
 }
