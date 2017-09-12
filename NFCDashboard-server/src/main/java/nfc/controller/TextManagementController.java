@@ -5,7 +5,9 @@
  */
 package nfc.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
+import nfc.model.SearchQA;
 import nfc.model.Text;
 import nfc.model.ViewModel.GridView;
 import nfc.service.ITextService;
@@ -67,9 +69,26 @@ public class TextManagementController {
         return "{\"result\":\"" + data + "\"}";
         
     } 
+    @RequestMapping(value = "app/texts/insert", method = RequestMethod.POST)
+    public @ResponseBody String insertTextApp(@RequestBody Text text) {
+        System.out.println("Value insertText:");
+        String data = textDAO.insertText(text) + "";         
+        return "{\"result\":\"" + data + "\"}";
+        
+    } 
     @RequestMapping(value="texts/delete/{text_id}", method=RequestMethod.DELETE)
 	public @ResponseBody String deleteGroup(@PathVariable("text_id") int text_id){
 		String data = textDAO.deleteText(text_id)+"";
 		return "{\"result\":\"" + data + "\"}";
 	}
+    @RequestMapping(value = "app/texts/getListTextByTypeApp/{text_type}", method = RequestMethod.GET)
+    public List<Text> getListTextByTypeApp(@PathVariable("text_type") String text_type) {   
+        List<Text> texts = textDAO.getListTextByType(text_type);
+        return texts;
+    }
+    @RequestMapping(value = "app/texts/getListTextbyTextInput", method = RequestMethod.POST)
+    public List<Text> getListTextbyTextInput(@RequestBody SearchQA search)  throws UnsupportedEncodingException {   
+        List<Text> texts = textDAO.getListTextbyTextInput(search.getTextInput(),search.getText_type());
+        return texts;
+    }
    }

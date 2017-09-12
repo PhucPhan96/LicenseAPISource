@@ -29,6 +29,7 @@ import nfc.model.Category;
 import nfc.model.Code;
 import nfc.model.Role;
 import nfc.model.SupplierAddress;
+import nfc.model.SupplierFavorite;
 import nfc.model.SupplierUser;
 import nfc.model.User;
 import nfc.model.UserAddress;
@@ -37,6 +38,7 @@ import nfc.model.UserRegister;
 import nfc.model.UserRole;
 import nfc.model.ViewModel.GridView;
 import nfc.model.ViewModel.SupplierAddressView;
+import nfc.model.ViewModel.SupplierView;
 import nfc.model.ViewModel.UserAddressView;
 import nfc.service.IMailService;
 import nfc.service.IRoleService;
@@ -704,9 +706,23 @@ public class UserService implements IUserService {
         return count;
     }
     
+    public List<SupplierFavorite> fGetListSupplierFavoriteByUserId(String userId){
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        Criteria criteria = session.createCriteria(SupplierFavorite.class);
+        criteria.add(Restrictions.eq("user_id", userId));
+        List<SupplierFavorite> lstSupplier = (List<SupplierFavorite>) criteria.list();
+        trans.commit();
+        return lstSupplier;
+    }
     
-    
-    
-    
-
+    List<SupplierView> fGetListSupplierViewFavoriteByListFavorite(List<SupplierFavorite> lstSupplier){
+        List<SupplierView> lstSupplierView = new ArrayList<SupplierView>();
+        for (SupplierFavorite supplier: lstSupplier) {
+            SupplierView supplierView = new SupplierView();
+            supplierView = supplDAO.getSupplierView(supplier.getSuppl_id());
+            lstSupplierView.add(supplierView);
+        }
+        return lstSupplierView;
+    }
 }

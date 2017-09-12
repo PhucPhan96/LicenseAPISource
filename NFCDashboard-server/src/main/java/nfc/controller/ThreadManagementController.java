@@ -87,4 +87,15 @@ public class ThreadManagementController {
         System.out.print("Vao No Answer Thread"+ threadDAO.getListThreadNoReview(suppl_id));
         return threadDAO.getListThreadNoReview(suppl_id);
     }
+    @RequestMapping(value="app/thread/getreviewcount/{board_id}", method=RequestMethod.GET)
+    public Object getReviewCount(@PathVariable("board_id") int board_id){
+        Object reviewCount = threadDAO.fGetReviewCount(board_id);
+        return reviewCount;
+    }
+    @RequestMapping(value="app/thread/getListReview/{username}", method=RequestMethod.GET)
+    public  List<ThreadView> getListReview(@PathVariable("username") String username){ 
+        System.out.print("Vao getListReview"+ threadDAO.getListReview(username));
+        return threadDAO.getListReview(username);
+    }
+    
 }

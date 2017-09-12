@@ -7,6 +7,8 @@ import nfc.model.Address;
 import nfc.model.Mail;
 import nfc.model.Order;
 import nfc.model.PKModel.SupplierUserPK;
+import nfc.model.Product;
+import nfc.model.ProductOptional;
 import nfc.model.Supplier;
 import nfc.model.SupplierCategories;
 import nfc.model.SupplierImage;
@@ -14,7 +16,9 @@ import nfc.model.SupplierUser;
 import nfc.model.SupplierWork;
 import nfc.model.SupplierFavorite;
 import nfc.model.ViewModel.BillHistory;
+import nfc.model.ViewModel.BillHistoryView;
 import nfc.model.ViewModel.BillSupplierInformation;
+import nfc.model.ViewModel.ProductOptionalBH;
 import nfc.model.ViewModel.SupplierAppView;
 import nfc.model.ViewModel.SupplierView;
 
@@ -45,8 +49,8 @@ public interface ISupplierService {
 	List<Supplier> getListSupplierFavoriteByUser(String userID);
 	void deleteFavoriteStore(Session session, int suppl_id);
 	String deleteStoreFavorite(int supplId);
-	List<BillHistory> getListBillHistory (String userID);
-	List<BillHistory> getListSearchBillHistory(String userID, String dateFrom, String dateTo);
+	List<BillHistoryView> getListBillHistory(String userID) ;
+	List<BillHistoryView> getListSearchBillHistory(String userID, String dateFrom, String dateTo);
         List<Supplier> getListSupplierManage(int roleId);
         List<Supplier> getListSupplierFromRoles(String roleJoin);
         List<SupplierWork> getListSupplierWorkOfManager(int manageSupplId);
@@ -64,4 +68,5 @@ public interface ISupplierService {
         List<Supplier> getListSupplierChildFromUser(String userId);
         List<Supplier> getListSupplierFromSupplierIds(String supplierIds);
         
+        List<ProductOptionalBH> getListProductOptions(String stringList);
 }

@@ -22,6 +22,7 @@ import nfc.model.Thread;
 import nfc.model.ViewModel.BoardView;
 import nfc.model.ViewModel.GridView;
 import nfc.model.ViewModel.ProductView;
+import nfc.model.ViewModel.ThreadImageView;
 
 @RestController
 public class BoardManagementController {
@@ -63,18 +64,21 @@ public class BoardManagementController {
         System.out.println("count is: " + threads.size());
         return threads;
     } 
+    
     @RequestMapping(value="board/thread/delete/{id}", method=RequestMethod.DELETE)
     public @ResponseBody String deleteThread(@PathVariable("id") String threadId){
         System.out.println("Vao delete " + threadId);
         String data =boardDAO.deleteThread(threadId) + "";
         return "{\"result\":\"" + data + "\"}";
     }
+    
     @RequestMapping(value="board/delete/{id}", method=RequestMethod.DELETE)
     public @ResponseBody String deleteBoard(@PathVariable("id") int boardId){
         System.out.println("Vao delete " + boardId);
         String data =boardDAO.deleteBoard(boardId) + "";
         return "{\"result\":\"" + data + "\"}";
     }
+    
     @RequestMapping(value="app/board/thread/{id}", method=RequestMethod.GET)
     public List<Thread> getThread(@PathVariable("id") int board_id){
         System.out.println("boardId is: " + board_id);	
@@ -82,28 +86,38 @@ public class BoardManagementController {
         System.out.println("threads is: " + threads);	
         return threads;
     }
+    
     @RequestMapping(value="app/board/threadsmall/{id}", method=RequestMethod.GET)
     public List<Thread> getThreadSmall(@PathVariable("id") String thread_id){
         System.out.println("thread_id is: " + thread_id);	
         List<Thread> threads = boardDAO.getListThreadSmall(thread_id);
         return threads;
     }
+    
     @RequestMapping(value="app/board/{id}", method=RequestMethod.GET)
     public List<Board> getListBoardForApp(@PathVariable("id") int boardId){
         System.out.println("boardId is: " + boardId);	
         List<Board> threads = boardDAO.getListBoards(boardId);
         return threads;
     }
+    
     @RequestMapping(value="app/boardview/{id}", method=RequestMethod.GET)
     public BoardView getBoardView(@PathVariable("id") int boardId){
         System.out.println("boardId is: " + boardId);	
         BoardView threads = boardDAO.getBoardView(boardId);// .getListBoards(boardId);
         return threads;
     }
+    
+//    @RequestMapping(value="app/thread/add", method=RequestMethod.POST)
+//    public @ResponseBody String insertThread(@RequestBody Thread thread){
+//        String data = boardDAO.insertThread(thread) + "";// .insertProductView(productView) + "";
+//        return "{\"result\":\"" + data + "\"}";
+//    }
+    
     @RequestMapping(value="app/thread/add", method=RequestMethod.POST)
-    public @ResponseBody String insertThread(@RequestBody Thread thread){
-        String data = boardDAO.insertThread(thread) + "";// .insertProductView(productView) + "";
-        return "{\"result\":\"" + data + "\"}";
+    public @ResponseBody String insertThread(@RequestBody ThreadImageView thread){
+            String data = boardDAO.insertThreadImageView(thread) + "";// .insertProductView(productView) + "";
+            return "{\"result\":\"" + data + "\"}";
     }
 	
 }

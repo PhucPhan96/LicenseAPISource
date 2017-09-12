@@ -21,6 +21,7 @@ import nfc.service.IUserService;
 import nfc.serviceImpl.common.Utils;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -202,5 +203,21 @@ public class TextService implements ITextService {
         }
         return jsonArr;
     }
+     public List<Text> getListTextbyTextInput(String textInput, String text_type) {
+       List<Text> lstText= new ArrayList<Text>();
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        String sqlQuery = "SELECT * FROM 82wafoodgo.fg_texts where text_title like '%" + textInput + "%' AND text_type='"+text_type+"'";
+        try {
+            Query query = session.createSQLQuery(sqlQuery).addEntity(Text.class);;
+            lstText = (List<Text>) query.list();
+            trans.commit();
+            
+        } catch (Exception ex) {            
+            System.out.println(ex);
+        }
+        return lstText;
+    }
+
 
 }

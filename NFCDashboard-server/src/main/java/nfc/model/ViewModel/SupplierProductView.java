@@ -7,12 +7,12 @@ import nfc.model.Category;
 import nfc.model.Product;
 
 public class SupplierProductView {
-	private List<Product> products = new ArrayList<Product>();
+	private List<ProductView> products = new ArrayList<ProductView>();
 	private Category category = new Category();
-	public List<Product> getProducts() {
+	public List<ProductView> getProducts() {
 		return products;
 	}
-	public void setProducts(List<Product> products) {
+	public void setProducts(List<ProductView> products) {
 		this.products = products;
 	}
 	public Category getCategory() {

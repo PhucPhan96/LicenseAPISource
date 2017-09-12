@@ -6,6 +6,7 @@ import nfc.model.Board;
 import nfc.model.Thread;
 import nfc.model.ViewModel.BoardView;
 import nfc.model.ViewModel.GridView;
+import nfc.model.ViewModel.ThreadImageView;
 
 public interface IBoardService {
 	boolean insertBoard(Board board);
@@ -22,4 +23,5 @@ public interface IBoardService {
         Board getBoard(int boardId);
         
         GridView getListBoardGrid(GridView gridData);
+        public boolean insertThreadImageView(ThreadImageView threadImgView);
 }

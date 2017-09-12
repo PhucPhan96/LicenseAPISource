@@ -16,25 +16,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import nfc.model.AttachFile;
 import nfc.model.Board;
-import nfc.model.Category;
-import nfc.model.Role;
-import nfc.model.SupplierAddress;
-import nfc.model.SupplierCategories;
-import nfc.model.SupplierImage;
-import nfc.model.Text;
 import nfc.model.User;
 import nfc.model.Thread;
 import nfc.model.ThreadImg;
 import nfc.service.IBoardService;
 import nfc.service.IFileService;
-import nfc.model.ViewModel.SupplierAddressView;
-import nfc.model.ViewModel.SupplierView;
 import nfc.model.ViewModel.BoardView;
 import nfc.model.ViewModel.GridView;
+import nfc.model.ViewModel.ThreadImageView;
 import nfc.service.IUserService;
 import nfc.serviceImpl.common.Utils;
 import org.hibernate.criterion.Order;
-import org.hibernate.transform.Transformers;
 import org.hibernate.type.LongType;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -86,7 +78,27 @@ public class BoardService implements IBoardService{
             trans.rollback();
             return false;
         }
+    }    
+    public boolean insertThreadImageView(ThreadImageView threadImgView) {
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        try{
+            ThreadImg threadImg = new ThreadImg();
+            session.save(threadImgView.getThread());
+            threadImg.setThread_id(threadImgView.getThread().getThread_id());
+            threadImg.setImg_id(threadImgView.getThread_img().getFile_id());
+            session.save(threadImg);
+            trans.commit();
+            return true;			
+        }
+        catch(Exception ex)
+        {
+            System.out.println("Error " + ex.getMessage());
+            trans.rollback();
+            return false;
+        }
     }
+    
     public List<Board> getListBoard(String userName)
     {
         Session session = this.sessionFactory.getCurrentSession();
