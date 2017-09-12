@@ -712,14 +712,14 @@ public class SupplierService implements ISupplierService {
         return list;
     }
     
-    private List<Supplier> getListSupplierFromCategory(String categoryId, String storeType){
+ private List<Supplier> getListSupplierFromCategory(String categoryId, String storeType){
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
         List<Supplier> suppliers = new ArrayList<>();
         try {
-            String sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id join fg_delivery d on d.delivery_id = sw.delivery_id where d.delivery_url !=  '#' and FIND_IN_SET(sc.cate_id,'"+categoryId+"')";
+            String sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where sw.delivery_id = 'DELIVERIED' and FIND_IN_SET(sc.cate_id,'"+categoryId+"')";
             if(storeType == "NONDELIVERY"){
-                sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id join fg_delivery d on d.delivery_id = sw.delivery_id where d.delivery_url =  '#' and FIND_IN_SET(sc.cate_id,'"+categoryId+"')";
+                sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where sw.delivery_id != 'DELIVERIED' and FIND_IN_SET(sc.cate_id,'"+categoryId+"')";
             }
             else if(storeType == "ALL"){
                 sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where FIND_IN_SET(sc.cate_id,'"+categoryId+"')";
