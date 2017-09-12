@@ -32,11 +32,11 @@ public class ProductStoreManagementController {
         return products;
     }
     
-    @RequestMapping(value = "productStores/getListCategoryBySupId/{suppl_id}", method = RequestMethod.GET)
-    public List<Category> getListCategoryBySupId(@PathVariable("suppl_id") int suppl_id) {   
-        List<Category> categories = productStoreDAO.getListCategoryBySupId(suppl_id);
-        return categories;
-    }
+//    @RequestMapping(value = "productStores/getListCategoryBySupId/{suppl_id}", method = RequestMethod.GET)
+//    public List<Category> getListCategoryBySupId(@PathVariable("suppl_id") int suppl_id) {   
+//        List<Category> categories = productStoreDAO.getListCategoryBySupId(suppl_id);
+//        return categories;
+//    }
     
     @RequestMapping(value = "productStores/getListProductByCategoryID/{cate_id}/{suppl_id}", method = RequestMethod.GET)
     public List<Product> getListProductByCategoryID(@PathVariable("cate_id") int cate_id,@PathVariable("suppl_id") int suppl_id) {   

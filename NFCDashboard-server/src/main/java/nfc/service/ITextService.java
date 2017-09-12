@@ -7,6 +7,7 @@ package nfc.service;
 
 import java.util.List;
 import nfc.model.Text;
+import nfc.model.ViewModel.GridView;
 
 /**
  *
@@ -16,6 +17,7 @@ public interface ITextService {
     List<Text> getAllText();
     List<Text> getListText();
     List<Text> getListTextByType(String text_type);
+    GridView getListTextGrid(GridView gridData);
     Text getTextbyId(int text_id);
     boolean updateText(Text text);
     boolean insertText(Text text);

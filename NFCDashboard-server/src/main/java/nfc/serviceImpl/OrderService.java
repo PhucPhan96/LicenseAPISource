@@ -33,6 +33,7 @@ import nfc.model.SupplierWork;
 import nfc.model.User;
 import nfc.model.Filter;
 import nfc.model.UserAddress;
+import nfc.model.ViewModel.DeliveryInformation;
 import nfc.model.ViewModel.OrderView;
 import nfc.model.ViewModel.SupplierAddressView;
 import nfc.model.ViewModel.UserAddressView;
@@ -359,7 +360,7 @@ public class OrderService implements IOrderService {
         //Transaction trans = session.beginTransaction();
         Order order = new Order();
         try{
-            Query query = session.createSQLQuery("SELECT * FROM 82wafoodgo.fg_orders order by order_date desc limit 1")
+            Query query = session.createSQLQuery("SELECT * FROM 82wafoodgo.fg_orders order by order_id desc limit 1")
                           .addEntity(Order.class);
             order = (Order) query.uniqueResult();
             //trans.commit();
@@ -451,7 +452,7 @@ public class OrderService implements IOrderService {
         Transaction trans = session.beginTransaction();
         List<Order> orders = new ArrayList<>();
         try {
-            Query query = session.createSQLQuery("select o.*, s.supplier_name, s.address from fg_orders o inner join fg_supplier_users su on o.suppl_id = su.suppl_id inner join fg_suppliers s on s.suppl_id = su.suppl_id where su.user_id='" + userId + "' and order_date >= current_date() order by o.order_date desc")
+            Query query = session.createSQLQuery("select o.*, s.supplier_name from fg_orders o inner join fg_supplier_users su on o.suppl_id = su.suppl_id inner join fg_suppliers s on s.suppl_id = su.suppl_id where su.user_id='" + userId + "' and order_date >= current_date() order by o.order_date desc")
                     .setResultTransformer(Transformers.aliasToBean(Order.class));
             orders = (List<Order>) query.list();
             trans.commit();
@@ -539,4 +540,20 @@ public class OrderService implements IOrderService {
         return vatReports;
     }
     
+    public DeliveryInformation getDeliveryInformation(String orderId){
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        DeliveryInformation deliveryInfor = new DeliveryInformation();
+        try {
+            Query query = session.createSQLQuery("CALL SP_GetDeliveryInformation(:orderId)")
+                    .setParameter("orderId", orderId)
+                    .setResultTransformer(Transformers.aliasToBean(DeliveryInformation.class));
+            deliveryInfor = (DeliveryInformation) query.uniqueResult();
+            trans.commit();
+        } catch (Exception ex) {
+            System.err.println("error " + ex.getMessage());
+            trans.rollback();
+        }
+        return deliveryInfor;
+    }
 }

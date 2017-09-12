@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 import nfc.model.SearchQA;
 import nfc.model.Text;
+import nfc.model.ViewModel.GridView;
 import nfc.service.ITextService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +34,13 @@ public class TextManagementController {
         List<Text> texts = textDAO.getListText();
         return texts;
     }
+    
+    @RequestMapping(value = "texts/grid", method = RequestMethod.POST)
+    public GridView getListTextGrid(@RequestBody GridView gridData) {
+        return textDAO.getListTextGrid(gridData);
+    }
+    
+    
 
     @RequestMapping(value = "texts/getListTextByType/{text_type}", method = RequestMethod.GET)
     public List<Text> getListTextByType(@PathVariable("text_type") String text_type) {   
@@ -56,6 +64,13 @@ public class TextManagementController {
     }
     @RequestMapping(value = "texts/insert", method = RequestMethod.POST)
     public @ResponseBody String insertText(@RequestBody Text text) {
+        System.out.println("Value insertText:");
+        String data = textDAO.insertText(text) + "";         
+        return "{\"result\":\"" + data + "\"}";
+        
+    } 
+    @RequestMapping(value = "app/texts/insert", method = RequestMethod.POST)
+    public @ResponseBody String insertTextApp(@RequestBody Text text) {
         System.out.println("Value insertText:");
         String data = textDAO.insertText(text) + "";         
         return "{\"result\":\"" + data + "\"}";

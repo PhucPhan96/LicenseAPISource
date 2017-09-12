@@ -25,15 +25,16 @@ public class ProductStoreService implements IProductStoreService {
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
-    public List<Category> getListCategoryBySupId(int suppl_id ) {
-        Session session = this.sessionFactory.getCurrentSession();
-        Transaction trans = session.beginTransaction();
-        Query query = session.createSQLQuery("SELECT pc.cate_id,c.app_id,c.cate_img_id, c.cate_name,c.parent_cate_id,c.created_date,c.cate_seq,c.cate_type FROM fg_product_categories pc inner join fg_categories c on pc.cate_id=c.cate_id WHERE pc.prod_id IN (SELECT p.prod_id FROM fg_products p WHERE p.suppl_id = "+suppl_id+")GROUP BY pc.cate_id").addEntity(Category.class);
-        List<Category> listCategory = query.list();
-        trans.commit();         
-        return listCategory;
-    }
     
+//    public List<Category> getListCategoryBySupId(int suppl_id ) {
+//        Session session = this.sessionFactory.getCurrentSession();
+//        Transaction trans = session.beginTransaction();
+//        Query query = session.createSQLQuery("SELECT pc.cate_id,c.app_id,c.cate_img_id, c.cate_name,c.parent_cate_id,c.created_date,c.cate_seq,c.cate_type, c.suppl_id FROM fg_product_categories pc inner join fg_categories c on pc.cate_id=c.cate_id WHERE pc.prod_id IN (SELECT p.prod_id FROM fg_products p WHERE p.suppl_id = "+suppl_id+")GROUP BY pc.cate_id").addEntity(Category.class);
+//        List<Category> listCategory = query.list();
+//        trans.commit();         
+//        return listCategory;
+//    }
+//    
     
      public List<Product> getListProductBySupplId(int suppl_id) {
         Session session = this.sessionFactory.getCurrentSession();

@@ -27,6 +27,9 @@ public class Text {
     private String text_title;
     private String text_type;
     private Date text_updatedDate;
+    
+    private String code_name;
+    private String user_name;
 
     @Id
     @Column(name = "text_id")
@@ -91,5 +94,27 @@ public class Text {
     public void setText_updatedDate(Date text_updatedDate) {
         this.text_updatedDate = text_updatedDate;
     }
+
+    @javax.persistence.Transient
+    public String getCode_name() {
+        return code_name;
+    }
+
+    public void setCode_name(String code_name) {
+        this.code_name = code_name;
+    }
+
+    @javax.persistence.Transient
+    public String getUser_name() {
+        return user_name;
+    }
+
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
+    }
+    
+    
+    
+    
 
 }

@@ -323,4 +323,17 @@ public class SupplierManagementController {
         return lstSupplierView;
     }
     
+    
+    @RequestMapping(value = "/suppliers/child/{userId}", method = RequestMethod.GET)
+    public List<Supplier> getListSupplierChildOfUser(@PathVariable("userId") String userId) {
+        List<Supplier> suppliers = supplierDAO.getListSupplierChildFromUser(userId);
+        return suppliers;
+    }
+    
+    
+    @RequestMapping(value = "/suppliers/supplierIds/{supplierIds}", method = RequestMethod.GET)
+    public List<Supplier> getListSupplierFromSupplierIds(@PathVariable("supplierIds") String supplierIds) {
+        List<Supplier> suppliers = supplierDAO.getListSupplierFromSupplierIds(supplierIds);
+        return suppliers;
+    }
 }

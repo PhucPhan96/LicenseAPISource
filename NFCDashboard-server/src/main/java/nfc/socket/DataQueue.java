@@ -53,7 +53,6 @@ public class DataQueue {
     
     public void addDataQueue(StoreBasePacket data){
         synchronized(dataQueue){
-            System.err.println("Add data queue");
             dataQueue.add(data);
             dataQueue.notify();
         }

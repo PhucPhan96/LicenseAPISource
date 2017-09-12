@@ -15,6 +15,8 @@ import nfc.serviceImpl.Security.JwtTokenUtil;
 import nfc.serviceImpl.common.Utils;
 
 import java.util.UUID;
+import nfc.model.ViewModel.GridView;
+import org.json.simple.JSONArray;
 import nfc.model.SupplierFavorite;
 import nfc.model.ViewModel.SupplierView;
 
@@ -136,9 +138,28 @@ public class UserManagementController {
         return "{\"result\":\"" + data + "\"}";
     }
 
-    @RequestMapping(value = "app/user/addUserFB", method = RequestMethod.POST)
-    public @ResponseBody
-    String insertUserFacebook(@RequestBody User user) {
+
+    @RequestMapping(value="/users/role",method=RequestMethod.POST)
+    public GridView getListUserOfRole(@RequestBody GridView gridData){
+        gridData.setCount(userDAO.countUserGrid(gridData));
+        List<User>  users = userDAO.getListUserGrid(gridData);
+        JSONArray response = new JSONArray();
+        for(User user: users){
+            JSONObject object = new JSONObject();
+            object.put("first_name", user.getFirst_name());
+            object.put("last_name", user.getLast_name());
+            object.put("user_name", user.getUser_name());
+            object.put("email", user.getEmail());
+            object.put("created_date", Utils.convertDateToString(user.getCreated_date()));
+            object.put("user_id", user.getUser_id());
+            response.add(object);
+        }
+        gridData.setResponse(new ArrayList<>(response));
+        return gridData;
+    }
+
+    @RequestMapping(value="app/user/addUserFB", method=RequestMethod.POST)
+    public @ResponseBody  String insertUserFacebook(@RequestBody User user){	
         user.setApp_id(Utils.appId);
         UUID uuid = UUID.randomUUID();
         String randomUUID = uuid.toString();
@@ -150,7 +171,7 @@ public class UserManagementController {
 
         boolean data = userDAO.insertUserFb(user);
         System.out.println(data);
-        if (data) {
+        if(data){
             final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUser_name());
             final String token = jwtTokenUtil.generateToken(userDetails);
             System.out.println(token);

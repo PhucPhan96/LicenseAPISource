@@ -7,6 +7,7 @@ import nfc.model.Filter;
 import nfc.model.Order;
 import nfc.model.OrderDetail;
 import nfc.model.PaymentOrderHistory;
+import nfc.model.ViewModel.DeliveryInformation;
 import nfc.model.ViewModel.OrderView;
 import nfc.model.ViewModel.VATReport;
 import nfc.model.ViewModel.VATReportInformation;
@@ -34,4 +35,5 @@ public interface IOrderService {
         List<Order> getListOrderOfBill(BillRequestFilter filter);
         VATReport getVATReport(BillRequestFilter filter);
         List<VATReportInformation> getListVATReportFromOrder(BillRequestFilter filter);
+        DeliveryInformation getDeliveryInformation(String orderId);
 }

@@ -9,7 +9,8 @@ import java.io.InputStreamReader;
 import java.util.logging.Logger;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.NameValuePair;;
+import org.apache.commons.httpclient.NameValuePair;import org.apache.commons.httpclient.methods.GetMethod;
+;
 /**
  *
  * @author Admin
@@ -31,7 +32,7 @@ public class NFCHttpClient {
         return SingletonHelper.INSTANCE;
     }
     
-    public JSONObject  sendPost(JSONObject infoRequest, JSONObject json){
+    public JSONObject sendPost(JSONObject infoRequest, JSONObject json){
         JSONObject  response= new JSONObject ();
         try{
             PostMethod post = new PostMethod(infoRequest.get("url").toString());
@@ -49,6 +50,25 @@ public class NFCHttpClient {
             log.info("status text: " + HttpStatus.getStatusText(statusCode));
             log.info("response body: " + post.getResponseBodyAsString());
             response = (JSONObject)(new JSONParser().parse(new InputStreamReader(post.getResponseBodyAsStream())));
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            log.info("error: " + e.getMessage());
+        }
+        return response;
+    } 
+    
+    public JSONObject sendGet(JSONObject infoRequest, NameValuePair[] params){
+        JSONObject  response= new JSONObject ();
+        try{
+            GetMethod get = new GetMethod(infoRequest.get("url").toString());
+            get.setQueryString(params);
+            HttpClient client = new HttpClient();
+            int statusCode = client.executeMethod(get);
+            log.info("status code: " + statusCode);
+            log.info("status text: " + HttpStatus.getStatusText(statusCode));
+            log.info("response body: " + get.getResponseBodyAsString());
+            response = (JSONObject)(new JSONParser().parse(new InputStreamReader(get.getResponseBodyAsStream())));
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
