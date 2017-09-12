@@ -4,20 +4,25 @@ import java.math.BigDecimal;
 import java.util.Date;
 import nfc.messages.OrderStatusCustomerMessage;
 import nfc.messages.OrderStatusMessage;
-import nfc.messages.OrderStatusRequest;
-import nfc.messages.SpeedPayCancel;
+import nfc.messages.request.OrderStatusRequest;
+import nfc.messages.request.PaymentCancel;
 import nfc.messages.base.BasePacket;
+import nfc.messages.base.DeliveryRequestPacket;
+import nfc.messages.request.Delivery82WaRequest;
 import nfc.model.Discount;
 import nfc.model.Order;
 import nfc.model.PaymentOrderHistory;
+import nfc.model.ViewModel.DeliveryInformation;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import nfc.model.ViewModel.OrderView;
 import nfc.service.IDiscountService;
 import nfc.service.IOrderService;
 import nfc.service.IUserService;
+import nfc.serviceImpl.common.PushNotification;
 import nfc.serviceImpl.common.SpeedPayInformation;
 import nfc.serviceImpl.common.Utils;
+import nfc.serviceImpl.delivery.DeliveryFactory;
 import nfc.serviceImpl.payment.PaymentFactory;
 import nfc.socket.CustomerDataQueue;
 import nfc.socket.DataQueue;
@@ -26,24 +31,21 @@ import org.json.simple.JSONObject;
 public class OrderServiceEndpoint {
 	@Autowired
 	private IOrderService orderDAO;
-        @Autowired
-        private IUserService userDAO;
+//        @Autowired
+//        private IUserService userDAO;
         @Autowired
         private IDiscountService discountDAO;
         
 	public OrderView saveOrder(OrderView orderView)
 	{
-            
             setupOderView(orderView);
             if(!orderDAO.insertOrderView(orderView)){
-                System.err.println("Set Faile");
                 orderView.getOrder().setOrder_status(Utils.ORDER_FAILED);
             }
             return orderView;
 	}
         
         private void setupOderView(OrderView orderView){
-            System.err.println("vao setup order view");
             Order order  = orderView.getOrder();
             setDiscountOrder(order);
             setOnlineFeeOrder(order);
@@ -52,7 +54,6 @@ public class OrderServiceEndpoint {
             setDeliveryFee(order);
             calculatorOrderAmount(order);
             setDateForOrder(order);
-            System.err.println("vao setup order view xong");
         }
         
         private void setDiscountOrder(Order order){
@@ -119,15 +120,17 @@ public class OrderServiceEndpoint {
         
         public OrderStatusRequest orderComplete(OrderStatusRequest orderStatusRequest){
             //send data to delivery system
+            sendOrderToDeliverySystem(orderStatusRequest);
             sendOrderStatusToStore(orderStatusRequest, BasePacket.PacketType.COMPLETE_ORDER);
-            sendDataToCustomer(orderStatusRequest, BasePacket.PacketType.COMPLETE_ORDER);
+            pushNotificationToCustomer(orderStatusRequest);
             return orderStatusRequest;
         }
         
         public OrderStatusRequest orderCancel(OrderStatusRequest orderStatusRequest){
-            if(cancelOrder(orderStatusRequest.getOrderId())){
+            if(cancelOrder(orderStatusRequest)){
                 orderDAO.updateOrderStatus(orderStatusRequest.getOrderId(), Utils.ORDER_CANCEL);
-                sendDataToCustomer(orderStatusRequest, BasePacket.PacketType.CANCEL_ORDER);
+                pushNotificationToCustomer(orderStatusRequest);
+                //sendDataToCustomer(orderStatusRequest, BasePacket.PacketType.CANCEL_ORDER);
                 sendOrderStatusToStore(orderStatusRequest, BasePacket.PacketType.CANCEL_ORDER);
             }
             else{
@@ -143,7 +146,8 @@ public class OrderServiceEndpoint {
         }
         
         public OrderStatusRequest orderCooking(OrderStatusRequest orderStatusRequest){
-            sendDataToCustomer(orderStatusRequest, BasePacket.PacketType.COOKING_ORDER);
+            pushNotificationToCustomer(orderStatusRequest);
+            //sendDataToCustomer(orderStatusRequest, BasePacket.PacketType.COOKING_ORDER);
             sendOrderStatusToStore(orderStatusRequest, BasePacket.PacketType.COOKING_ORDER);
             return orderStatusRequest;
         }
@@ -163,12 +167,38 @@ public class OrderServiceEndpoint {
             CustomerDataQueue.getInstance().addDataQueue(orderStatusCustomerMessage);
         }
         
-        private boolean cancelOrder(String orderId){
+        
+        private void pushNotificationToCustomer(OrderStatusRequest orderStatusRequest){
+            
+            PushNotification.getInstance().pushNotification(orderStatusRequest.getUuid(), "Information", getMessageOfOrderStatus(orderStatusRequest.getStatus()));
+        }
+        
+        private String getMessageOfOrderStatus(String status){
+            String message = "";
+            if(status == Utils.ORDER_CANCEL){
+                return "Order cancel";
+            }
+            else if(status == Utils.ORDER_COMPLETE || status == Utils.ORDER_DELIVERY_FAILED){
+                return "Order complete";
+            }
+            else if(status == Utils.ORDER_DELIVERY_SUCCESS){
+                return "Order delivering";
+            }
+            else if(status == Utils.ORDER_COOKING){
+                return "Order cooking";
+            }
+            else if(status == Utils.ORDER_FAILED){
+                return "Order failed";
+            }
+            return message;
+        }
+        
+        private boolean cancelOrder(OrderStatusRequest orderStatusRequest){
             try{
-                PaymentOrderHistory paymentHistory = orderDAO.getPaymentOrderHistory(orderId);
-                SpeedPayCancel speedPayCancel = new SpeedPayCancel();
+                PaymentOrderHistory paymentHistory = orderDAO.getPaymentOrderHistory(orderStatusRequest.getOrderId());
+                PaymentCancel speedPayCancel = new PaymentCancel();
                 speedPayCancel.setId(paymentHistory.getPayment_unique_number());
-                JSONObject resultPayment = PaymentFactory.getPaymentApi(SpeedPayInformation.PaymentAPI.SPEED_PAY).cancel(speedPayCancel);
+                JSONObject resultPayment = PaymentFactory.getPaymentApi(orderStatusRequest.getPayment_code()).cancel(speedPayCancel);
                 if(resultPayment.containsKey("success") && resultPayment.get("success") == "true"){
                     return true;
                 }
@@ -179,4 +209,45 @@ public class OrderServiceEndpoint {
             } 
         }
         
+        
+        private void sendOrderToDeliverySystem(OrderStatusRequest request){
+            DeliveryInformation delivery = getDeliveryInformation(request.getOrderId());
+            if(isStoreNonDelivery(delivery)){
+                if(sendDelivery(delivery)){
+                    request.setStatus(Utils.ORDER_DELIVERY_SUCCESS);
+                }
+                else{
+                    request.setStatus(Utils.ORDER_DELIVERY_FAILED);
+                }
+            }
+        }
+        
+        private boolean isStoreNonDelivery(DeliveryInformation delivery){
+            if(delivery.getDelivery_id().equals("DELIVERIED"))
+                return false;
+            return true;
+        }
+        
+        private DeliveryInformation getDeliveryInformation(String orderId){
+            return orderDAO.getDeliveryInformation(orderId);
+        }
+        
+        private boolean sendDelivery(DeliveryInformation delivery){
+            JSONObject response = DeliveryFactory.getDeliveryApi(delivery.getDelivery_id()).order(initDeliveryRequest(delivery));
+            return isSendSuccess(response);
+        }
+        
+        private DeliveryRequestPacket initDeliveryRequest(DeliveryInformation delivery){
+            DeliveryRequestPacket request = new DeliveryRequestPacket();
+            request.setCust_tel(delivery.getDelivery_phone());
+            request.setPrice(delivery.getOrder_amt().longValue());
+            request.setReach_addr(delivery.getDelivery_addr());
+            return request; 
+        }
+        
+        private boolean isSendSuccess(JSONObject response){
+            if(response.get("result").equals("OK"))
+                return true;
+            return false;
+        }
 }

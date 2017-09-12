@@ -11,20 +11,28 @@ import java.util.Date;
 import java.util.List;
 import nfc.model.Text;
 import nfc.model.User;
+import nfc.model.ViewModel.BillSupplierInformation;
+import nfc.model.ViewModel.GridFiltering;
+import nfc.model.ViewModel.GridView;
 import nfc.model.ViewModel.TextView;
 import nfc.service.ICodeService;
 import nfc.service.ITextService;
 import nfc.service.IUserService;
+import nfc.serviceImpl.common.Utils;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
+import org.hibernate.type.LongType;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- *
+ *   
  * @author Admin
  *
  */
@@ -136,6 +144,63 @@ public class TextService implements ITextService {
             trans.rollback();
             return false;
         }
+    }
+    
+    public GridView getListTextGrid(GridView gridData){
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        try {
+            StringBuilder filterBuild = Utils.generateGridFilterString(gridData, "text_type", "user_name");
+            setFilterString(filterBuild, gridData);
+            String filter = filterBuild.toString();
+            List<Text> list = session.createSQLQuery("select *, (select code_name from fg_codes where sub_code = text_type and group_code = '0006') as code_name, (select user_name from fg_users where user_id = text_createdUser) as user_name from fg_texts " + (filter.equals("")  ? "" :  (" where " + filter)) + " limit " + gridData.getPageSize() + " offset " + ((gridData.getPageIndex() - 1) * gridData.getPageSize()))
+                    .setResultTransformer(Transformers.aliasToBean(Text.class))
+                    .list();
+            gridData.setResponse(new ArrayList<>(convertTextToJson(list)));
+            
+            long count = (long) session.createSQLQuery("select count(*) as count from fg_texts " + (filter.equals("")  ? "" :  (" where " + filter)))
+                    .addScalar("count", LongType.INSTANCE)
+                    .uniqueResult();
+            gridData.setCount(count);
+            trans.commit();
+        } catch (Exception ex) {
+            System.err.println("error" + ex.getMessage());
+            trans.rollback();
+        }
+        return gridData;
+    }
+    
+    private void setFilterString(StringBuilder filter, GridView gridData){
+        for(GridFiltering filtering : gridData.getFiltering()){
+            if(filtering.getName().equals("user_name") && !filtering.getValue().equals("")){
+                appendFilter("text_createdUser IN (select user_id from fg_users where user_name like '%" + filtering.getValue()+ "%')", filter);
+            }
+            else if(filtering.getName().equals("text_type")&& !filtering.getValue().equals("")){
+                appendFilter("text_type in (select sub_code from fg_codes  where code_name like '%" + filtering.getValue() + "%' and group_code='0006')", filter);
+                
+            }
+        }
+    }
+    
+    private void appendFilter(String appendStr, StringBuilder filter){
+        if(filter.length() > 0){
+            filter.append(" and ");
+        }
+        filter.append(appendStr);
+    }
+    
+    private JSONArray convertTextToJson(List<Text> texts){
+        JSONArray jsonArr = new JSONArray();
+        for(Text text: texts){
+            JSONObject object = new JSONObject();
+            object.put("text_title", text.getText_title());
+            object.put("text_createdDate",Utils.convertDateToString(text.getText_createdDate()));
+            object.put("user_name", text.getUser_name());
+            object.put("text_type", text.getCode_name());
+            object.put("text_id", text.getText_id());
+            jsonArr.add(object);
+        }
+        return jsonArr;
     }
 
 }

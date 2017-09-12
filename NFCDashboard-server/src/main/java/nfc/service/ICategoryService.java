@@ -15,5 +15,6 @@ public interface ICategoryService {
 	Category getCategory(String cateID);
 	List<CategoryView> getListCategoryView(String type);
 	List<SupplierProductView> getListProductOfCategory(int supplierId);
+        List<Category> getListCategoryOfSupplier(int supplierId);
 	
 }

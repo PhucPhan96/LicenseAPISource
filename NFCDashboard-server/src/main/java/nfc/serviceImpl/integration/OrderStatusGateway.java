@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package nfc.serviceImpl.integration;
-import nfc.messages.OrderStatusRequest;
+import nfc.messages.request.OrderStatusRequest;
 import org.springframework.integration.annotation.Gateway;
 
 /**

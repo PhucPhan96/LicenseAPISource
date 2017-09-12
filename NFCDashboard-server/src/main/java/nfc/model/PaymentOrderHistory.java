@@ -22,6 +22,7 @@ public class PaymentOrderHistory {
     private String payment_unique_number;
     private String card_nm;
     private String card_id;
+    private String payment_code;
 
     @Id
     @Column(name="order_id")
@@ -59,6 +60,16 @@ public class PaymentOrderHistory {
     public void setCard_id(String card_id) {
         this.card_id = card_id;
     }
+
+    @Column(name="payment_code")
+    public String getPayment_code() {
+        return payment_code;
+    }
+
+    public void setPayment_code(String payment_code) {
+        this.payment_code = payment_code;
+    }
+    
     
     
     

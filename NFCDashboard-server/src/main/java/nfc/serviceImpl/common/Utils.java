@@ -20,6 +20,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.google.gson.Gson;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import nfc.model.ViewModel.GridFiltering;
+import nfc.model.ViewModel.GridView;
+import org.springframework.util.StringUtils;
 
 public class Utils {
     public static String appId="e6271952-d4b9-4ed3-b83b-63a56d47a713";
@@ -28,6 +32,8 @@ public class Utils {
     public static String ORDER_PAID = "PAID";
     public static String ORDER_COOKING = "COOKING";
     public static String ORDER_COMPLETE = "COMPLETE";
+    public static String ORDER_DELIVERY_SUCCESS = "DELIVERY_SUCCESS";
+    public static String ORDER_DELIVERY_FAILED = "DELIVERY_FAILED";
     public static String ORDER_CANCEL = "CANCEL";
     public static String ORDER_REQUEST_CANCEL = "REQUEST_CANCEL";
     
@@ -142,4 +148,29 @@ public class Utils {
         return modifiedDate;
     }
         
+    
+    public static StringBuilder generateGridFilterString(GridView gridView, String... rejectCoumns){
+        StringBuilder builder = new StringBuilder();
+        List<GridFiltering> filters = gridView.getFiltering();
+        for(int i =0; i <filters.size() ; i++){
+            if(!StringUtils.isEmpty(filters.get(i).getValue()) && !isColumReject(filters.get(i).getName(), rejectCoumns)){
+                builder.append(filters.get(i).getName() +  " like '%" +filters.get(i).getValue()+"%' and ");
+            }
+        }
+        if(builder.length()>0){
+            builder.replace(builder.length()-4, builder.length(), "");
+        }
+        return builder;
+    }
+    
+    
+    private static boolean isColumReject(String column, String... rejectCoumns){
+        for(String col : rejectCoumns){
+            if(col.equals(column)){
+                return true;
+            }
+        }
+        return false;
+    }
+    
 }

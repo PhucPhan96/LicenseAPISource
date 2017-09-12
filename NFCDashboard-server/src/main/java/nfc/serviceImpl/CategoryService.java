@@ -192,21 +192,20 @@ public class CategoryService implements ICategoryService{
 	}
 	
 	private List<Category> getListCategoryFromSupplier(int supplierId){
-		Session session = this.sessionFactory.getCurrentSession();
-		Transaction trans = session.beginTransaction();
-                List<Category> results = new ArrayList<Category>();
-                try{
-                    String sql = "SELECT * FROM fg_categories c INNER JOIN fg_product_categories pc ON c.cate_id = pc.cate_id INNER JOIN fg_products p ON pc.prod_id = p.prod_id WHERE p.suppl_id = "+supplierId + " GROUP BY p.cate_id";
-                    SQLQuery query = session.createSQLQuery(sql);
-                    query.addEntity(Category.class);
-                    results = query.list();
-                    trans.commit();
-                }
-                catch(Exception ex){
-                    trans.rollback();
-                }
-		
-		return results;
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            List<Category> results = new ArrayList<Category>();
+            try{
+                String sql = "SELECT * FROM fg_categories c INNER JOIN fg_product_categories pc ON c.cate_id = pc.cate_id INNER JOIN fg_products p ON pc.prod_id = p.prod_id WHERE p.suppl_id = "+supplierId + " GROUP BY p.cate_id";
+                SQLQuery query = session.createSQLQuery(sql);
+                query.addEntity(Category.class);
+                results = query.list();
+                trans.commit();
+            }
+            catch(Exception ex){
+                trans.rollback();
+            }
+            return results;
 	}
         
 	private List<Product> getListProductOfCategoryProduct(int cate){
@@ -253,4 +252,21 @@ public class CategoryService implements ICategoryService{
 		}*/
 		return lstSupplierProductView;
 	}
+        
+    public List<Category> getListCategoryOfSupplier(int supplierId){
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        List<Category> results = new ArrayList<Category>();
+        try{
+            String sql = "select * from fg_categories where cate_type='P' and suppl_id="+supplierId;
+            SQLQuery query = session.createSQLQuery(sql);
+            query.addEntity(Category.class);
+            results = query.list();
+            trans.commit();
+        }
+        catch(Exception ex){
+            trans.rollback();
+        }
+        return results;
+    }
 }

@@ -35,6 +35,7 @@ import nfc.model.UserAddress;
 import nfc.model.UserLogin;
 import nfc.model.UserRegister;
 import nfc.model.UserRole;
+import nfc.model.ViewModel.GridView;
 import nfc.model.ViewModel.SupplierAddressView;
 import nfc.model.ViewModel.UserAddressView;
 import nfc.service.IMailService;
@@ -45,6 +46,7 @@ import nfc.serviceImpl.common.Utils;
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.ResultTransformer;
 import org.hibernate.transform.Transformers;
+import org.hibernate.type.LongType;
 
 @Transactional
 public class UserService implements IUserService {
@@ -667,5 +669,44 @@ public class UserService implements IUserService {
         }
         return userId;
     }
+    
+    public List<User> getListUserGrid(GridView gridView){
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        List<User> users = new ArrayList<>();
+        try {
+            String filter = Utils.generateGridFilterString(gridView).toString();
+            filter = filter.equals("") ? "" : (" and " +  filter); 
+            users = session.createSQLQuery("select u.* from fg_users u join fg_supplier_users su on u.user_id = su.user_id where find_in_set(su.suppl_id, '" + gridView.getData() + "')" + filter + " limit " + gridView.getPageSize() + " offset " + ((gridView.getPageIndex() - 1) * gridView.getPageSize())).addEntity(User.class).list();
+            trans.commit();
+        } catch (Exception ex) {
+            trans.rollback();
+        }
+        return users;
+    }
+    
+    
+    public long countUserGrid(GridView gridView){
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        long count = 0;
+        try {
+            String filter = Utils.generateGridFilterString(gridView).toString();
+            filter = filter.equals("") ? "" : (" and " +  filter);
+            count = (long) session.createSQLQuery("select count(*) as count from fg_users u join fg_supplier_users su on u.user_id = su.user_id where find_in_set(su.suppl_id, '" + gridView.getData() + "')" + filter)
+                    .addScalar("count", LongType.INSTANCE)
+                    .uniqueResult();
+            trans.commit();
+        } catch (Exception ex) {
+            System.err.println("error " + ex.getMessage());
+            trans.rollback();
+        }
+        return count;
+    }
+    
+    
+    
+    
+    
 
 }

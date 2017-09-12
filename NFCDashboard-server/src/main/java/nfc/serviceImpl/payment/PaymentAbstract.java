@@ -3,17 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nfc.service.payment;
+package nfc.serviceImpl.payment;
 
+import nfc.messages.request.PaymentCancel;
 import nfc.messages.base.PaymentCancelPacket;
 import nfc.messages.base.PaymentRequestPacket;
+import nfc.messages.request.PayRequest;
 import org.json.simple.JSONObject;
 
 /**
  *
  * @author Admin
  */
-public interface IPayment {
-    JSONObject payment(PaymentRequestPacket paymentRequest);
-    JSONObject cancel(PaymentCancelPacket paymentCancelRequest);
+public abstract class PaymentAbstract {
+    protected String payment_code = "0";
+    public abstract JSONObject payment(PayRequest paymentRequest);
+    public abstract JSONObject cancel(PaymentCancel paymentCancelRequest);
 }

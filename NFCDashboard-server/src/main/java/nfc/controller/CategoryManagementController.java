@@ -43,7 +43,15 @@ public class CategoryManagementController {
         String username = jwtTokenUtil.getUsernameFromToken(token);
         List<Category> category = categoryDAO.getListCategory(username);
         return category;
-    } 
+    }
+    
+    @RequestMapping(value="category/supplier/{id}",method=RequestMethod.GET)
+    public List<Category> getListCategoryOfSupplier(@PathVariable("id") int supplierId){
+        List<Category> categories = categoryDAO.getListCategoryOfSupplier(supplierId);
+        return categories;
+    }
+    
+    
     @RequestMapping(value="category/{type}", method=RequestMethod.GET)
     public @ResponseBody List<Category> getListCategoryFilterType(@PathVariable("type") String type){
         List<Category> category = categoryDAO.getListCategoryFilterType(type);

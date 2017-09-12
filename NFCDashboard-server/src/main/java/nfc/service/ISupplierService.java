@@ -60,6 +60,8 @@ public interface ISupplierService {
         List<SupplierView> getListSupplierViewByTextInput(String text);
         List<Supplier> fGetListSupplierFromSuppIDManager(int supplId);
         List<Supplier> fGetListSupplierFromUserName(String userID);
-        
         BillSupplierInformation getBillSupplierInformation(String userId);
+        List<Supplier> getListSupplierChildFromUser(String userId);
+        List<Supplier> getListSupplierFromSupplierIds(String supplierIds);
+        
 }

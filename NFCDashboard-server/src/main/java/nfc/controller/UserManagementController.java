@@ -15,6 +15,8 @@ import nfc.serviceImpl.Security.JwtTokenUtil;
 import nfc.serviceImpl.common.Utils;
 
 import java.util.UUID;
+import nfc.model.ViewModel.GridView;
+import org.json.simple.JSONArray;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +61,25 @@ public class UserManagementController {
 	public List<User> getListUserOfRole(@PathVariable("id") int roleId){
             List<User> users = userDAO.getListUserOfRole(roleId);	
             return users; 
+	}
+        
+        @RequestMapping(value="/users/role",method=RequestMethod.POST)
+	public GridView getListUserOfRole(@RequestBody GridView gridData){
+            gridData.setCount(userDAO.countUserGrid(gridData));
+            List<User>  users = userDAO.getListUserGrid(gridData);
+            JSONArray response = new JSONArray();
+            for(User user: users){
+                JSONObject object = new JSONObject();
+                object.put("first_name", user.getFirst_name());
+                object.put("last_name", user.getLast_name());
+                object.put("user_name", user.getUser_name());
+                object.put("email", user.getEmail());
+                object.put("created_date", Utils.convertDateToString(user.getCreated_date()));
+                object.put("user_id", user.getUser_id());
+                response.add(object);
+            }
+            gridData.setResponse(new ArrayList<>(response));
+            return gridData;
 	}
         
 	@RequestMapping(value="app/user",method=RequestMethod.GET)

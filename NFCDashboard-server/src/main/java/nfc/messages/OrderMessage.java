@@ -47,4 +47,6 @@ public class OrderMessage extends StoreBasePacket{
             this.lstOrderDetail = lstOrderDetail;
     }    
     
+    
+    
 }

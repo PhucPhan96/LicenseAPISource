@@ -3,15 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nfc.messages;
+package nfc.messages.request;
 
+import nfc.messages.*;
 import nfc.messages.base.PaymentRequestPacket;
 
 /**
  *
  * @author Admin
  */
-public class SpeedPayRequest extends PaymentRequestPacket{
+public class PayRequest extends PaymentRequestPacket{
     
     private String card_no;
     private String card_ymd;
@@ -23,6 +24,7 @@ public class SpeedPayRequest extends PaymentRequestPacket{
     private String buyer_nm = "";
     private String buyer_phone_no = "";
     private String buyer_email= "";
+    private String payment_code;
 
     public String getCard_no() {
         return card_no;
@@ -103,6 +105,15 @@ public class SpeedPayRequest extends PaymentRequestPacket{
     public void setBuyer_email(String buyer_email) {
         this.buyer_email = buyer_email;
     }
+
+    public String getPayment_code() {
+        return payment_code;
+    }
+
+    public void setPayment_code(String payment_code) {
+        this.payment_code = payment_code;
+    }
+    
     
     
 }

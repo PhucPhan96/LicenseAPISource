@@ -1,7 +1,7 @@
 package nfc.serviceImpl.integration.endpoint;
 
 import java.util.stream.Collectors;
-import nfc.messages.OrderStatusRequest;
+import nfc.messages.request.OrderStatusRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.dsl.support.Function;
@@ -15,7 +15,6 @@ import nfc.serviceImpl.common.Utils;
 public class OrderRouter {
     
     public String routeOrder(OrderView orderView) {
-        System.err.println("vao nay chu");
         String result = "paymentOutputChannel"; 
         if(orderView.getOrder().getOrder_status().trim().equals(Utils.ORDER_FAILED)){
             result = "paymentOutputChannel";

@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nfc.messages;
+package nfc.messages.request;
+
+import nfc.messages.*;
 
 /**
  *
@@ -15,7 +17,8 @@ public class OrderStatusRequest {
     private int storeId;
     private String uuid;
     private String userIdStore;
-
+    private String payment_code;
+    
     public String getOrderId() {
         return orderId;
     }
@@ -54,6 +57,14 @@ public class OrderStatusRequest {
 
     public void setUserIdStore(String userIdStore) {
         this.userIdStore = userIdStore;
+    }
+
+    public String getPayment_code() {
+        return payment_code;
+    }
+
+    public void setPayment_code(String payment_code) {
+        this.payment_code = payment_code;
     }
     
     

@@ -6,12 +6,11 @@
 package nfc.serviceImpl.payment;
 
 import java.util.Date;
-import nfc.messages.SpeedPayCancel;
-import nfc.messages.SpeedPayRequest;
+import nfc.messages.request.PaymentCancel;
 import nfc.messages.base.PaymentCancelPacket;
 import nfc.messages.base.PaymentRequestPacket;
+import nfc.messages.request.PayRequest;
 import nfc.model.ViewModel.PaymentView;
-import nfc.service.payment.IPayment;
 import nfc.serviceImpl.common.NFCHttpClient;
 import nfc.serviceImpl.common.SpeedPayInformation;
 import org.apache.commons.httpclient.NameValuePair;
@@ -22,30 +21,24 @@ import org.springframework.util.StringUtils;
  *
  * @author Admin
  */
-public class SpeedPayPayment implements IPayment{
+public class SpeedPayPayment extends PaymentAbstract{
     
-    private static class SingletonHelper{
-        private static final SpeedPayPayment INSTANCE = new SpeedPayPayment(); 
+    public SpeedPayPayment(){
+        this.payment_code = "SPEEDPAY";
     }
     
-    public static SpeedPayPayment getInstance(){
-        return SingletonHelper.INSTANCE;
-    }
-        
-    public JSONObject payment(PaymentRequestPacket paymentRequest) {
-        SpeedPayRequest speedPayRequest = (SpeedPayRequest) paymentRequest;
-        System.err.println("infor " + speedPayRequest.getCard_no());
+    public JSONObject payment(PayRequest paymentRequest) {
         JSONObject requestData = new JSONObject();
-        requestData.put("card_no", speedPayRequest.getCard_no());
-        requestData.put("card_ymd", speedPayRequest.getCard_ymd());
-        requestData.put("amt", speedPayRequest.getAmt());
-        requestData.put("sell_nm", speedPayRequest.getSell_nm());
+        requestData.put("card_no", paymentRequest.getCard_no());
+        requestData.put("card_ymd", paymentRequest.getCard_ymd());
+        requestData.put("amt", paymentRequest.getAmt());
+        requestData.put("sell_nm", paymentRequest.getSell_nm());
         requestData.put("pg_type", "PG");
         requestData.put("pay_type", "O2B2_APP");
-        requestData.put("product_nm", speedPayRequest.getProduct_nm());
-        requestData.put("buyer_nm", speedPayRequest.getBuyer_nm());
-        requestData.put("buyer_phone_no", speedPayRequest.getBuyer_phone_no());
-        requestData.put("buyer_email", speedPayRequest.getBuyer_email());
+        requestData.put("product_nm", paymentRequest.getProduct_nm());
+        requestData.put("buyer_nm", paymentRequest.getBuyer_nm());
+        requestData.put("buyer_phone_no", paymentRequest.getBuyer_phone_no());
+        requestData.put("buyer_email", paymentRequest.getBuyer_email());
         requestData.put("tax_free_yn", "true");
         requestData.put("test_yn", "true");
         JSONObject requestHttp = new JSONObject();
@@ -57,9 +50,8 @@ public class SpeedPayPayment implements IPayment{
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public JSONObject cancel(PaymentCancelPacket paymentCancelRequest) {
-        SpeedPayCancel speedPayRequest = (SpeedPayCancel) paymentCancelRequest;
-        String url = "https://speed-pay.co.kr/api/v1/order/payments/"+ speedPayRequest.getId()+ "/cancel.json";
+    public JSONObject cancel(PaymentCancel paymentCancelRequest) {
+        String url = "https://speed-pay.co.kr/api/v1/order/payments/"+ paymentCancelRequest.getId()+ "/cancel.json";
         JSONObject requestHttp = new JSONObject();
         requestHttp.put("url", url);
         requestHttp.put("isAuthorization", "true");
@@ -110,6 +102,6 @@ public class SpeedPayPayment implements IPayment{
             SpeedPayInformation.getInstance().setToken("");
         }
     }
-    
+
     
 }

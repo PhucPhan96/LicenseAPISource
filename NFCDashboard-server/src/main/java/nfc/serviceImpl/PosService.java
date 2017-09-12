@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import nfc.model.Order;
 import nfc.model.OrderDetail;
+import nfc.model.PaymentOrderHistory;
 import nfc.model.User;
 import nfc.model.UserAddress;
 import nfc.model.ViewModel.OrderDetailView;
@@ -64,10 +65,22 @@ public class PosService implements IPosService{
                 }
                 posDetailView.setCustomer(customer);
                 posDetailView.setListOrderDetailView(getListDetailViewModel(order.getOrder_id()));
+                posDetailView.setPayment_code(getPaymentCode(order.getOrder_id()));
 
             }
             return posDetailView;
 	}
+        
+        private String getPaymentCode(String orderId){
+           PaymentOrderHistory orderHistory = orderDAO.getPaymentOrderHistory(orderId);
+           if(orderHistory != null){
+               return orderHistory.getPayment_code();
+           }
+           else{
+               return "";
+           }
+        }
+        
     
     private String getAddressOfUser(User user){
         String address = "";
@@ -94,7 +107,7 @@ public class PosService implements IPosService{
         try{
             Criteria criteria = session.createCriteria(Customer.class);
             criteria.add(Restrictions.eq("customer_id", customerId));
-            customer = (Customer) criteria.list();
+            customer = (Customer) criteria.uniqueResult();
             trans.commit();
         }
         catch(Exception ex){

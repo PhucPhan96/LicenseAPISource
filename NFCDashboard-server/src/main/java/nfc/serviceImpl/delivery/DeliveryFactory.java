@@ -3,33 +3,31 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nfc.serviceImpl.payment;
+package nfc.serviceImpl.delivery;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import nfc.serviceImpl.common.SpeedPayInformation;
-import nfc.serviceImpl.common.Utils;
+import nfc.serviceImpl.payment.PaymentFactory;
 import org.reflections.Reflections;
 
 /**
  *
  * @author Admin
  */
-public class PaymentFactory{
-    
+public class DeliveryFactory {
     private static final Logger log =  Logger.getLogger(PaymentFactory.class.toString());
-    private static List<PaymentAbstract> listPayment = new ArrayList<>();
+    private static List<DeliveryAbstract> listDelivery = new ArrayList<>();
     
     static {
-        Reflections reflections = new Reflections("nfc.serviceImpl.payment");
-        Set<Class<? extends PaymentAbstract>> paymentAPIs = reflections.getSubTypesOf(PaymentAbstract.class);
-        for(Class<? extends PaymentAbstract> paymentAPI : paymentAPIs)
+        Reflections reflections = new Reflections("nfc.serviceImpl.delivery");
+        Set<Class<? extends DeliveryAbstract>> deliveryAPIs = reflections.getSubTypesOf(DeliveryAbstract.class);
+        for(Class<? extends DeliveryAbstract> deliveryAPI : deliveryAPIs)
         {
             try {
-                listPayment.add(paymentAPI.newInstance());
+                listDelivery.add(deliveryAPI.newInstance());
             } catch (InstantiationException ex) {
                 log.info(ex.getMessage());
             } catch (IllegalAccessException ex) {
@@ -38,13 +36,13 @@ public class PaymentFactory{
         }
     }
     
-    public static PaymentAbstract getPaymentApi(String paymentCode){
-        for(PaymentAbstract paymentAPI: listPayment){
-            if(paymentAPI.payment_code.equals(paymentCode)){
-                return paymentAPI;
+    public static DeliveryAbstract getDeliveryApi(String deliveryCode){
+        System.err.println("deliveryCode " + deliveryCode);
+        for(DeliveryAbstract deliveryAPI: listDelivery){
+            if(deliveryAPI.deliveryCode.equals(deliveryCode)){
+                return deliveryAPI;
             }
         }
         return null;
     }
-    
 }

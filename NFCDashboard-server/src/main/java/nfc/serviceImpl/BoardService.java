@@ -21,6 +21,7 @@ import nfc.model.Role;
 import nfc.model.SupplierAddress;
 import nfc.model.SupplierCategories;
 import nfc.model.SupplierImage;
+import nfc.model.Text;
 import nfc.model.User;
 import nfc.model.Thread;
 import nfc.model.ThreadImg;
@@ -29,8 +30,14 @@ import nfc.service.IFileService;
 import nfc.model.ViewModel.SupplierAddressView;
 import nfc.model.ViewModel.SupplierView;
 import nfc.model.ViewModel.BoardView;
+import nfc.model.ViewModel.GridView;
 import nfc.service.IUserService;
+import nfc.serviceImpl.common.Utils;
 import org.hibernate.criterion.Order;
+import org.hibernate.transform.Transformers;
+import org.hibernate.type.LongType;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class BoardService implements IBoardService{
     @Autowired
@@ -200,11 +207,11 @@ public class BoardService implements IBoardService{
             List<Thread> list = (List<Thread>) criteria.list();
             for(Thread thread:list)
             {
-                    String deleteQuery = "delete from fg_thread_imgs where thread_id = " + thread.getThread_id();
+                    String deleteQuery = "delete from fg_thread_imgs where thread_id = '" + thread.getThread_id()+"'";
                     Query query = session.createSQLQuery(deleteQuery);
                 query.executeUpdate();
 
-                String deleteThread = "delete from fg_threads where thread_id = " + thread.getThread_id();
+                String deleteThread = "delete from fg_threads where thread_id = '" + thread.getThread_id()+"'";
                     Query queryThread = session.createSQLQuery(deleteThread);
                     queryThread.executeUpdate();
             }
@@ -317,5 +324,39 @@ public class BoardService implements IBoardService{
             return false;
         } 
     }
-
+    
+    public GridView getListBoardGrid(GridView gridData){
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        try {
+            StringBuilder filterBuild = Utils.generateGridFilterString(gridData);
+            String filter = filterBuild.toString();
+            List<Board> list = session.createSQLQuery("select b.* from fg_boards b join fg_supplier_work sw on b.board_id =  sw.board_id where find_in_set(sw.suppl_id,'" + gridData.getData() + "')" + (filter.equals("")  ? "" :  (" where " + filter)) + " limit " + gridData.getPageSize() + " offset " + ((gridData.getPageIndex() - 1) * gridData.getPageSize()))
+                    .addEntity(Board.class)
+                    .list();
+            gridData.setResponse(new ArrayList<>(convertBoardToJson(list)));
+            
+            long count = (long) session.createSQLQuery("select count(*) as count from fg_boards b join fg_supplier_work sw on b.board_id =  sw.board_id where find_in_set(sw.suppl_id,'" + gridData.getData() + "')" + (filter.equals("")  ? "" :  (" where " + filter)))
+                    .addScalar("count", LongType.INSTANCE)
+                    .uniqueResult();
+            gridData.setCount(count);
+            trans.commit();
+        } catch (Exception ex) {
+            System.err.println("error" + ex.getMessage());
+            trans.rollback();
+        }
+        return gridData;
+    }
+    
+    private JSONArray convertBoardToJson(List<Board> boards){
+        JSONArray jsonArr = new JSONArray();
+        for(Board board: boards){
+            JSONObject object = new JSONObject();
+            object.put("board_id", board.getBoard_id());
+            object.put("created_date",Utils.convertDateToString(board.getCreated_date()));
+            object.put("board_name", board.getBoard_name());
+            jsonArr.add(object);
+        }
+        return jsonArr;
+    }
 }

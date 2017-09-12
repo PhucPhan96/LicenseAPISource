@@ -30,30 +30,31 @@ public class PaymentServiceEndpoint {
     
     public OrderView payment(OrderView orderView)
     {
-        JSONObject resultPayment = PaymentFactory.getPaymentApi(SpeedPayInformation.PaymentAPI.SPEED_PAY).payment(orderView.getPayment_request());
+        JSONObject resultPayment = PaymentFactory.getPaymentApi(orderView.getPayment_request().getPayment_code()).payment(orderView.getPayment_request());
+        System.err.println(resultPayment.toJSONString());
         Order order = orderView.getOrder();
         if(resultPayment.containsKey("success") && resultPayment.get("success") == "true"){
-            savePaymentOrderHistory(order.getOrder_id(), resultPayment);
-            updatePaymentStatus(order.getOrder_id(), "PAID");
-            order.setOrder_status("PAID");
+            savePaymentOrderHistory(order.getOrder_id(), resultPayment, orderView.getPayment_request().getPayment_code());
+            updatePaymentStatus(order.getOrder_id(), Utils.ORDER_PAID);
+            order.setOrder_status(Utils.ORDER_PAID);
             sendOrderToStore(orderView);
         }   
         else{
-            System.err.println("payment failed");
-            //order.setOrder_status("FAILD");
-            orderDAO.updateOrderStatus(order.getOrder_id(), "PAYFAIL");
+            order.setOrder_status(Utils.ORDER_FAILED);
+            orderDAO.updateOrderStatus(order.getOrder_id(), Utils.ORDER_FAILED);
             sendOrderToStore(orderView);
         }
         return orderView;
     }
     
-    private void savePaymentOrderHistory(String orderId, JSONObject resultPayment){
+    private void savePaymentOrderHistory(String orderId, JSONObject resultPayment, String payment_code){
         PaymentOrderHistory paymentOrderHistory = new PaymentOrderHistory();
         paymentOrderHistory.setOrder_id(orderId);
         paymentOrderHistory.setPayment_unique_number(resultPayment.get("id").toString());
         JSONObject payDetail = (JSONObject)resultPayment.get("pay_det");
         paymentOrderHistory.setCard_id(payDetail.get("card_id").toString());
         paymentOrderHistory.setCard_nm(payDetail.get("card_nm").toString());
+        paymentOrderHistory.setPayment_code(payment_code);
         orderDAO.savePaymentOrderHistory(paymentOrderHistory);
     }
     

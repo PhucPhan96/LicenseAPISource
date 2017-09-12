@@ -24,6 +24,7 @@ public class Delivery {
     private String delivery_url;
     private String delivery_desc;
     private Date date_create;
+    private String delivery_method;
 
     @Id
     @Column(name="delivery_id")
@@ -71,6 +72,15 @@ public class Delivery {
     public void setDate_create(Date date_create) {
         this.date_create = date_create;
     }
+
+    public String getDelivery_method() {
+        return delivery_method;
+    }
+
+    public void setDelivery_method(String delivery_method) {
+        this.delivery_method = delivery_method;
+    }
+    
     
     
 }

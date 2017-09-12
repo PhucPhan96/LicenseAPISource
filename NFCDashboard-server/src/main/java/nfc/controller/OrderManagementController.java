@@ -12,12 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import nfc.messages.BaseResponse;
 import nfc.messages.OrderMessage;
 import nfc.messages.OrderStatusMessage;
-import nfc.messages.OrderStatusRequest;
-import nfc.messages.SpeedPayRequest;
+import nfc.messages.request.OrderStatusRequest;
 import nfc.messages.base.BasePacket;
 import nfc.messages.base.PaymentRequestPacket;
 import nfc.messages.filters.BillRequestFilter;
 import nfc.messages.filters.StatisticRequestFilter;
+import nfc.messages.request.PayRequest;
 
 import nfc.model.Code;
 import nfc.model.Group;
@@ -31,6 +31,7 @@ import nfc.service.ICodeService;
 import nfc.service.IOrderService;
 import nfc.service.IPosService;
 import nfc.serviceImpl.Security.JwtTokenUtil;
+import nfc.serviceImpl.common.PushNotification;
 import nfc.serviceImpl.common.SpeedPayInformation;
 import nfc.serviceImpl.common.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -220,7 +221,6 @@ public class OrderManagementController {
     
     @RequestMapping(value="/order/customer", method = RequestMethod.POST)
     public BaseResponse customerOrder(@RequestBody OrderView orderView) {
-        System.err.println("Vao order view ne");
         BaseResponse baseResponse = new BaseResponse();
         orderGateway.sendOrder(orderView);
         if(orderGateway.receive().getOrder().getOrder_status().equals(Utils.ORDER_FAILED)){
@@ -247,7 +247,7 @@ public class OrderManagementController {
     
     @RequestMapping(value="/order/payment/test", method = RequestMethod.GET)
     public String paymentTest() {
-    	SpeedPayRequest speedPayRequest = new SpeedPayRequest();
+    	PayRequest speedPayRequest = new PayRequest();
         speedPayRequest.setAmt("1000");
         speedPayRequest.setCard_no("5562456078580705");
         //speedPayRequest.setCard_serial("6267");
@@ -257,7 +257,7 @@ public class OrderManagementController {
         speedPayRequest.setBuyer_email("aa@gmail.com");
         speedPayRequest.setBuyer_nm("chongsongyong");
         speedPayRequest.setBuyer_phone_no("01023134519");
-        JSONObject resultPayment = PaymentFactory.getPaymentApi(SpeedPayInformation.PaymentAPI.SPEED_PAY).payment(speedPayRequest);
+        JSONObject resultPayment = PaymentFactory.getPaymentApi("SPEEDPAY").payment(speedPayRequest);
         return resultPayment.toJSONString();
     }
     
@@ -290,6 +290,12 @@ public class OrderManagementController {
         DataQueue.getInstance().addDataQueue(orderStatusMessage);
         DataQueue.getInstance().addDataQueue(orderStatusMessage);
         return "Okie";
+    }
+    
+    
+    @RequestMapping(value="/order/send/notification", method = RequestMethod.GET)
+    public void sendNotificationTest() {
+        PushNotification.getInstance().pushNotification("cKCaijPhT4k:APA91bEVcvLFglLFextfO3R-CWXvbzWyZTAX2ZBvdCGGn6UUEzQaNlb4RGzdaag1QlQUDWmFUlkTBDoI9KSWupu9eP3xXcVPLz6rGKKDhjaZsMlpIgxSPPlGLyZ0qIshU8V47rnO4nwE", "Hello", "from nfc");
     }
     
     @RequestMapping(value = "/order/statistic", method = RequestMethod.POST)

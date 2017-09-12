@@ -8,6 +8,7 @@ import nfc.model.User;
 import nfc.model.UserAddress;
 import nfc.model.UserRegister;
 import nfc.model.UserRole;
+import nfc.model.ViewModel.GridView;
 
 public interface IUserService {
 	List<User> getListUser();
@@ -36,4 +37,6 @@ public interface IUserService {
         List<User> getListUserByLikePhone(String phone);
         List<UserAddress> getListUserByAddress(String address);
         List<User> getListUserByLikePhoneAndAddress(String phone, String address);
+        List<User> getListUserGrid(GridView gridView);
+        long countUserGrid(GridView gridView);
 }

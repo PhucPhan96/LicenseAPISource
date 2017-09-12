@@ -3,15 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nfc.messages;
+package nfc.messages.request;
 
+import nfc.messages.*;
 import nfc.messages.base.PaymentCancelPacket;
 
 /**
  *
  * @author Admin
  */
-public class SpeedPayCancel extends PaymentCancelPacket{
+public class PaymentCancel{
     
     private String id;
 

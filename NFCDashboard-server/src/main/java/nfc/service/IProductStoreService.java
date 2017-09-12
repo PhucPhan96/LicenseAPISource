@@ -14,7 +14,7 @@ import nfc.model.Product;
  * @author Admin
  */
 public interface IProductStoreService {
-    List<Category> getListCategoryBySupId(int suppl_id );
+    //List<Category> getListCategoryBySupId(int suppl_id );
     List<Product> getListProductBySupplId(int suppl_id);
     List<Product> getListProductByCategoryID (int cate_id, int suppl_id );
     boolean updateProductStore(Product product);

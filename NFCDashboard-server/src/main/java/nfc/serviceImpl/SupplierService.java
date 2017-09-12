@@ -299,7 +299,7 @@ public class SupplierService implements ISupplierService {
                 str.setVisit_pay(Boolean.parseBoolean(row[14] + ""));
                 str.setWd_end_hm(row[3] + "");
                 str.setWd_start_hm(row[2] + "");
-                str.setDelivery_id(Integer.parseInt(row[27] + ""));
+                str.setDelivery_id(row[27]+"");
                 supplierWork = str;
             }
             trans.commit();
@@ -599,6 +599,7 @@ public class SupplierService implements ISupplierService {
              */
             // deleteReferenceOfSupplier(session, supplId, "fg_orders");
             // deleteReferenceOfSupplier(session, supplId, "fg_products");
+            deleteReferenceOfSupplier(session, supplId, "fg_businessDays");
             deleteReferenceOfSupplier(session, supplId, "fg_favorite_suppliers");
             deleteReferenceOfSupplier(session, supplId, "fg_supplier_categories");
             deleteReferenceOfSupplier(session, supplId, "fg_supplier_imgs");
@@ -714,9 +715,9 @@ public class SupplierService implements ISupplierService {
         Transaction trans = session.beginTransaction();
         List<Supplier> suppliers = new ArrayList<>();
         try {
-            String sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id join fg_delivery d on d.delivery_id = sw.delivery_id where d.delivery_url !=  '#' and FIND_IN_SET(sc.cate_id,'"+categoryId+"')";
+            String sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where sw.delivery_id = 'DELIVERIED' and FIND_IN_SET(sc.cate_id,'"+categoryId+"')";
             if(storeType == "NONDELIVERY"){
-                sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id join fg_delivery d on d.delivery_id = sw.delivery_id where d.delivery_url =  '#' and FIND_IN_SET(sc.cate_id,'"+categoryId+"')";
+                sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where sw.delivery_id != 'DELIVERIED' and FIND_IN_SET(sc.cate_id,'"+categoryId+"')";
             }
             else if(storeType == "ALL"){
                 sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where FIND_IN_SET(sc.cate_id,'"+categoryId+"')";
@@ -1109,5 +1110,35 @@ public class SupplierService implements ISupplierService {
             trans.rollback();
         }
         return billSupplierInformation;
+    }
+    
+    
+    public List<Supplier> getListSupplierChildFromUser(String userId){
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        List<Supplier> suppliers = new ArrayList<>();
+        try {
+            suppliers = session.createSQLQuery("select s.* from fg_suppliers s join fg_supplier_work sw on s.suppl_id = sw.suppl_id where sw.manage_suppl_id in (select swh.suppl_id from fg_suppliers swh join fg_supplier_users su on su.suppl_id = swh.suppl_id where su.user_id='"+userId+"')").addEntity(Supplier.class).list();
+            trans.commit();
+        } catch (Exception ex) {
+            trans.rollback();
+        }
+        
+        return suppliers;
+    }
+    
+    
+    public List<Supplier> getListSupplierFromSupplierIds(String supplierIds){
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        List<Supplier> suppliers = new ArrayList<>();
+        try {
+            suppliers = session.createSQLQuery("select * from fg_suppliers where find_in_set(suppl_id,'" + supplierIds + "')").addEntity(Supplier.class).list();
+            trans.commit();
+        } catch (Exception ex) {
+            trans.rollback();
+        }
+        
+        return suppliers;
     }
 }

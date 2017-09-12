@@ -12,6 +12,7 @@ public class PosDetailView {
     private Customer customer;
     //private User user;
     private List<OrderDetailViewModel> listOrderDetailView;
+    private String payment_code;
 
     public Order getOrder() {
         return order;
@@ -37,8 +38,12 @@ public class PosDetailView {
         this.listOrderDetailView = listOrderDetailView;
     }
 
-    
-        
-        
+    public String getPayment_code() {
+        return payment_code;
+    }
+
+    public void setPayment_code(String payment_code) {
+        this.payment_code = payment_code;
+    }    
 	
 }
