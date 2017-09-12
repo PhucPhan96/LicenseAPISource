@@ -1,6 +1,5 @@
 package nfc.serviceImpl;
 
-import java.nio.channels.SeekableByteChannel;
 import java.util.ArrayList;
 import java.util.List;
 
