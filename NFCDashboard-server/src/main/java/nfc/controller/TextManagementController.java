@@ -91,4 +91,15 @@ public class TextManagementController {
         List<Text> texts = textDAO.getListTextbyTextInput(search.getTextInput(),search.getText_type());
         return texts;
     }
+    @RequestMapping(value = "app/texts/getListNews", method = RequestMethod.GET)
+    public List<Text> getListNews() {
+        List<Text> texts = textDAO.getListNews();
+        return texts;
+    }
+    @RequestMapping(value = "app/texts/getNewsbyId/{text_id}", method = RequestMethod.GET)
+    public Text getNewsbyId(@PathVariable("text_id") int text_id) {
+        System.out.println("Vao getTextbyId ");
+        Text texts = textDAO.getTextbyId(text_id);
+        return texts;
+    }
    }

@@ -218,6 +218,22 @@ public class TextService implements ITextService {
         }
         return lstText;
     }
+     
+     public List<Text> getListNews() {
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        List<Text> lstText= new ArrayList<Text>();
+        String sqlQuery = "SELECT * FROM 82wafoodgo.fg_texts where text_type ='0009'";
+        try {
+            Query query = session.createSQLQuery(sqlQuery).addEntity(Text.class);
+            lstText = (List<Text>) query.list();
+            trans.commit();
+            
+        } catch (Exception ex) {            
+            System.out.println(ex);
+        }
+        return lstText;
+     }
 
 
 }
