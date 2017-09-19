@@ -23,4 +23,5 @@ public interface ITextService {
     boolean insertText(Text text);
     boolean deleteText(int text_id);
     List<Text> getListTextbyTextInput(String textInput, String text_type);
+    List<Text> getListNews();
 }

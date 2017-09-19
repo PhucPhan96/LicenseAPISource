@@ -724,7 +724,7 @@ public class SupplierService implements ISupplierService {
         return list;
     }
     
-    private List<Supplier> getListSupplierFromCategory(String categoryId, String storeType){
+ private List<Supplier> getListSupplierFromCategory(String categoryId, String storeType){
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
         List<Supplier> suppliers = new ArrayList<>();
