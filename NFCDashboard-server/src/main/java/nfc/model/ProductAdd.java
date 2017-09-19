@@ -14,6 +14,7 @@ public class ProductAdd {
 	private String add_name; 
 	private int add_price; 
 	private Byte price_type;
+        private String add_desc;
 	@Id
 	@Column(name="add_id")
 	@GeneratedValue
@@ -51,5 +52,15 @@ public class ProductAdd {
 	public void setPrice_type(Byte price_type) {
 		this.price_type = price_type;
 	}
+
+        @Column(name="add_desc")
+    public String getAdd_desc() {
+        return add_desc;
+    }
+
+    public void setAdd_desc(String add_desc) {
+        this.add_desc = add_desc;
+    }
 	
+        
 }

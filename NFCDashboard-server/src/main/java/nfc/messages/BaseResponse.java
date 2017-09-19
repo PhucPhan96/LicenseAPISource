@@ -25,6 +25,8 @@ public class BaseResponse {
     public String resultCode = "";
 
     public String errorMsg = "";
+    
+    public Object response_data;
 
     public String getResultCode() {
         return resultCode;
@@ -41,4 +43,14 @@ public class BaseResponse {
     public void setErrorMsg(String errorMsg) {
         this.errorMsg = errorMsg;
     }
+
+    public Object getResponse_data() {
+        return response_data;
+    }
+
+    public void setResponse_data(Object response_data) {
+        this.response_data = response_data;
+    }
+    
+    
 }

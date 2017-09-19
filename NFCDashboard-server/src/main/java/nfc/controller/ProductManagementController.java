@@ -53,10 +53,17 @@ public class ProductManagementController {
 		return resutl;
 	}
 	@RequestMapping(value="product/add", method=RequestMethod.POST)
-	public @ResponseBody String insertGroup(@RequestBody ProductView productView){
+	public @ResponseBody String insertProductView(@RequestBody ProductView productView){
 		String data = productDAO.insertProductView(productView) + "";
 		return "{\"result\":\"" + data + "\"}";
 	}
+        
+        @RequestMapping(value="product/list/add", method=RequestMethod.POST)
+	public @ResponseBody String insertListProductView(@RequestBody List<ProductView> productViews){
+            String data = productDAO.insertListProductView(productViews) + "";
+            return "{\"result\":\"" + data + "\"}";
+	}
+        
 	@RequestMapping(value="product/edit", method=RequestMethod.PUT)
 	public @ResponseBody String eidtProduct(@RequestBody ProductView productView){
 		String data = productDAO.updateProductView(productView) + "";
@@ -74,5 +81,13 @@ public class ProductManagementController {
             String data = productDAO.deleteProductView(productId) + "";
             return "{\"result\":\"" + data + "\"}";
         }
+        
+        
+        @RequestMapping(value="product/category/{id}",method=RequestMethod.GET)
+	public List<ProductView> getListProductViewByCategory(@PathVariable("id") int categoryId){
+		List<ProductView> lstProductView = productDAO.getListProductViewOfCategory(categoryId);
+		return lstProductView;
+		//return Utils.convertObjectToJsonString(lstProductView);
+	}
 	
 }

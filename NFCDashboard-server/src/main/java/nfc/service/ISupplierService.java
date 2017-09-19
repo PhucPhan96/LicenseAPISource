@@ -21,6 +21,7 @@ import nfc.model.ViewModel.BillSupplierInformation;
 import nfc.model.ViewModel.ProductOptionalBH;
 import nfc.model.ViewModel.SupplierAppView;
 import nfc.model.ViewModel.SupplierView;
+import nfc.model.ViewModel.UserSupplierView;
 
 public interface ISupplierService {
 	List<Supplier> getListSupplier();
@@ -69,4 +70,6 @@ public interface ISupplierService {
         List<Supplier> getListSupplierFromSupplierIds(String supplierIds);
         
         List<ProductOptionalBH> getListProductOptions(String stringList);
+        
+        Supplier insertUserSupplierView(UserSupplierView userSupplierView, String username);
 }
