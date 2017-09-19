@@ -113,6 +113,11 @@ public class PayRequest extends PaymentRequestPacket{
     public void setPayment_code(String payment_code) {
         this.payment_code = payment_code;
     }
+
+    @Override
+    public String toString() {
+        return "PayRequest{" + "card_no=" + card_no + ", card_ymd=" + card_ymd + ", card_serial=" + card_serial + ", sell_nm=" + sell_nm + ", sign=" + sign + ", amt=" + amt + ", product_nm=" + product_nm + ", buyer_nm=" + buyer_nm + ", buyer_phone_no=" + buyer_phone_no + ", buyer_email=" + buyer_email + ", payment_code=" + payment_code + '}';
+    }
     
     
     

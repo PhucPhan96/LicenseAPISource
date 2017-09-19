@@ -142,6 +142,7 @@ public class UserService implements IUserService {
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
         try {
+            user.setApp_id(Utils.appId);
             //user.setPassword(Utils.BCryptPasswordEncoder(user.getPassword()));
             session.save(user);
             insertUserRole(session, user);

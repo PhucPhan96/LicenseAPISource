@@ -33,7 +33,7 @@ public class PaymentServiceEndpoint {
         JSONObject resultPayment = PaymentFactory.getPaymentApi(orderView.getPayment_request().getPayment_code()).payment(orderView.getPayment_request());
         System.err.println(resultPayment.toJSONString());
         Order order = orderView.getOrder();
-        if(resultPayment.containsKey("success") && resultPayment.get("success") == "true"){
+        if(resultPayment.containsKey("success") &&  resultPayment.get("success").toString() == "true"){
             savePaymentOrderHistory(order.getOrder_id(), resultPayment, orderView.getPayment_request().getPayment_code());
             updatePaymentStatus(order.getOrder_id(), Utils.ORDER_PAID);
             order.setOrder_status(Utils.ORDER_PAID);

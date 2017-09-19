@@ -99,5 +99,12 @@ public class CategoryManagementController {
         List<SupplierProductView> lstSupplierProductView = categoryDAO.getListProductOfCategory(supplierId);
         return lstSupplierProductView;
     } 
+    
+    
+    @RequestMapping(value="category/add/list", method=RequestMethod.POST)
+    public @ResponseBody List<Category>  addListCategory(@RequestBody List<Category> categories){
+        categoryDAO.addListCategory(categories);
+        return categories;
+    }
 
 }

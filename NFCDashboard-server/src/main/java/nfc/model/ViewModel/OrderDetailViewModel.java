@@ -22,6 +22,8 @@ public class OrderDetailViewModel {
     private BigDecimal deliver_amt;
     private BigDecimal prod_amt;
     private String prod_name;
+    private String lstOption;
+    private String lstQty_Option;
 
     public String getOrder_id() {
         return order_id;
@@ -94,6 +96,23 @@ public class OrderDetailViewModel {
     public void setProd_name(String prod_name) {
         this.prod_name = prod_name;
     }
+
+    public String getLstOption() {
+        return lstOption;
+    }
+
+    public void setLstOption(String lstOption) {
+        this.lstOption = lstOption;
+    }
+
+    public String getLstQty_Option() {
+        return lstQty_Option;
+    }
+
+    public void setLstQty_Option(String lstQty_Option) {
+        this.lstQty_Option = lstQty_Option;
+    }
+    
     
     
 }

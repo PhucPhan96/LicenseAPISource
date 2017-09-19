@@ -28,10 +28,11 @@ public class SpeedPayPayment extends PaymentAbstract{
     }
     
     public JSONObject payment(PayRequest paymentRequest) {
+        System.err.println(paymentRequest.toString());
         JSONObject requestData = new JSONObject();
         requestData.put("card_no", paymentRequest.getCard_no());
         requestData.put("card_ymd", paymentRequest.getCard_ymd());
-        requestData.put("amt", paymentRequest.getAmt());
+        requestData.put("amt", "500");//paymentRequest.getAmt()
         requestData.put("sell_nm", paymentRequest.getSell_nm());
         requestData.put("pg_type", "PG");
         requestData.put("pay_type", "O2B2_APP");

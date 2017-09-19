@@ -21,6 +21,8 @@ public class OrderDetail {
     private BigDecimal disc_rate;
     private BigDecimal deliver_amt;
     private BigDecimal prod_amt;
+    private String lstOption;
+    private String lstQty_Option;
 
     @Id
     @Column(name="order_id")
@@ -81,6 +83,25 @@ public class OrderDetail {
             this.prod_amt = prod_amt;
     }
 
+    @Column(name="lstOption")
+    public String getLstOption() {
+        return lstOption;
+    }
+
+    public void setLstOption(String lstOption) {
+        this.lstOption = lstOption;
+    }
+    
+    @Column(name="lstQty_Option")
+    public String getLstQty_Option() {
+        return lstQty_Option;
+    }
+
+    public void setLstQty_Option(String lstQty_Option) {
+        this.lstQty_Option = lstQty_Option;
+    }
+    
+    
     
     
 }

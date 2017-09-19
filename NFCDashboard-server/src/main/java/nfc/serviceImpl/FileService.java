@@ -11,6 +11,7 @@ import org.hibernate.criterion.Restrictions;
 
 import nfc.model.AttachFile;
 import nfc.service.IFileService;
+import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class FileService implements IFileService{
@@ -37,13 +38,20 @@ public class FileService implements IFileService{
             }
 	}
 	public AttachFile getAttachFile(int fileId) {
-		Session session = this.sessionFactory.getCurrentSession();
-		Transaction trans = session.beginTransaction();
-		Criteria criteria = session.createCriteria(AttachFile.class);
-		criteria.add(Restrictions.eq("file_id", fileId));
-		AttachFile attachFile = (AttachFile) criteria.uniqueResult();
-		trans.commit();
-		return attachFile;
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            AttachFile attachFile = new AttachFile();
+            try{
+                Criteria criteria = session.createCriteria(AttachFile.class);
+                criteria.add(Restrictions.eq("file_id", fileId));
+                attachFile = (AttachFile) criteria.uniqueResult();
+                trans.commit();
+            }
+            catch(Exception ex){
+                trans.rollback();
+            }
+            return attachFile;
+            
 	}
 	public AttachFile getAttachFileWithSession(int fileId,Session session) {
 		session = this.sessionFactory.getCurrentSession();
@@ -66,5 +74,26 @@ public class FileService implements IFileService{
                 return false;
             }
         }
-
+        
+        public boolean deleteAttachFile(int fileId){
+            AttachFile file = getAttachFile(fileId);
+            if(file!=null){
+                deleteFile(file.getFile_path());
+            }
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            try
+            {
+                String deleteQuery = "delete from fg_files where file_id = " + fileId;
+                Query query = session.createSQLQuery(deleteQuery);
+                query.executeUpdate();
+                trans.commit();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                trans.rollback();
+                return false;
+            } 
+        }
 }
