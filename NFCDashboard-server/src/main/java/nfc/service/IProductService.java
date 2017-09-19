@@ -23,4 +23,7 @@ public interface IProductService {
 	List<ProductCategory> getListProductCategory(int cateId);
 	List<Product> getListProductOfCategory(int cateId, int supplId);
 	List<ProductOptional> getProductOptional(int prodId);
+        boolean insertListProductView(List<ProductView> productViews);
+        
+        List<ProductView> getListProductViewOfCategory(int cateId);
 }

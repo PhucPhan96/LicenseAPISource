@@ -41,6 +41,10 @@ public class SupplierWork {
     private String suppl_delivery_info;
     private String delivery_id;
     private String distance_in_km;
+    private String work_day;
+    private String closed_days;
+    private String closed_day_type;
+    
     @javax.persistence.Transient
     public String getDistance_in_km() {
         return distance_in_km;
@@ -259,6 +263,33 @@ public class SupplierWork {
 
     public void setDelivery_id(String delivery_id) {
         this.delivery_id = delivery_id;
+    }
+
+    @Column(name="work_day")
+    public String getWork_day() {
+        return work_day;
+    }
+
+    public void setWork_day(String work_day) {
+        this.work_day = work_day;
+    }
+
+    @Column(name="closed_days")
+    public String getClosed_days() {
+        return closed_days;
+    }
+
+    public void setClosed_days(String closed_days) {
+        this.closed_days = closed_days;
+    }
+
+    @Column(name="closed_day_type")
+    public String getClosed_day_type() {
+        return closed_day_type;
+    }
+
+    public void setClosed_day_type(String closed_day_type) {
+        this.closed_day_type = closed_day_type;
     }
     
     

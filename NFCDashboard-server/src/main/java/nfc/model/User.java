@@ -7,10 +7,12 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 import nfc.model.ViewModel.UserAddressView;
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name="fg_users")
@@ -44,7 +46,7 @@ public class User {
 	private String app_id;
 	private Date password_expired_date;
 	private int role_id;
-        
+        private Date birth_date;
 	private List<Integer> listSupplierId;
 	
 	private List<UserAddressView> lstuserAddress = new ArrayList<UserAddressView>();
@@ -52,6 +54,8 @@ public class User {
 	
 	@Id
 	@Column(name="user_id")
+        @GeneratedValue(generator = "system-uuid")
+        @GenericGenerator(name = "system-uuid", strategy = "uuid")
 	public String getUser_id() {
 		return user_id;
 	}
@@ -282,4 +286,15 @@ public class User {
 	public void setLstRoles(List<Role> lstRoles) {
 		this.lstRoles = lstRoles;
 	}
+
+        @Column(name="birth_date")
+        public Date getBirth_date() {
+            return birth_date;
+        }
+
+        public void setBirth_date(Date birth_date) {
+            this.birth_date = birth_date;
+        }
+        
+        
 }

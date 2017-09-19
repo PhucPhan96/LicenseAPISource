@@ -26,6 +26,7 @@ import nfc.model.Search;
 import nfc.model.User;
 import nfc.model.ViewModel.BillHistoryView;
 import nfc.model.ViewModel.ProductOptionalBH;
+import nfc.model.ViewModel.UserSupplierView;
 import nfc.service.IMailService;
 import nfc.service.IUserService;
 
@@ -335,5 +336,13 @@ public class SupplierManagementController {
     public List<Supplier> getListSupplierFromSupplierIds(@PathVariable("supplierIds") String supplierIds) {
         List<Supplier> suppliers = supplierDAO.getListSupplierFromSupplierIds(supplierIds);
         return suppliers;
+    }
+    
+    
+    @RequestMapping(value = "user/supplier/add", method = RequestMethod.POST)
+    public @ResponseBody Supplier insertUserSupplier(@RequestBody UserSupplierView userSupplierView, HttpServletRequest request) {
+        String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        return supplierDAO.insertUserSupplierView(userSupplierView, username);
     }
 }

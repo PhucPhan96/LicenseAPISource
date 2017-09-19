@@ -280,4 +280,25 @@ public class CategoryService implements ICategoryService{
         }
         return results;
     }
+    
+    public List<Category> addListCategory(List<Category> categories){
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        try
+        {
+            for(Category category: categories){
+                category.setApp_id(Utils.appId);
+                category.setCate_img_id(null);
+                category.setCate_type("P");
+                session.save(category); 
+            } 	
+            trans.commit();
+        }
+        catch(Exception ex)
+        {
+            System.out.println("Error " + ex.getMessage());
+            trans.rollback();
+        }
+        return categories;
+    }
 }

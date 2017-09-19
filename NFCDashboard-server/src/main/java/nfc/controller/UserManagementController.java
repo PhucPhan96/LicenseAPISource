@@ -124,14 +124,14 @@ public class UserManagementController {
     @RequestMapping(value = "user/add", method = RequestMethod.POST)
     public @ResponseBody
     String insertUser(@RequestBody User user) {
-        user.setApp_id(Utils.appId);
-        UUID uuid = UUID.randomUUID();
-        String randomUUID = uuid.toString();
-        user.setUser_id(randomUUID);
-        Date date = new Date();
-        user.setCreated_date(date);
-        System.out.println("vao insert");
-        System.out.println(user.getLstRoles().size());
+//        user.setApp_id(Utils.appId);
+//        UUID uuid = UUID.randomUUID();
+//        String randomUUID = uuid.toString();
+//        user.setUser_id(randomUUID);
+//        Date date = new Date();
+//        user.setCreated_date(date);
+//        System.out.println("vao insert");
+//        System.out.println(user.getLstRoles().size());
 
         String data = userDAO.insertUser(user) + "";
         //String data = "";

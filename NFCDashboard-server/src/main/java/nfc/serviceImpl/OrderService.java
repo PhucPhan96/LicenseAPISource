@@ -88,18 +88,18 @@ public class OrderService implements IOrderService {
 
     private void setupCustomerInformationForOrder(Session session, OrderView orderView) {
         if (StringUtils.isEmpty(orderView.getOrder().getUser_id())) {
-            insertCustomer(session, orderView.getCustomer());
+            insertCustomer(session, orderView);
             orderView.getOrder().setCustomer_id(orderView.getCustomer().getCustomer_id());
         }
     }
     
-    private void insertCustomer(Session session, Customer customer){
-        Customer cus = getCustomerExist(session, customer);
+    private void insertCustomer(Session session, OrderView orderView){
+        Customer cus = getCustomerExist(session, orderView.getCustomer());
         if(cus == null){
-            session.save(customer);
+            session.save(orderView.getCustomer());
         }
         else{
-            customer = cus;
+            orderView.setCustomer(cus);
         }
     }
     
@@ -377,9 +377,9 @@ public class OrderService implements IOrderService {
         SimpleDateFormat df = new SimpleDateFormat("yyMMdd");
         String orderIdGenerated = df.format(new java.util.Date());
         Order lastOrder = getLastOrder(session);
-        System.err.println(lastOrder.getOrder_id().substring(0, 6));
-        System.err.println(orderIdGenerated);
         if(lastOrder != null && lastOrder.getOrder_id().substring(0, 6).equals(orderIdGenerated)){
+            System.err.println(lastOrder.getOrder_id().substring(0, 6));
+            System.err.println(orderIdGenerated);
             orderId = Long.parseLong(lastOrder.getOrder_id().substring(6));
         }
         else{
@@ -447,21 +447,21 @@ public class OrderService implements IOrderService {
         return paymentOrderHistory;
     }
 
-    public List<Order> getListOrderAllStoreOfUser(String userId) {
-        Session session = this.sessionFactory.getCurrentSession();
-        Transaction trans = session.beginTransaction();
-        List<Order> orders = new ArrayList<>();
-        try {
-            Query query = session.createSQLQuery("select o.*, s.supplier_name from fg_orders o inner join fg_supplier_users su on o.suppl_id = su.suppl_id inner join fg_suppliers s on s.suppl_id = su.suppl_id where su.user_id='" + userId + "' and order_date >= current_date() order by o.order_date desc")
-                    .setResultTransformer(Transformers.aliasToBean(Order.class));
-            orders = (List<Order>) query.list();
-            trans.commit();
-        } catch (Exception ex) {
-            System.err.println("error " + ex.getMessage());
-            trans.rollback();
-        }
-        return orders;
-    }
+//    public List<Order> getListOrderAllStoreOfUser(String userId) {
+//        Session session = this.sessionFactory.getCurrentSession();
+//        Transaction trans = session.beginTransaction();
+//        List<Order> orders = new ArrayList<>();
+//        try {
+//            Query query = session.createSQLQuery("select o.*, s.supplier_name from fg_orders o inner join fg_supplier_users su on o.suppl_id = su.suppl_id inner join fg_suppliers s on s.suppl_id = su.suppl_id where su.user_id='" + userId + "' and order_date >= current_date() order by o.order_date desc")
+//                    .setResultTransformer(Transformers.aliasToBean(Order.class));
+//            orders = (List<Order>) query.list();
+//            trans.commit();
+//        } catch (Exception ex) {
+//            System.err.println("error " + ex.getMessage());
+//            trans.rollback();
+//        }
+//        return orders;
+//    }
 
     /*Lucas -  get list all order by supplierID
      */

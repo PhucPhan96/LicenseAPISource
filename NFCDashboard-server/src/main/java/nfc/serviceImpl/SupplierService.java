@@ -63,6 +63,7 @@ import nfc.model.ViewModel.BillSupplierInformation;
 import nfc.model.ViewModel.ProductOptionalBH;
 
 import nfc.model.ViewModel.SupplierAttachFileView;
+import nfc.model.ViewModel.UserSupplierView;
 import org.hibernate.transform.Transformers;
 import nfc.service.IMailService;
 
@@ -535,6 +536,7 @@ public class SupplierService implements ISupplierService {
     }
 
     public boolean updateSupplierView(SupplierView supplierView) {
+        deleteSupplierImage(supplierView.getSupplier().getSuppl_id());
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
         try {
@@ -580,6 +582,14 @@ public class SupplierService implements ISupplierService {
             return false;
         }
     }
+    
+    
+    private void deleteSupplierImage(int supplierId){
+        List<SupplierImage> supplImgs = getListSupplierImage(supplierId);
+        for(SupplierImage suppImage: supplImgs){
+            fileDAO.deleteAttachFile(suppImage.getImg_id());
+        }
+    }
 
     private void deleteReferenceOfOder(Session session, int orderId, String table) {
         String deleteQuery = "delete from " + table + " where order_id = " + orderId;
@@ -591,6 +601,7 @@ public class SupplierService implements ISupplierService {
         User user = userDAO.findUserByUserName(username);
         List<Order> lstOrder = orderDAO.getListOrder(supplId);
         boardDAO.deleteBoard(getSupplierWork(supplId).getBoard_id());
+        deleteSupplierImage(supplId);
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
         try {
@@ -738,22 +749,36 @@ public class SupplierService implements ISupplierService {
         List<Supplier> suppliers = getListSupplierFromCategory(categoryId, storeType);
         for (Supplier supplier : suppliers) {
             SupplierWork supplierWork = getSupplierWork(supplier.getSuppl_id());
-            if (Integer.parseInt(supplierWork.getSuppl_role()) == 21) {
-                SupplierAppView supplierAppView = new SupplierAppView();
-                supplierAppView.setSupplier(supplier);
-                supplierAppView.setSupplierWork(supplierWork);
-                List<SupplierImage> supplImgs = getListSupplierImage(supplier.getSuppl_id());
-                List<SupplierAttachFileView> supplAttachFiles = new ArrayList<SupplierAttachFileView>();
-                for (SupplierImage supImg : supplImgs) {
-                    SupplierAttachFileView splImageView = new SupplierAttachFileView();
-                    splImageView.setAttachFile(fileDAO.getAttachFile(supImg.getImg_id()));
-                    splImageView.setImageType(supImg.getImg_type());
-                    supplAttachFiles.add(splImageView);
-                }
-                supplierAppView.setImages(supplAttachFiles);
-                supplierAppView.setReviewCount(boardDAO.getListThread(supplierWork.getBoard_id()).size());
-                lstSupplierAppView.add(supplierAppView);
+//            if (Integer.parseInt(supplierWork.getSuppl_role()) == 21) {
+//                SupplierAppView supplierAppView = new SupplierAppView();
+//                supplierAppView.setSupplier(supplier);
+//                supplierAppView.setSupplierWork(supplierWork);
+//                List<SupplierImage> supplImgs = getListSupplierImage(supplier.getSuppl_id());
+//                List<SupplierAttachFileView> supplAttachFiles = new ArrayList<SupplierAttachFileView>();
+//                for (SupplierImage supImg : supplImgs) {
+//                    SupplierAttachFileView splImageView = new SupplierAttachFileView();
+//                    splImageView.setAttachFile(fileDAO.getAttachFile(supImg.getImg_id()));
+//                    splImageView.setImageType(supImg.getImg_type());
+//                    supplAttachFiles.add(splImageView);
+//                }
+//                supplierAppView.setImages(supplAttachFiles);
+//                supplierAppView.setReviewCount(boardDAO.getListThread(supplierWork.getBoard_id()).size());
+//                lstSupplierAppView.add(supplierAppView);
+//            }
+            SupplierAppView supplierAppView = new SupplierAppView();
+            supplierAppView.setSupplier(supplier);
+            supplierAppView.setSupplierWork(supplierWork);
+            List<SupplierImage> supplImgs = getListSupplierImage(supplier.getSuppl_id());
+            List<SupplierAttachFileView> supplAttachFiles = new ArrayList<SupplierAttachFileView>();
+            for (SupplierImage supImg : supplImgs) {
+                SupplierAttachFileView splImageView = new SupplierAttachFileView();
+                splImageView.setAttachFile(fileDAO.getAttachFile(supImg.getImg_id()));
+                splImageView.setImageType(supImg.getImg_type());
+                supplAttachFiles.add(splImageView);
             }
+            supplierAppView.setImages(supplAttachFiles);
+            supplierAppView.setReviewCount(boardDAO.getListThread(supplierWork.getBoard_id()).size());
+            lstSupplierAppView.add(supplierAppView);
         }
         return lstSupplierAppView;
     }
@@ -1190,4 +1215,15 @@ public class SupplierService implements ISupplierService {
                
         return listProductOptional;
     }
+       
+       public Supplier insertUserSupplierView(UserSupplierView userSupplierView, String username){
+           insertSupplierView(userSupplierView.getSupplierView(), username);
+           User user = userSupplierView.getUser();
+           List supplierIds = new ArrayList();
+           supplierIds.add(userSupplierView.getSupplierView().getSupplier().getSuppl_id());
+           user.setListSupplierId(supplierIds);
+           System.err.println("supplier id" + user.getListSupplierId().size());
+           userDAO.insertUser(userSupplierView.getUser());
+           return userSupplierView.getSupplierView().getSupplier();
+       }
 }

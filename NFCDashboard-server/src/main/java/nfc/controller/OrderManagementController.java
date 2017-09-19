@@ -27,6 +27,7 @@ import nfc.model.ViewModel.OrderView;
 import nfc.model.ViewModel.PosDetailView;
 import nfc.model.ViewModel.SupplierView;
 import nfc.model.Filter;
+import nfc.model.ViewModel.GridView;
 import nfc.service.ICodeService;
 import nfc.service.IOrderService;
 import nfc.service.IPosService;
@@ -158,9 +159,14 @@ public class OrderManagementController {
         return posDetailView;
     }
         
-    @RequestMapping(value="orders/stores/{userId}",method=RequestMethod.GET)
-    public List<Order> getListOrderOfStoresUser(@PathVariable("userId") String userId){
-        return orderDAO.getListOrderAllStoreOfUser(userId);
+//    @RequestMapping(value="orders/stores/{userId}",method=RequestMethod.GET)
+//    public List<Order> getListOrderOfStoresUser(@PathVariable("userId") String userId){
+//        return orderDAO.getListOrderAllStoreOfUser(userId);
+//    }
+    
+    @RequestMapping(value="orders/stores/user",method=RequestMethod.POST)
+    public GridView getListOrderOfStoresUser(@RequestBody GridView gridData){
+        return posDAO.getListOrderAllStoreOfUser(gridData);
     }
         
         
@@ -223,7 +229,9 @@ public class OrderManagementController {
     public BaseResponse customerOrder(@RequestBody OrderView orderView) {
         BaseResponse baseResponse = new BaseResponse();
         orderGateway.sendOrder(orderView);
-        if(orderGateway.receive().getOrder().getOrder_status().equals(Utils.ORDER_FAILED)){
+        Order orderReceive = orderGateway.receive().getOrder();
+        baseResponse.setResponse_data(orderReceive);
+        if(orderReceive.getOrder_status().equals(Utils.ORDER_FAILED)){
             baseResponse.resultCode = BaseResponse.FAILED;
         }
         else{
@@ -295,7 +303,10 @@ public class OrderManagementController {
     
     @RequestMapping(value="/order/send/notification", method = RequestMethod.GET)
     public void sendNotificationTest() {
-        PushNotification.getInstance().pushNotification("cKCaijPhT4k:APA91bEVcvLFglLFextfO3R-CWXvbzWyZTAX2ZBvdCGGn6UUEzQaNlb4RGzdaag1QlQUDWmFUlkTBDoI9KSWupu9eP3xXcVPLz6rGKKDhjaZsMlpIgxSPPlGLyZ0qIshU8V47rnO4nwE", "Hello", "from nfc");
+        //PushNotification.getInstance().pushNotification("cKCaijPhT4k:APA91bEVcvLFglLFextfO3R-CWXvbzWyZTAX2ZBvdCGGn6UUEzQaNlb4RGzdaag1QlQUDWmFUlkTBDoI9KSWupu9eP3xXcVPLz6rGKKDhjaZsMlpIgxSPPlGLyZ0qIshU8V47rnO4nwE", "Hello", "from nfc");
+        PushNotification.getInstance().pushNotification("cHH12tE-6d8:APA91bFcrtBEuMJHqfu_0ajZ2A8vI7P-LjxR7hjjXw8n50mTvLsS_LSUUREPWKOdK8ecxonXfsAoaAxycw8FGzEpJarlVUTyqszjlnsnoS2dNAY1p8dbNaK60nl2ChZhDqJPc3h1npL6", "Hello", "from nfc");
+        
+        
     }
     
     @RequestMapping(value = "/order/statistic", method = RequestMethod.POST)

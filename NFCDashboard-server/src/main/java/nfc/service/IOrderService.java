@@ -26,7 +26,7 @@ public interface IOrderService {
         boolean savePaymentOrderHistory(PaymentOrderHistory paymentOrderHistory);
         boolean updateOrderStatus(String orderId, String status);
         PaymentOrderHistory getPaymentOrderHistory(String orderId);
-        List<Order> getListOrderAllStoreOfUser(String userId);
+        //List<Order> getListOrderAllStoreOfUser(String userId);
         List<Order> fGetListOrderByFilter(Filter filter);
         List<Order> fGetListOrderByFilterWithPhoneAndAddress(Filter filter);
         List<Order> fGetListOrderByFilterWithPhone(Filter filter);
