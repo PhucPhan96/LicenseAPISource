@@ -108,6 +108,7 @@ public class SupplierManagementController {
 
     @RequestMapping(value = "app/supplier/{id}/{type}", method = RequestMethod.GET)
     public List<SupplierAppView> getListSupplierViewOfCategory(@PathVariable("id") String categoryId, @PathVariable("type") String storeType) {
+        System.out.println("Type: " + storeType);
         List<SupplierAppView> lstSupplierView = supplierDAO.getListSupplierViewOfCategory(categoryId, storeType);
         return lstSupplierView;
     }
