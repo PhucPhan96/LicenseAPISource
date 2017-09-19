@@ -27,12 +27,15 @@ import nfc.model.Address;
 import nfc.model.AppUser;
 import nfc.model.Category;
 import nfc.model.Code;
+import nfc.model.Email;
+
 import nfc.model.Role;
 import nfc.model.SupplierAddress;
 import nfc.model.SupplierFavorite;
 import nfc.model.SupplierUser;
 import nfc.model.User;
 import nfc.model.UserAddress;
+
 import nfc.model.UserLogin;
 import nfc.model.UserRegister;
 import nfc.model.UserRole;
@@ -407,13 +410,16 @@ public class UserService implements IUserService {
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
         try {
+            userRegist.setReq_code(Utils.generationCode());
             session.save(userRegist);
+            //send code by sms to  mobile
             trans.commit();
             return true;
         } catch (Exception ex) {
             System.out.println("Error " + ex.getMessage());
             trans.rollback();
             return false;
+            
         }
     }
 
@@ -725,4 +731,48 @@ public class UserService implements IUserService {
         }
         return lstSupplierView;
     }
+    //checkExistEmail
+     public boolean checkExistEMail(Email email) {
+         UserRegister userExist = getUserRegister(email.getEmail());
+         if(userExist != null)
+         {
+              return false;
+         }
+         return true;
+     }
+    
+    public UserRegister getUserRegisterByEmail(Email email) {
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        List<UserRegister> listUserRegister = new ArrayList<UserRegister>() ;
+        UserRegister userRegister = new UserRegister();
+        try{
+            listUserRegister = session.createSQLQuery("SELECT sw.* FROM 82wafoodgo.fg_user_regist sw  WHERE sw.req_email ='" + email.getEmail() +"'").addEntity(UserRegister.class).list();
+            userRegister = listUserRegister.get(0);
+            trans.commit();
+        }
+        catch(Exception ex){
+            trans.rollback();
+        }     
+        return userRegister;
+    }
+    //Insert User App
+     public boolean insertUserApp(User user) {
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        try {
+            
+            user.setApp_id(Utils.appId);
+            java.util.Date date = new java.util.Date();
+            user.setCreated_date(date);
+            user.setIs_active(true);            
+            session.save(user);
+            trans.commit();
+            return true;
+        } catch (Exception ex) {
+            trans.rollback();
+            return false;
+        }
+    }
+    
 }
