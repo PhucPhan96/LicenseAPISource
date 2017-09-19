@@ -736,10 +736,13 @@ public class SupplierService implements ISupplierService {
         } else if (storeType.equalsIgnoreCase("NONDELIVERY")) {
             System.out.println("Vao Nondelivery");
             sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where sw.delivery_id = 'DELIVERIED' and FIND_IN_SET(sc.cate_id,'" + categoryId + "')";
-        } else if (storeType == "ALLDELIVERY") {
+        } else if (storeType.equalsIgnoreCase("ALLDELIVERY")) {
+            System.out.println("Vao Alldelivery");
             sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where sw.delivery_id != 'DELIVERIED' and FIND_IN_SET(sc.cate_id,'" + categoryId + "')";
-        } else if (storeType == "ALLNONDELIVERY") {
+        } else if (storeType.equalsIgnoreCase("ALLNONDELIVERY")) {
+            System.out.println("Vao AllNondelivery");
             sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where sw.delivery_id = 'DELIVERIED' and FIND_IN_SET(sc.cate_id,'" + categoryId + "')";
+            
         }
         try {
             suppliers = session.createSQLQuery(sql).addEntity(Supplier.class).list();
