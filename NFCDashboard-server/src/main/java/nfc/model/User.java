@@ -47,7 +47,7 @@ public class User {
 	private Date password_expired_date;
         private Date birth_date;    
 	private int role_id;
-        private Date birth_date;
+        
 	private List<Integer> listSupplierId;
 	
 	private List<UserAddressView> lstuserAddress = new ArrayList<UserAddressView>();
@@ -247,14 +247,7 @@ public class User {
 	public void setApp_id(String app_id) {
 		this.app_id = app_id;
 	}
-        @Column(name="birth_date")
-        public Date getBirth_date() {
-            return birth_date;
-        }
-
-        public void setBirth_date(Date birth_date) {
-            this.birth_date = birth_date;
-        }
+      
 	@Column(name="password_expired_date")
 	public Date getPassword_expired_date() {
 		return password_expired_date;
