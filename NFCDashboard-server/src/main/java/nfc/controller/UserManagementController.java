@@ -269,12 +269,7 @@ public class UserManagementController {
     
     
     //LanAnh
-    @RequestMapping(value = "app/user/checkExistEMail", method = RequestMethod.POST)
-    public String checkExistEMail(@RequestBody Email email)  throws UnsupportedEncodingException{       
-        String data = userDAO.checkExistEMail(email) + "";
-        System.out.println("vao checkExistEMail :"+data); 
-        return "{\"result\":\"" + data + "\"}";
-    }
+    
     @RequestMapping(value = "app/user/insertUserRegister", method = RequestMethod.POST)
     public @ResponseBody
     String insertUserRegister(@RequestBody UserRegister userRegist) {

@@ -44,8 +44,7 @@ public interface IUserService {
         List<User> getListUserByLikePhoneAndAddress(String phone, String address);
         List<User> getListUserGrid(GridView gridView);
         long countUserGrid(GridView gridView);
-        public List<SupplierFavorite> fGetListSupplierFavoriteByUserId(String userId);
-        boolean checkExistEMail(Email email);
+        public List<SupplierFavorite> fGetListSupplierFavoriteByUserId(String userId);       
         UserRegister getUserRegisterByEmail(Email email);
         boolean insertUserApp(User user);
         

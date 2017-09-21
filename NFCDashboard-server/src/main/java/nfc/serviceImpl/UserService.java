@@ -731,16 +731,7 @@ public class UserService implements IUserService {
             lstSupplierView.add(supplierView);
         }
         return lstSupplierView;
-    }
-    //checkExistEmail
-     public boolean checkExistEMail(Email email) {
-         UserRegister userExist = getUserRegister(email.getEmail());
-         if(userExist != null)
-         {
-              return false;
-         }
-         return true;
-     }
+    }  
     
     public UserRegister getUserRegisterByEmail(Email email) {
         Session session = this.sessionFactory.getCurrentSession();
