@@ -724,7 +724,7 @@ public class SupplierService implements ISupplierService {
         return list;
     }
 
-    private List<Supplier> getListSupplierFromCategory(String categoryId, String storeType) {
+    private List<Supplier> getListSupplierFromCategory(String categoryId, String storeType, int pageindex, int pagesize) {
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
         List<Supplier> suppliers = new ArrayList<>();
@@ -732,16 +732,16 @@ public class SupplierService implements ISupplierService {
         System.out.println(storeType);
         if (storeType.equalsIgnoreCase("DELIVERY")) {
             System.out.println("Vao delivery");
-            sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where sw.delivery_id != 'DELIVERIED' and FIND_IN_SET(sc.cate_id,'" + categoryId + "')";
+            sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where sw.delivery_id != 'DELIVERIED' and FIND_IN_SET(sc.cate_id,'" + categoryId + "') limit " + pageindex + ", " + pagesize;
         } else if (storeType.equalsIgnoreCase("NONDELIVERY")) {
             System.out.println("Vao Nondelivery");
-            sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where sw.delivery_id = 'DELIVERIED' and FIND_IN_SET(sc.cate_id,'" + categoryId + "')";
+            sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where sw.delivery_id = 'DELIVERIED' and FIND_IN_SET(sc.cate_id,'" + categoryId + "') limit " + pageindex + ", " + pagesize;
         } else if (storeType.equalsIgnoreCase("ALLDELIVERY")) {
             System.out.println("Vao Alldelivery");
-            sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where sw.delivery_id != 'DELIVERIED' and FIND_IN_SET(sc.cate_id,'" + categoryId + "')";
+            sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where sw.delivery_id != 'DELIVERIED' and FIND_IN_SET(sc.cate_id,'" + categoryId + "') limit " + pageindex + ", " + pagesize;
         } else if (storeType.equalsIgnoreCase("ALLNONDELIVERY")) {
             System.out.println("Vao AllNondelivery");
-            sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where sw.delivery_id = 'DELIVERIED' and FIND_IN_SET(sc.cate_id,'" + categoryId + "')";
+            sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where sw.delivery_id = 'DELIVERIED' and FIND_IN_SET(sc.cate_id,'" + categoryId + "') limit " + pageindex + ", " + pagesize;
             
         }
         try {
@@ -753,10 +753,10 @@ public class SupplierService implements ISupplierService {
         return suppliers;
     }
 
-    public List<SupplierAppView> getListSupplierViewOfCategory(String categoryId, String storeType) {
+    public List<SupplierAppView> getListSupplierViewOfCategory(String categoryId, String storeType, int pageindex, int pagesize) {
         List<SupplierAppView> lstSupplierAppView = new ArrayList<SupplierAppView>();
         //List<SupplierCategories> lstSupplierCategory = getListSupplierCategoryFromCategory(categoryId);
-        List<Supplier> suppliers = getListSupplierFromCategory(categoryId, storeType);
+        List<Supplier> suppliers = getListSupplierFromCategory(categoryId, storeType, pageindex, pagesize);
         for (Supplier supplier : suppliers) {
             SupplierWork supplierWork = getSupplierWork(supplier.getSuppl_id());
 //            if (Integer.parseInt(supplierWork.getSuppl_role()) == 21) {
