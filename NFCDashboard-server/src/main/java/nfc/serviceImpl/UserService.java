@@ -22,6 +22,11 @@ import org.springframework.util.StringUtils;
 
 import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.type.PhoneNumber;
+import static nfc.controller.SMSController.ACCOUNT_SID;
+import static nfc.controller.SMSController.AUTH_TOKEN;
 
 import nfc.model.Address;
 import nfc.model.AppUser;
@@ -411,8 +416,11 @@ public class UserService implements IUserService {
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
         try {
-            userRegist.setReq_code(Utils.generationCode());
+            String code = Utils.generationCode();
+            userRegist.setReq_code(code);
             session.save(userRegist);
+            System.out.println("code la " + code);
+            sendSMS(code);
             //send code by sms to  mobile
             trans.commit();
             return true;
@@ -748,7 +756,21 @@ public class UserService implements IUserService {
         }     
         return userRegister;
     }
+    
     //Insert User App
+    public static final String ACCOUNT_SID = "ACb4fc4a37e7e7edd2396d1c8bfe766034";
+    public static final String AUTH_TOKEN = "01a94a54d2c1a124b0a73d0dc7715754";
+
+    public void sendSMS(String code){
+            Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+            Message message = Message
+            .creator(new PhoneNumber("+821049923148"), new PhoneNumber("+12512542245"),
+                    "SMS notification from NFC, your verify code is "+ code)
+            .create();
+            System.out.println("vao ham send SMS");
+             System.out.println(message.getSid()); 
+             
+	}
      public boolean insertUserApp(User user) {
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
@@ -760,6 +782,7 @@ public class UserService implements IUserService {
             user.setIs_active(true);            
             session.save(user);
             trans.commit();
+        
             return true;
         } catch (Exception ex) {
             trans.rollback();

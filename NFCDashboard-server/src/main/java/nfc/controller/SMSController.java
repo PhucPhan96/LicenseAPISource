@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @RestController
 public class SMSController {
-	public static final String ACCOUNT_SID = "ACf486b0ebb35102823cb3d448f77d8e3b";
-	public static final String AUTH_TOKEN = "789e64c24ea5055a5819a0ca52d6bd10";
+	public static final String ACCOUNT_SID = "ACb4fc4a37e7e7edd2396d1c8bfe766034";
+	public static final String AUTH_TOKEN = "01a94a54d2c1a124b0a73d0dc7715754";
 	@Autowired
 	private IMailService mailDAO;
 	public void sendSMS(){
