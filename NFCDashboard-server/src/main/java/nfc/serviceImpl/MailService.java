@@ -53,7 +53,7 @@ public class MailService implements IMailService{
             message.setTo(code.getCode_name());
             message.setSubject(mail.getTitle());
             message.setText("From mail: " + mail.getFromAdd()
-                            +"\n\n" + "New your password: "+ mail.getContent());
+                            +"\n\n" + mail.getContent());
             mailSender.send(message);
             return true;
         }
@@ -93,7 +93,7 @@ public class MailService implements IMailService{
             message.setTo(mail.getToAdd());
             message.setSubject(mail.getTitle());
             message.setText("From mail: " + mail.getFromAdd()
-                            +"\n\n" + mail.getContent());
+                            +"\n\n"+ "New your password: " + mail.getContent());
             mailSender.send(message);
              System.out.println("Noi dung mail " + message);
             return true;
