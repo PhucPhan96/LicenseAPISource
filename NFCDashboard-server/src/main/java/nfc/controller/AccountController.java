@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nfc.messages.BaseResponse;
 import nfc.messages.ErrorResponse;
+import nfc.model.Email;
+import nfc.model.Mail;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 import nfc.model.User;
 import nfc.model.UserRegister;
 import nfc.model.ViewModel.UserModelLogin;
+import nfc.service.IMailService;
 import nfc.service.IUserService;
 import nfc.serviceImpl.Security.JwtAuthenticationRequest;
 import nfc.serviceImpl.Security.JwtAuthenticationResponse;
@@ -59,6 +62,9 @@ public class AccountController {
     
     @Autowired
     private IUserService userDAO;
+    
+    @Autowired
+    private IMailService mailDAO;
 
     @RequestMapping(value = "/auth", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest){
@@ -164,6 +170,7 @@ public class AccountController {
     }
     @RequestMapping(value = "/app/user/forgotPasword", method = RequestMethod.POST)
     public ResponseEntity<?> forgotPasword(@RequestBody User user) {
+        System.out.println("Vao Ham forgotPasword");
     	String body = userDAO.forgotPassword(user);
     	if(body.contains(":"))
     	{	
@@ -182,4 +189,26 @@ public class AccountController {
     	}
         return ResponseEntity.ok(new JwtAuthenticationResponse(body));
     }
+      @RequestMapping(value = "app/mail/send/sendMailForgotPassword", method = RequestMethod.POST)
+        public @ResponseBody String sendMailForgotPassword(@RequestBody Mail mail) {
+            
+            boolean data = mailDAO.sendMailFromAdmin(mail);
+            System.out.println("result sendmail la "+data);
+            return "{\"result\":\"" + data + "\"}";
+        }
+        @RequestMapping(value = "app/user/getUserByEmail", method = RequestMethod.POST)
+        public User getUserByEmail(@RequestBody Email email) {
+        System.out.println("Email la"+email.getEmail()); 
+        User user = userDAO.getUserByEmail(email);
+        System.out.println("vao getUserByEmail"+user); 
+        return user;
+        }
+        @RequestMapping(value = "app/user/updateUserForgotPassword", method = RequestMethod.PUT)
+        public @ResponseBody
+        String updateUserForgotPassword(@RequestBody User user) {
+            System.out.println("vao duoc update user");
+            //userRegister.setReq_approved(true);
+            String data = userDAO.updateUserForgotPassword(user) + "";
+            return "{\"result\":\"" + data + "\"}";
+        }
 }

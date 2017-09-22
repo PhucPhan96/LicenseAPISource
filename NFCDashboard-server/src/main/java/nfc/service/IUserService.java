@@ -2,6 +2,7 @@ package nfc.service;
 
 import java.util.List;
 import nfc.model.Email;
+import nfc.model.Mail;
 
 import nfc.model.SupplierFavorite;
 
@@ -47,5 +48,6 @@ public interface IUserService {
         public List<SupplierFavorite> fGetListSupplierFavoriteByUserId(String userId);       
         UserRegister getUserRegisterByEmail(Email email);
         boolean insertUserApp(User user);
+        User getUserByEmail(Email email) ;
         
 }

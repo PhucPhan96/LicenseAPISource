@@ -33,6 +33,7 @@ import nfc.model.AppUser;
 import nfc.model.Category;
 import nfc.model.Code;
 import nfc.model.Email;
+import nfc.model.Mail;
 
 import nfc.model.Role;
 import nfc.model.SupplierAddress;
@@ -599,7 +600,6 @@ public class UserService implements IUserService {
         try {
             session.update(user);
             trans.commit();
-
             return true;
 
         } catch (Exception ex) {
@@ -624,13 +624,12 @@ public class UserService implements IUserService {
         User userExist = getUserForgotPassword(user.getEmail());
         System.out.println("getUserForgotPassword " + userExist);
         if (userExist != null) {
-            String passwordRandom = Utils.randomPassword(8);
-            System.out.println("Mail User " + user.getEmail());
-            mailDAO.sendSimpleMail("kjncunn@gmail.com", user.getEmail(), "Verify", "New Password for NFC Account: " + passwordRandom);
-            userExist.setPassword(Utils.Sha1(passwordRandom));
-            if (updateUserForgotPassword(userExist)) {
-                System.out.println("passwordRandom " + passwordRandom);
-                return "success";
+//            String passwordRandom = Utils.randomPassword(8);
+//            userExist.setPassword(Utils.Sha1(passwordRandom));
+            System.out.println("Mail User " + user.getEmail());           
+            if (updateUserForgotPassword(userExist)) {                                    
+                    return "success";                         
+                
             } else {
                 return "fail";
             }
@@ -789,5 +788,19 @@ public class UserService implements IUserService {
             return false;
         }
     }
-    
+      public User getUserByEmail(Email email) {
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        List<User> listUser = new ArrayList<User>() ;
+        User user = new User();
+        try{
+            listUser= session.createSQLQuery("SELECT sw.* FROM 82wafoodgo.fg_users sw  WHERE sw.email ='" + email.getEmail() +"'").addEntity(User.class).list();
+            user = listUser.get(0);
+            trans.commit();
+        }
+        catch(Exception ex){
+            trans.rollback();
+        }     
+        return user;
+    }
 }
