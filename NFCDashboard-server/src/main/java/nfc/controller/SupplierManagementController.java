@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
 @RestController
 public class SupplierManagementController {
 
@@ -52,9 +53,10 @@ public class SupplierManagementController {
     private JwtTokenUtil jwtTokenUtil;
     @Autowired
     private IMailService mailDAO;
-    
+
     @Autowired
     private IUserService userDAO;
+
     @RequestMapping(value = "supplier", method = RequestMethod.GET)
     public List<Supplier> getSupplier() {
         List<Supplier> supplier = supplierDAO.getListSupplier();
@@ -106,9 +108,14 @@ public class SupplierManagementController {
         return lstSupplierView;
     }
 
-    @RequestMapping(value = "app/supplier/{id}/{type}", method = RequestMethod.GET)
-    public List<SupplierAppView> getListSupplierViewOfCategory(@PathVariable("id") String categoryId, @PathVariable("type") String storeType) {
-        List<SupplierAppView> lstSupplierView = supplierDAO.getListSupplierViewOfCategory(categoryId, storeType);
+    @RequestMapping(value = "app/supplier/{id}/{type}/{pageindex}/{pagesize}", method = RequestMethod.GET)
+    public List<SupplierAppView> getListSupplierViewOfCategory(
+            @PathVariable("id") String categoryId,
+            @PathVariable("type") String storeType,
+            @PathVariable("pageindex") int pageindex,
+            @PathVariable("pagesize") int pagesize) {
+        System.out.println("Type: " + storeType);
+        List<SupplierAppView> lstSupplierView = supplierDAO.getListSupplierViewOfCategory(categoryId, storeType, pageindex, pagesize);
         return lstSupplierView;
     }
 
@@ -251,7 +258,7 @@ public class SupplierManagementController {
     public @ResponseBody
     List<BillHistoryView> getListBillHistory(@PathVariable("userID") String userID) {
         System.out.println("run getListBillHistory");
-        List<BillHistoryView> listBillHistoryView= supplierDAO.getListBillHistory(userID);
+        List<BillHistoryView> listBillHistoryView = supplierDAO.getListBillHistory(userID);
         return listBillHistoryView;
     }
 
@@ -269,30 +276,34 @@ public class SupplierManagementController {
         List<Supplier> suppliers = supplierDAO.getListSupplierFromRoles(roleJoin);
         return suppliers;
     }
-    
+
     //Lucas
     @RequestMapping(value = "supplier/changeOrderPhoneNumber", method = RequestMethod.POST)
-    public @ResponseBody String ChangePasswordUser(@RequestBody String[] temp) {
+    public @ResponseBody
+    String ChangePasswordUser(@RequestBody String[] temp) {
         String data = supplierDAO.ChangeOrderPhoneNumberSupplier(temp[0], temp[1]) + "";
         return "{\"result\":\"" + data + "\"}";
     }
+
     //Lucas
     @RequestMapping(value = "app/suppliers/getlstbylocation/{long}/{lat}", method = RequestMethod.GET)
     public List<SupplierView> getListSupplierByLocation(@PathVariable("long") String longT, @PathVariable("lat") String lat) {
         List<SupplierView> suppliers = supplierDAO.getListSupplierByAddress(longT, lat);
         return suppliers;
     }
-    
+
     @RequestMapping(value = "app/suppliers/searchsupplierbytextinput", method = RequestMethod.POST)
     public List<SupplierView> getListSupplierByTextInput(@RequestBody Search search) throws UnsupportedEncodingException {
         List<SupplierView> lstsuppliers = supplierDAO.getListSupplierViewByTextInput(search.getText());
         return lstsuppliers;
     }
+
     @RequestMapping(value = "app/suppliers/getlstsupplierbymanagerid/{id}", method = RequestMethod.GET)
     public List<Supplier> getListSupplierByManagerId(@PathVariable("id") int id) {
         List<Supplier> lstSupplier = supplierDAO.fGetListSupplierFromSuppIDManager(id);
         return lstSupplier;
     }
+
     @RequestMapping(value = "supplier/getlistupplierfromtoken", method = RequestMethod.GET)
     public List<Supplier> getListSupplierByUserName(HttpServletRequest request) {
         String token = request.getHeader(tokenHeader);
@@ -300,7 +311,8 @@ public class SupplierManagementController {
         List<Supplier> lstSupplier = supplierDAO.fGetListSupplierFromUserName(username);
         return lstSupplier;
     }
-     //Get List Product Optional
+    //Get List Product Optional
+
     @RequestMapping(value = "app/getListProductOptions/{stringList}", method = RequestMethod.GET)
     public @ResponseBody
     List<ProductOptionalBH> getListProductOptions(@PathVariable("stringList") String stringList) {
@@ -308,6 +320,7 @@ public class SupplierManagementController {
         System.out.println("show list search BillHistory" + listProductOptional.size());
         return listProductOptional;
     }
+
     @RequestMapping(value = "app/user/getlistfavorite", method = RequestMethod.GET)
     public List<SupplierView> getListSupplierFavorite(HttpServletRequest request) {
         String token = request.getHeader(tokenHeader);
@@ -316,31 +329,29 @@ public class SupplierManagementController {
         String userid = users.getUser_id();
         List<SupplierFavorite> lstSupplierFavo = userDAO.fGetListSupplierFavoriteByUserId(userid);
         List<SupplierView> lstSupplierView = new ArrayList<SupplierView>();
-        for (SupplierFavorite supplier: lstSupplierFavo) {
+        for (SupplierFavorite supplier : lstSupplierFavo) {
             SupplierView supplierView = new SupplierView();
             supplierView = supplierDAO.getSupplierView(supplier.getSuppl_id());
             lstSupplierView.add(supplierView);
         }
         return lstSupplierView;
     }
-    
-    
+
     @RequestMapping(value = "/suppliers/child/{userId}", method = RequestMethod.GET)
     public List<Supplier> getListSupplierChildOfUser(@PathVariable("userId") String userId) {
         List<Supplier> suppliers = supplierDAO.getListSupplierChildFromUser(userId);
         return suppliers;
     }
-    
-    
+
     @RequestMapping(value = "/suppliers/supplierIds/{supplierIds}", method = RequestMethod.GET)
     public List<Supplier> getListSupplierFromSupplierIds(@PathVariable("supplierIds") String supplierIds) {
         List<Supplier> suppliers = supplierDAO.getListSupplierFromSupplierIds(supplierIds);
         return suppliers;
     }
-    
-    
+
     @RequestMapping(value = "user/supplier/add", method = RequestMethod.POST)
-    public @ResponseBody Supplier insertUserSupplier(@RequestBody UserSupplierView userSupplierView, HttpServletRequest request) {
+    public @ResponseBody
+    Supplier insertUserSupplier(@RequestBody UserSupplierView userSupplierView, HttpServletRequest request) {
         String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
         return supplierDAO.insertUserSupplierView(userSupplierView, username);

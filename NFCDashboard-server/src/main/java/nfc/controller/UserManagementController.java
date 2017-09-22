@@ -250,6 +250,14 @@ public class UserManagementController {
         }
         return lstUser;
     }
+    /**
+     * Lucas 
+     */
+    @RequestMapping(value = "app/user/finduseridbysupplier/{id}", method = RequestMethod.GET)
+    public String getUserIDBySupplier(@PathVariable("id") int id) {
+        String userID = userDAO.getUserIdOfSupplier(id) + "";
+        return "{\"result\":\"" + userID + "\"}";
+    }
 
 //    @RequestMapping(value = "app/user/getlistfavorite", method = RequestMethod.GET)
 //    public List<SupplierView> getListSupplierFavorite(HttpServletRequest request) {
