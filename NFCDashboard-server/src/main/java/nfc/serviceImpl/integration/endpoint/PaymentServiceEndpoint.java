@@ -30,11 +30,9 @@ public class PaymentServiceEndpoint {
     
     public OrderView payment(OrderView orderView)
     {
-        JSONObject resultPayment = PaymentFactory.getPaymentApi(orderView.getPayment_request().getPayment_code()).payment(orderView.getPayment_request());
-        System.err.println(resultPayment.toJSONString());
         Order order = orderView.getOrder();
-        if(resultPayment.containsKey("success") &&  resultPayment.get("success").toString() == "true"){
-            savePaymentOrderHistory(order.getOrder_id(), resultPayment, orderView.getPayment_request().getPayment_code());
+        boolean resultPayment = PaymentFactory.getPaymentApi(orderView.getPayment_request().get("payment_code").toString()).payment(orderView.getPayment_request(), order.getOrder_id());
+        if(resultPayment){
             updatePaymentStatus(order.getOrder_id(), Utils.ORDER_PAID);
             order.setOrder_status(Utils.ORDER_PAID);
             sendOrderToStore(orderView);
@@ -45,17 +43,6 @@ public class PaymentServiceEndpoint {
             sendOrderToStore(orderView);
         }
         return orderView;
-    }
-    
-    private void savePaymentOrderHistory(String orderId, JSONObject resultPayment, String payment_code){
-        PaymentOrderHistory paymentOrderHistory = new PaymentOrderHistory();
-        paymentOrderHistory.setOrder_id(orderId);
-        paymentOrderHistory.setPayment_unique_number(resultPayment.get("id").toString());
-        JSONObject payDetail = (JSONObject)resultPayment.get("pay_det");
-        paymentOrderHistory.setCard_id(payDetail.get("card_id").toString());
-        paymentOrderHistory.setCard_nm(payDetail.get("card_nm").toString());
-        paymentOrderHistory.setPayment_code(payment_code);
-        orderDAO.savePaymentOrderHistory(paymentOrderHistory);
     }
     
     private void updatePaymentStatus(String orderId, String status){

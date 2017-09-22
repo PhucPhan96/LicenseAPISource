@@ -3,6 +3,7 @@ package nfc.controller;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -18,6 +19,7 @@ import nfc.messages.base.PaymentRequestPacket;
 import nfc.messages.filters.BillRequestFilter;
 import nfc.messages.filters.StatisticRequestFilter;
 import nfc.messages.request.PayRequest;
+import nfc.messages.request.PaymentCancel;
 
 import nfc.model.Code;
 import nfc.model.Group;
@@ -203,21 +205,17 @@ public class OrderManagementController {
     public List<Order> getListOrderByFilter(@RequestBody Filter filter) {
         List<Order> lstOrder = new ArrayList<Order>();
         if (filter.getAddress().equalsIgnoreCase("") && filter.getPhone_num().equalsIgnoreCase("")) {
-            System.out.println("Khong Co Dia Chi Va SDT");
             lstOrder = orderDAO.fGetListOrderByFilter(filter);
             return lstOrder;
         }
         else{
             if (filter.getAddress().equalsIgnoreCase("")) {
-                System.out.println("Khong Co Dia Chi");
                 lstOrder = orderDAO.fGetListOrderByFilterWithPhone(filter);
                 return lstOrder;
             } else if (filter.getPhone_num().equalsIgnoreCase("")){
-                System.out.println("Khong Co SDT");
                 lstOrder = orderDAO.fGetListOrderByFilterWithAddress(filter);
                 return lstOrder;
             } else{
-                System.out.println("Co Dia Chi Va SDT");
                 lstOrder = orderDAO.fGetListOrderByFilterWithPhoneAndAddress(filter);
                 return lstOrder;
             }
@@ -253,21 +251,21 @@ public class OrderManagementController {
         return baseResponse;
     }
     
-    @RequestMapping(value="/order/payment/test", method = RequestMethod.GET)
-    public String paymentTest() {
-    	PayRequest speedPayRequest = new PayRequest();
-        speedPayRequest.setAmt("1000");
-        speedPayRequest.setCard_no("5562456078580705");
-        //speedPayRequest.setCard_serial("6267");
-        speedPayRequest.setCard_ymd("20170817");
-        speedPayRequest.setSell_nm("sadsad");
-        speedPayRequest.setProduct_nm("aaaa");
-        speedPayRequest.setBuyer_email("aa@gmail.com");
-        speedPayRequest.setBuyer_nm("chongsongyong");
-        speedPayRequest.setBuyer_phone_no("01023134519");
-        JSONObject resultPayment = PaymentFactory.getPaymentApi("SPEEDPAY").payment(speedPayRequest);
-        return resultPayment.toJSONString();
-    }
+//    @RequestMapping(value="/order/payment/test", method = RequestMethod.GET)
+//    public String paymentTest() {
+//    	PayRequest speedPayRequest = new PayRequest();
+//        speedPayRequest.setAmt("1000");
+//        speedPayRequest.setCard_no("5562456078580705");
+//        //speedPayRequest.setCard_serial("6267");
+//        speedPayRequest.setCard_ymd("20170817");
+//        speedPayRequest.setSell_nm("sadsad");
+//        speedPayRequest.setProduct_nm("aaaa");
+//        speedPayRequest.setBuyer_email("aa@gmail.com");
+//        speedPayRequest.setBuyer_nm("chongsongyong");
+//        speedPayRequest.setBuyer_phone_no("01023134519");
+//        JSONObject resultPayment = PaymentFactory.getPaymentApi("SPEEDPAY").payment(speedPayRequest);
+//        return resultPayment.toJSONString();
+//    }
     
     @RequestMapping(value="/order/send/store/test", method = RequestMethod.GET)
     public String sendOrderToStoreTest() {
@@ -314,6 +312,15 @@ public class OrderManagementController {
         List<Order> lstOrder = new ArrayList<Order>();
         lstOrder = orderDAO.getListOrderOfStatisticRequest(filter);
         return lstOrder;
+    }
+    
+    
+    
+    @RequestMapping(value = "/order/lgpay", method = RequestMethod.GET)
+    public String lgPaymentTest() {
+        LinkedHashMap<String, String> paymentRequest = new LinkedHashMap<>();
+        paymentRequest.put("LGD_PAYKEY", "sdafsdaf3423k2345234");
+        return PaymentFactory.getPaymentApi("LGPAYNOW").payment(paymentRequest, "1709200000010") + "";
     }
    
     

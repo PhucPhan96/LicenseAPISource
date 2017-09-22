@@ -198,11 +198,7 @@ public class OrderServiceEndpoint {
                 PaymentOrderHistory paymentHistory = orderDAO.getPaymentOrderHistory(orderStatusRequest.getOrderId());
                 PaymentCancel speedPayCancel = new PaymentCancel();
                 speedPayCancel.setId(paymentHistory.getPayment_unique_number());
-                JSONObject resultPayment = PaymentFactory.getPaymentApi(orderStatusRequest.getPayment_code()).cancel(speedPayCancel);
-                if(resultPayment.containsKey("success") && resultPayment.get("success") == "true"){
-                    return true;
-                }
-                return false;
+                return PaymentFactory.getPaymentApi(orderStatusRequest.getPayment_code()).cancel(speedPayCancel);
             }
             catch(Exception ex){
                 return false;

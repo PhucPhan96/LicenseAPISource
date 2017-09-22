@@ -730,10 +730,10 @@ public class SupplierService implements ISupplierService {
         List<Supplier> suppliers = new ArrayList<>();
         try {
             String sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where sw.delivery_id = 'DELIVERIED' and FIND_IN_SET(sc.cate_id,'"+categoryId+"')";
-            if(storeType == "NONDELIVERY"){
+            if(storeType.equals("NONDELIVERY")){
                 sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where sw.delivery_id != 'DELIVERIED' and FIND_IN_SET(sc.cate_id,'"+categoryId+"')";
             }
-            else if(storeType == "ALL"){
+            else if(storeType.equals("ALL")){
                 sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where FIND_IN_SET(sc.cate_id,'"+categoryId+"')";
             }
             suppliers = session.createSQLQuery(sql).addEntity(Supplier.class).list();
@@ -1225,5 +1225,24 @@ public class SupplierService implements ISupplierService {
            System.err.println("supplier id" + user.getListSupplierId().size());
            userDAO.insertUser(userSupplierView.getUser());
            return userSupplierView.getSupplierView().getSupplier();
+       }
+       
+       public boolean updateStoreInformation(SupplierView supplierView){
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            try {
+                int supplierId = supplierView.getSupplier().getSuppl_id();
+                String strQuery = "update fg_suppliers set origin_food = '" + supplierView.getSupplier().getOrigin_food() + "' where suppl_id=" + supplierId;
+                session.createSQLQuery(strQuery).executeUpdate();
+                strQuery = "update fg_supplier_work set suppl_delivery_info = '" + supplierView.getSupplierWork().getSuppl_delivery_info() + "' where suppl_id=" + supplierId;
+                session.createSQLQuery(strQuery).executeUpdate();
+                trans.commit();
+                return true;
+            } catch (Exception ex) {
+                System.out.println("Error " + ex.getMessage());
+                trans.rollback();
+                return false;
+            } 
+        
        }
 }

@@ -345,4 +345,13 @@ public class SupplierManagementController {
         String username = jwtTokenUtil.getUsernameFromToken(token);
         return supplierDAO.insertUserSupplierView(userSupplierView, username);
     }
+    
+    @RequestMapping(value = "store/update/information", method = RequestMethod.POST)
+    public @ResponseBody String updateStoreInformation(@RequestBody SupplierView supplierView) {
+        String data = supplierDAO.updateStoreInformation(supplierView) + "";
+        return "{\"result\":\"" + data + "\"}";
+    }
+    
+    
+    
 }

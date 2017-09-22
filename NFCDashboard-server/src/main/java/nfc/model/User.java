@@ -47,6 +47,9 @@ public class User {
 	private Date password_expired_date;
 	private int role_id;
         private Date birth_date;
+        private String user_reg_num;
+        private String user_reg_name;
+        
 	private List<Integer> listSupplierId;
 	
 	private List<UserAddressView> lstuserAddress = new ArrayList<UserAddressView>();
@@ -295,6 +298,25 @@ public class User {
         public void setBirth_date(Date birth_date) {
             this.birth_date = birth_date;
         }
+
+        @Column(name="user_reg_num")
+        public String getUser_reg_num() {
+            return user_reg_num;
+        }
+
+        public void setUser_reg_num(String user_reg_num) {
+            this.user_reg_num = user_reg_num;
+        }
+
+        @Column(name="user_reg_name")
+        public String getUser_reg_name() {
+            return user_reg_name;
+        }
+
+        public void setUser_reg_name(String user_reg_name) {
+            this.user_reg_name = user_reg_name;
+        }
+        
         
         
 }

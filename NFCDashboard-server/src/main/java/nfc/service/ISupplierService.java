@@ -72,4 +72,6 @@ public interface ISupplierService {
         List<ProductOptionalBH> getListProductOptions(String stringList);
         
         Supplier insertUserSupplierView(UserSupplierView userSupplierView, String username);
+        
+        boolean updateStoreInformation(SupplierView supplierView);
 }
