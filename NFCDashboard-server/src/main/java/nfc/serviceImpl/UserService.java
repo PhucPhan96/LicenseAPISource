@@ -763,7 +763,7 @@ public class UserService implements IUserService {
     public void sendSMS(String code){
             Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
             Message message = Message
-            .creator(new PhoneNumber("+821049923148"), new PhoneNumber("+12512542245"),
+            .creator(new PhoneNumber("+821025670105"), new PhoneNumber("+12512542245"),
                     "SMS notification from NFC, your verify code is "+ code)
             .create();
             System.out.println("vao ham send SMS");
