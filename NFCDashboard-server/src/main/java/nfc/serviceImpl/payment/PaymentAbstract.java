@@ -5,6 +5,7 @@
  */
 package nfc.serviceImpl.payment;
 
+import java.util.LinkedHashMap;
 import nfc.messages.request.PaymentCancel;
 import nfc.messages.base.PaymentCancelPacket;
 import nfc.messages.base.PaymentRequestPacket;
@@ -17,6 +18,6 @@ import org.json.simple.JSONObject;
  */
 public abstract class PaymentAbstract {
     protected String payment_code = "0";
-    public abstract JSONObject payment(PayRequest paymentRequest);
-    public abstract JSONObject cancel(PaymentCancel paymentCancelRequest);
+    public abstract boolean payment(LinkedHashMap<String, String> paymentRequest, String orderId);
+    public abstract boolean cancel(PaymentCancel paymentCancelRequest);
 }

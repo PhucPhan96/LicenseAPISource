@@ -21,13 +21,15 @@ public interface IThreadService {
     boolean updateThread(nfc.model.Thread thread);
     boolean deleteThread(String threadId);
     List<ThreadSupplierUser> getListThreadStorebyID(int supplID);
+    List<ThreadSupplierUser> getListThreadStorebyIDNotOwner(int supplID,String write_id);
+    List<ThreadSupplierUser> getListThreadStorebyWriteID(int supplID,String writer_id);
     List<ThreadSupplierUser> getListThreadStoreSmall(int supplID, String thread_id);
     boolean updateThreadStoreSmall(nfc.model.Thread thread ); 
     nfc.model.Thread getThreadByID(String thread_id);
     boolean deleteThreadSmall(String thread_id) ;      
     nfc.model.Thread insertThreadStore(nfc.model.Thread thread);
     int getBoardIDbySupllierID(int suppl_id);
-    List<ThreadSupplierUser>  getListThreadNoReview(int suppl_id);
+    List<ThreadSupplierUser>  getListThreadNoReview(int suppl_id,String write_id);
     public Object fGetReviewCount(int board_id);
     List<ThreadView> getListReview(String username);
 }

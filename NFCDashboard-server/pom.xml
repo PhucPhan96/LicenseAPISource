@@ -344,7 +344,16 @@
             <version>0.9.10</version>
         </dependency>
         
-        
+<!--        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <dependency>
+          <groupId>xpayclient</groupId>
+          <artifactId>xpayclient</artifactId>
+          <version>1.0</version>
+        </dependency>-->
   </dependencies>
   <build>
     <finalName>NFCDashboard-server</finalName>

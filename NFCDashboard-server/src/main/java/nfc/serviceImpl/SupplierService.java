@@ -240,7 +240,7 @@ public class SupplierService implements ISupplierService {
             trans.commit();
             for (SupplierWork supplierWork : list) {
                 System.out.println("Vao For ne");
-                SupplierWork supplierWorkWithDistance = getSupplierByLongLat(longT == "undefined" ? "0": longT, latT == "undefined"?"0": latT, supplierWork.getSuppl_id() + "");
+                SupplierWork supplierWorkWithDistance = getSupplierByLongLat(longT == "undefined" ? "0" : longT, latT == "undefined" ? "0" : latT, supplierWork.getSuppl_id() + "");
                 String distanceTemp = supplierWorkWithDistance.getDistance_in_km() + "";
                 BigDecimal mindistance = new BigDecimal(3);
                 if (distanceTemp.equalsIgnoreCase("null")) {
@@ -303,7 +303,7 @@ public class SupplierService implements ISupplierService {
                 str.setVisit_pay(Boolean.parseBoolean(row[14] + ""));
                 str.setWd_end_hm(row[3] + "");
                 str.setWd_start_hm(row[2] + "");
-                str.setDelivery_id(row[27]+"");
+                str.setDelivery_id(row[27] + "");
                 supplierWork = str;
             }
             trans.commit();
@@ -343,7 +343,8 @@ public class SupplierService implements ISupplierService {
 
     /**
      * Lucas - Get list supplier from supplierID of manager
-     **/
+     *
+     */
     public List<Supplier> fGetListSupplierFromSuppIDManager(int supplId) {
         List<Supplier> lstSupplier = new ArrayList<Supplier>();
         List<SupplierWork> lstSupplierWork = getListSupplierWorkOfManager(supplId);
@@ -354,7 +355,7 @@ public class SupplierService implements ISupplierService {
         }
         return lstSupplier;
     }
-    
+
     public List<SupplierBank> getListSupplierBank(int supplId) {
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
@@ -582,11 +583,10 @@ public class SupplierService implements ISupplierService {
             return false;
         }
     }
-    
-    
-    private void deleteSupplierImage(int supplierId){
+
+    private void deleteSupplierImage(int supplierId) {
         List<SupplierImage> supplImgs = getListSupplierImage(supplierId);
-        for(SupplierImage suppImage: supplImgs){
+        for (SupplierImage suppImage : supplImgs) {
             fileDAO.deleteAttachFile(suppImage.getImg_id());
         }
     }
@@ -723,19 +723,28 @@ public class SupplierService implements ISupplierService {
         trans.commit();
         return list;
     }
-    
- private List<Supplier> getListSupplierFromCategory(String categoryId, String storeType){
+
+    private List<Supplier> getListSupplierFromCategory(String categoryId, String storeType, int pageindex, int pagesize) {
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
         List<Supplier> suppliers = new ArrayList<>();
+        String sql = "";
+        System.out.println(storeType);
+        if (storeType.equalsIgnoreCase("DELIVERY")) {
+            System.out.println("Vao delivery");
+            sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where sw.delivery_id != 'DELIVERIED' and FIND_IN_SET(sc.cate_id,'" + categoryId + "') limit " + pageindex + ", " + pagesize;
+        } else if (storeType.equalsIgnoreCase("NONDELIVERY")) {
+            System.out.println("Vao Nondelivery");
+            sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where sw.delivery_id = 'DELIVERIED' and FIND_IN_SET(sc.cate_id,'" + categoryId + "') limit " + pageindex + ", " + pagesize;
+        } else if (storeType.equalsIgnoreCase("ALLDELIVERY")) {
+            System.out.println("Vao Alldelivery");
+            sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where sw.delivery_id != 'DELIVERIED' and FIND_IN_SET(sc.cate_id,'" + categoryId + "') limit " + pageindex + ", " + pagesize;
+        } else if (storeType.equalsIgnoreCase("ALLNONDELIVERY")) {
+            System.out.println("Vao AllNondelivery");
+            sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where sw.delivery_id = 'DELIVERIED' and FIND_IN_SET(sc.cate_id,'" + categoryId + "') limit " + pageindex + ", " + pagesize;
+            
+        }
         try {
-            String sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where sw.delivery_id = 'DELIVERIED' and FIND_IN_SET(sc.cate_id,'"+categoryId+"')";
-            if(storeType == "NONDELIVERY"){
-                sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where sw.delivery_id != 'DELIVERIED' and FIND_IN_SET(sc.cate_id,'"+categoryId+"')";
-            }
-            else if(storeType == "ALL"){
-                sql = "select s.* from fg_suppliers s inner join fg_supplier_work sw on s.suppl_id = sw.suppl_id inner join fg_supplier_categories sc on s.suppl_id = sc.suppl_id where FIND_IN_SET(sc.cate_id,'"+categoryId+"')";
-            }
             suppliers = session.createSQLQuery(sql).addEntity(Supplier.class).list();
             trans.commit();
         } catch (Exception ex) {
@@ -743,10 +752,11 @@ public class SupplierService implements ISupplierService {
         }
         return suppliers;
     }
-    public List<SupplierAppView> getListSupplierViewOfCategory(String categoryId, String storeType) {
+
+    public List<SupplierAppView> getListSupplierViewOfCategory(String categoryId, String storeType, int pageindex, int pagesize) {
         List<SupplierAppView> lstSupplierAppView = new ArrayList<SupplierAppView>();
         //List<SupplierCategories> lstSupplierCategory = getListSupplierCategoryFromCategory(categoryId);
-        List<Supplier> suppliers = getListSupplierFromCategory(categoryId, storeType);
+        List<Supplier> suppliers = getListSupplierFromCategory(categoryId, storeType, pageindex, pagesize);
         for (Supplier supplier : suppliers) {
             SupplierWork supplierWork = getSupplierWork(supplier.getSuppl_id());
 //            if (Integer.parseInt(supplierWork.getSuppl_role()) == 21) {
@@ -963,23 +973,23 @@ public class SupplierService implements ISupplierService {
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
         String sql = "SELECT o.user_id ,o.order_id, o.order_date, o.deliver_date,o.order_status, o.prod_amt, o.app_id,od.prod_id,od.prod_qty,prod_name,s.suppl_id, s.supplier_name,p.unit_price,od.lstOption,od.lstQty_Option,o.order_amt FROM fg_orders o  INNER JOIN fg_order_details od ON o.order_id = od.order_id INNER JOIN	fg_products p ON od.prod_id = p.prod_id INNER JOIN fg_suppliers s ON	o.suppl_id = s.suppl_id WHERE o.user_id = '" + userID + "'";
-        List<BillHistory> listBillHistory  = session.createSQLQuery(sql).setResultTransformer(Transformers.aliasToBean(BillHistory.class)).list();
-                trans.commit();    
-             
-        List <ProductOptionalBH> listProductOption =  new ArrayList<ProductOptionalBH>();
+        List<BillHistory> listBillHistory = session.createSQLQuery(sql).setResultTransformer(Transformers.aliasToBean(BillHistory.class)).list();
+        trans.commit();
+
+        List<ProductOptionalBH> listProductOption = new ArrayList<ProductOptionalBH>();
         List<BillHistoryView> listBillHistoryView = new ArrayList<BillHistoryView>();
         for (BillHistory billHistory : listBillHistory) {
             //Get list product option         
-            if(billHistory.getLstOption()!="null"){
-                 listProductOption = getListProductOptions(billHistory.getLstOption());
-            }             
+            if (billHistory.getLstOption() != "null") {
+                listProductOption = getListProductOptions(billHistory.getLstOption());
+            }
             //Set value for list BillHistoryView
-            BillHistoryView billHistoryView = new BillHistoryView();  
+            BillHistoryView billHistoryView = new BillHistoryView();
             billHistoryView.setListProductOptions(listProductOption);
             billHistoryView.setBillHistory(billHistory);
             listBillHistoryView.add(billHistoryView);
         }
-       
+
         return listBillHistoryView;
     }
 
@@ -987,23 +997,23 @@ public class SupplierService implements ISupplierService {
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
         String sql = "SELECT o.order_id, o.order_date, o.deliver_date,o.order_status, o.prod_amt, o.app_id,od.prod_id,od.prod_qty,prod_name,s.suppl_id, s.supplier_name,p.unit_price,od.lstOption,od.lstQty_Option,o.order_amt  FROM fg_orders o  INNER JOIN fg_order_details od ON o.order_id = od.order_id INNER JOIN	fg_products p ON od.prod_id = p.prod_id INNER JOIN fg_suppliers s ON	o.suppl_id = s.suppl_id WHERE o.user_id = '" + userID + "' AND o.order_date >= '" + dateFrom + "' AND o.order_date<='" + dateTo + "' ORDER BY o.order_date";
-        List<BillHistory> listBillHistory  = session.createSQLQuery(sql).setResultTransformer(Transformers.aliasToBean(BillHistory.class)).list();
-                trans.commit();    
-             
-        List <ProductOptionalBH> listProductOption =  new ArrayList<ProductOptionalBH>();
+        List<BillHistory> listBillHistory = session.createSQLQuery(sql).setResultTransformer(Transformers.aliasToBean(BillHistory.class)).list();
+        trans.commit();
+
+        List<ProductOptionalBH> listProductOption = new ArrayList<ProductOptionalBH>();
         List<BillHistoryView> listBillHistoryView = new ArrayList<BillHistoryView>();
         for (BillHistory billHistory : listBillHistory) {
             //Get list product option         
-            if(billHistory.getLstOption()!="null"){
-                 listProductOption = getListProductOptions(billHistory.getLstOption());
-            }             
+            if (billHistory.getLstOption() != "null") {
+                listProductOption = getListProductOptions(billHistory.getLstOption());
+            }
             //Set value for list BillHistoryView
-            BillHistoryView billHistoryView = new BillHistoryView();  
+            BillHistoryView billHistoryView = new BillHistoryView();
             billHistoryView.setListProductOptions(listProductOption);
             billHistoryView.setBillHistory(billHistory);
             listBillHistoryView.add(billHistoryView);
         }
-       
+
         return listBillHistoryView;
     }
 
@@ -1120,15 +1130,16 @@ public class SupplierService implements ISupplierService {
         } catch (Exception ex) {
             trans.rollback();
         }
-        
+
         return suppliers;
     }
-    
+
     /**
      * Lucas - Get list supplier from userID
-     **/
-    public List<Supplier> fGetListSupplierFromUserName(String username){
-        
+     *
+     */
+    public List<Supplier> fGetListSupplierFromUserName(String username) {
+
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
         List<Supplier> suppliers = new ArrayList<>();
@@ -1138,7 +1149,7 @@ public class SupplierService implements ISupplierService {
         } catch (Exception ex) {
             trans.rollback();
         }
-        
+
         return suppliers;
 //        List<Supplier> lstSupplier = new ArrayList<Supplier>();
 //        List<SupplierUser> lstSupplierUser = new ArrayList<SupplierUser>();
@@ -1150,42 +1161,39 @@ public class SupplierService implements ISupplierService {
 //        }
 //        return lstSupplier;
     }
-    
-    public BillSupplierInformation getBillSupplierInformation(String userId){
-        
+
+    public BillSupplierInformation getBillSupplierInformation(String userId) {
+
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
         BillSupplierInformation billSupplierInformation = new BillSupplierInformation();
-        try{
+        try {
             Query query = session.createSQLQuery("select s.supplier_name, s.address, CONCAT_WS(' ', u.first_name, u.middle_name, u.last_name) as ownername from fg_suppliers s join fg_supplier_users su on  s.suppl_id = su.suppl_id join fg_users u on su.user_id = u.user_id where u.user_id = '" + userId + "' limit 1")
-                            .setResultTransformer(Transformers.aliasToBean(BillSupplierInformation.class));
+                    .setResultTransformer(Transformers.aliasToBean(BillSupplierInformation.class));
             billSupplierInformation = (BillSupplierInformation) query.uniqueResult();
             trans.commit();
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
             System.err.println("error " + ex.getMessage());
             trans.rollback();
         }
         return billSupplierInformation;
     }
-    
-    
-    public List<Supplier> getListSupplierChildFromUser(String userId){
+
+    public List<Supplier> getListSupplierChildFromUser(String userId) {
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
         List<Supplier> suppliers = new ArrayList<>();
         try {
-            suppliers = session.createSQLQuery("select s.* from fg_suppliers s join fg_supplier_work sw on s.suppl_id = sw.suppl_id where sw.manage_suppl_id in (select swh.suppl_id from fg_suppliers swh join fg_supplier_users su on su.suppl_id = swh.suppl_id where su.user_id='"+userId+"')").addEntity(Supplier.class).list();
+            suppliers = session.createSQLQuery("select s.* from fg_suppliers s join fg_supplier_work sw on s.suppl_id = sw.suppl_id where sw.manage_suppl_id in (select swh.suppl_id from fg_suppliers swh join fg_supplier_users su on su.suppl_id = swh.suppl_id where su.user_id='" + userId + "')").addEntity(Supplier.class).list();
             trans.commit();
         } catch (Exception ex) {
             trans.rollback();
         }
-        
+
         return suppliers;
     }
-    
-    
-    public List<Supplier> getListSupplierFromSupplierIds(String supplierIds){
+
+    public List<Supplier> getListSupplierFromSupplierIds(String supplierIds) {
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
         List<Supplier> suppliers = new ArrayList<>();
@@ -1195,35 +1203,54 @@ public class SupplierService implements ISupplierService {
         } catch (Exception ex) {
             trans.rollback();
         }
-        
+
         return suppliers;
     }
-    
-       public List<ProductOptionalBH> getListProductOptions(String stringList) {
+
+    public List<ProductOptionalBH> getListProductOptions(String stringList) {
         Session session = this.sessionFactory.getCurrentSession();
-        Transaction trans = session.beginTransaction();         
-        String sql = "SELECT * FROM fg_products WHERE  FIND_IN_SET(prod_id, '"+stringList+"')";
-        List<Product> listProduct = session.createSQLQuery(sql).addEntity(Product.class).list();     
+        Transaction trans = session.beginTransaction();
+        String sql = "SELECT * FROM fg_products WHERE  FIND_IN_SET(prod_id, '" + stringList + "')";
+        List<Product> listProduct = session.createSQLQuery(sql).addEntity(Product.class).list();
         trans.commit();
-        List <ProductOptionalBH> listProductOptional = new ArrayList<ProductOptionalBH>();         
-         for (Product product : listProduct){
-             ProductOptionalBH productOptional = new ProductOptionalBH();
-             productOptional.setProduct(product);
-             productOptional.setOptionalQuanlity("");
-             listProductOptional.add(productOptional);
-         } 
-               
+        List<ProductOptionalBH> listProductOptional = new ArrayList<ProductOptionalBH>();
+        for (Product product : listProduct) {
+            ProductOptionalBH productOptional = new ProductOptionalBH();
+            productOptional.setProduct(product);
+            productOptional.setOptionalQuanlity("");
+            listProductOptional.add(productOptional);
+        }
+
         return listProductOptional;
     }
+
+    public Supplier insertUserSupplierView(UserSupplierView userSupplierView, String username) {
+        insertSupplierView(userSupplierView.getSupplierView(), username);
+        User user = userSupplierView.getUser();
+        List supplierIds = new ArrayList();
+        supplierIds.add(userSupplierView.getSupplierView().getSupplier().getSuppl_id());
+        user.setListSupplierId(supplierIds);
+        System.err.println("supplier id" + user.getListSupplierId().size());
+        userDAO.insertUser(userSupplierView.getUser());
+        return userSupplierView.getSupplierView().getSupplier();
+    }
        
-       public Supplier insertUserSupplierView(UserSupplierView userSupplierView, String username){
-           insertSupplierView(userSupplierView.getSupplierView(), username);
-           User user = userSupplierView.getUser();
-           List supplierIds = new ArrayList();
-           supplierIds.add(userSupplierView.getSupplierView().getSupplier().getSuppl_id());
-           user.setListSupplierId(supplierIds);
-           System.err.println("supplier id" + user.getListSupplierId().size());
-           userDAO.insertUser(userSupplierView.getUser());
-           return userSupplierView.getSupplierView().getSupplier();
+       public boolean updateStoreInformation(SupplierView supplierView){
+            Session session = this.sessionFactory.getCurrentSession();
+            Transaction trans = session.beginTransaction();
+            try {
+                int supplierId = supplierView.getSupplier().getSuppl_id();
+                String strQuery = "update fg_suppliers set origin_food = '" + supplierView.getSupplier().getOrigin_food() + "' where suppl_id=" + supplierId;
+                session.createSQLQuery(strQuery).executeUpdate();
+                strQuery = "update fg_supplier_work set suppl_delivery_info = '" + supplierView.getSupplierWork().getSuppl_delivery_info() + "' where suppl_id=" + supplierId;
+                session.createSQLQuery(strQuery).executeUpdate();
+                trans.commit();
+                return true;
+            } catch (Exception ex) {
+                System.out.println("Error " + ex.getMessage());
+                trans.rollback();
+                return false;
+            } 
+        
        }
 }

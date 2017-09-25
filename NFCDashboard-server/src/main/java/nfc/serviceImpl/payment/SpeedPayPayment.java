@@ -6,15 +6,19 @@
 package nfc.serviceImpl.payment;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
 import nfc.messages.request.PaymentCancel;
 import nfc.messages.base.PaymentCancelPacket;
 import nfc.messages.base.PaymentRequestPacket;
 import nfc.messages.request.PayRequest;
+import nfc.model.PaymentOrderHistory;
 import nfc.model.ViewModel.PaymentView;
+import nfc.service.IOrderService;
 import nfc.serviceImpl.common.NFCHttpClient;
 import nfc.serviceImpl.common.SpeedPayInformation;
 import org.apache.commons.httpclient.NameValuePair;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 /**
@@ -23,23 +27,25 @@ import org.springframework.util.StringUtils;
  */
 public class SpeedPayPayment extends PaymentAbstract{
     
+    @Autowired
+    private IOrderService orderDAO;
+    
     public SpeedPayPayment(){
         this.payment_code = "SPEEDPAY";
     }
     
-    public JSONObject payment(PayRequest paymentRequest) {
-        System.err.println(paymentRequest.toString());
+    public boolean payment(LinkedHashMap<String, String> paymentRequest, String orderId) {
         JSONObject requestData = new JSONObject();
-        requestData.put("card_no", paymentRequest.getCard_no());
-        requestData.put("card_ymd", paymentRequest.getCard_ymd());
+        requestData.put("card_no", paymentRequest.get("card_no"));
+        requestData.put("card_ymd", paymentRequest.get("card_ymd"));
         requestData.put("amt", "500");//paymentRequest.getAmt()
-        requestData.put("sell_nm", paymentRequest.getSell_nm());
+        requestData.put("sell_nm", paymentRequest.get("sell_nm"));
         requestData.put("pg_type", "PG");
         requestData.put("pay_type", "O2B2_APP");
-        requestData.put("product_nm", paymentRequest.getProduct_nm());
-        requestData.put("buyer_nm", paymentRequest.getBuyer_nm());
-        requestData.put("buyer_phone_no", paymentRequest.getBuyer_phone_no());
-        requestData.put("buyer_email", paymentRequest.getBuyer_email());
+        requestData.put("product_nm", paymentRequest.get("product_nm"));
+        requestData.put("buyer_nm", paymentRequest.get("buyer_nm"));
+        requestData.put("buyer_phone_no", paymentRequest.get("buyer_phone_no"));
+        requestData.put("buyer_email", paymentRequest.get("buyer_email"));
         requestData.put("tax_free_yn", "true");
         requestData.put("test_yn", "true");
         JSONObject requestHttp = new JSONObject();
@@ -47,11 +53,29 @@ public class SpeedPayPayment extends PaymentAbstract{
         requestHttp.put("isAuthorization", "true");
         requestHttp.put("access_token", getTokenPaymentApi());
         JSONObject result = NFCHttpClient.getInstance().sendPost(requestHttp, requestData);
-        return result;
+        if(result.containsKey("success") &&  result.get("success").toString().equals("true")){
+            savePaymentOrderHistory(orderId, result);
+            return true;
+        }   
+        else{
+            return false;
+        }
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    
+    private void savePaymentOrderHistory(String orderId, JSONObject resultPayment){
+        PaymentOrderHistory paymentOrderHistory = new PaymentOrderHistory();
+        paymentOrderHistory.setOrder_id(orderId);
+        paymentOrderHistory.setPayment_unique_number(resultPayment.get("id").toString());
+        JSONObject payDetail = (JSONObject)resultPayment.get("pay_det");
+        paymentOrderHistory.setCard_id(payDetail.get("card_id").toString());
+        paymentOrderHistory.setCard_nm(payDetail.get("card_nm").toString());
+        paymentOrderHistory.setPayment_code(payment_code);
+        orderDAO.savePaymentOrderHistory(paymentOrderHistory);
+    }
 
-    public JSONObject cancel(PaymentCancel paymentCancelRequest) {
+    public boolean cancel(PaymentCancel paymentCancelRequest) {
         String url = "https://speed-pay.co.kr/api/v1/order/payments/"+ paymentCancelRequest.getId()+ "/cancel.json";
         JSONObject requestHttp = new JSONObject();
         requestHttp.put("url", url);
@@ -59,7 +83,12 @@ public class SpeedPayPayment extends PaymentAbstract{
         requestHttp.put("access_token", getTokenPaymentApi());
         JSONObject requestJson = new JSONObject();
         JSONObject result = NFCHttpClient.getInstance().sendPost(requestHttp, requestJson);
-        return result;
+        if(result.containsKey("success") && result.get("success").toString() == "true"){
+            return true;
+        }
+        else{
+            return false;
+        }
         
     }
     

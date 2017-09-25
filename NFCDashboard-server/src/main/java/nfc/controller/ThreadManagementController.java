@@ -56,10 +56,19 @@ public class ThreadManagementController {
     public  List<ThreadSupplierUser> getListThreadStorebyID(@PathVariable("suppl_id") int suppl_id){               
         return threadDAO.getListThreadStorebyID(suppl_id);
     }
+     @RequestMapping(value="thread/getListThreadStorebyIDNotOwner/{suppl_id}/{write_id}", method=RequestMethod.GET)
+    public  List<ThreadSupplierUser> getListThreadStorebyID(@PathVariable("suppl_id") int suppl_id,@PathVariable("write_id") String write_id){               
+        return threadDAO.getListThreadStorebyIDNotOwner(suppl_id,write_id);
+    }
+    @RequestMapping(value="thread/getListThreadStorebyWriteID/{suppl_id}/{writer_id}", method=RequestMethod.GET)
+    public  List<ThreadSupplierUser> getListThreadStorebyWriteID(@PathVariable("suppl_id") int suppl_id,@PathVariable("writer_id") String writer_id){
+        System.out.print("ahihi la" + suppl_id);   
+        return threadDAO.getListThreadStorebyWriteID(suppl_id,writer_id);
+    }
     @RequestMapping(value="thread/getListThreadStoreSmall/{suppl_id}/{thread_id}", method=RequestMethod.GET)
     public  List<ThreadSupplierUser> getListThreadStoreSmall(@PathVariable("suppl_id") int suppl_id,
             @PathVariable("thread_id") String thread_id){
-        System.out.print("list Smallthread" + threadDAO.getListThreadStoreSmall(suppl_id,thread_id));      
+        //System.out.print("list Smallthread" + threadDAO.getListThreadStoreSmall(suppl_id,thread_id));      
         return threadDAO.getListThreadStoreSmall(suppl_id,thread_id);
     }
     @RequestMapping(value="thread/updateThreadSmall", method=RequestMethod.PUT)
@@ -82,10 +91,10 @@ public class ThreadManagementController {
     public  int getBoardIDbySupllierID(@PathVariable("suppl_id") int suppl_id){               
         return threadDAO.getBoardIDbySupllierID(suppl_id);
     }
-    @RequestMapping(value="thread/getListThreadNoReview/{suppl_id}", method=RequestMethod.GET)
-    public  List<ThreadSupplierUser> getListThreadNoReview(@PathVariable("suppl_id") int suppl_id){ 
-        System.out.print("Vao No Answer Thread"+ threadDAO.getListThreadNoReview(suppl_id));
-        return threadDAO.getListThreadNoReview(suppl_id);
+    @RequestMapping(value="thread/getListThreadNoReview/{suppl_id}/{write_id}", method=RequestMethod.GET)
+    public  List<ThreadSupplierUser> getListThreadNoReview(@PathVariable("suppl_id") int suppl_id,@PathVariable("write_id") String write_id){ 
+        System.out.print("Vao No Answer Thread"+ threadDAO.getListThreadNoReview(suppl_id, write_id));
+        return threadDAO.getListThreadNoReview(suppl_id,write_id);
     }
     @RequestMapping(value="app/thread/getreviewcount/{board_id}", method=RequestMethod.GET)
     public Object getReviewCount(@PathVariable("board_id") int board_id){

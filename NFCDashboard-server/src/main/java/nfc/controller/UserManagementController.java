@@ -24,6 +24,7 @@ import nfc.model.SupplierFavorite;
 
 import nfc.model.UserRegister;
 import nfc.model.ViewModel.SupplierView;
+import nfc.model.ViewModel.UserAddressView;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,7 +89,11 @@ public class UserManagementController {
         User users = userDAO.findUserByUserName(username);
         String userid = users.getUser_id();
         String userName = users.getUser_name();
-        List address = users.getLstuserAddress();
+        String address = "";
+        List<UserAddressView> lstAddressView = users.getLstuserAddress();
+        for (UserAddressView addressView:  lstAddressView) {
+            address = addressView.getAddressOfUser().getAddress();
+        }
         String phone = users.getPhone_no();
         String lastname = users.getLast_name();
         String firstname = users.getFirst_name();
@@ -249,6 +254,14 @@ public class UserManagementController {
             return list;
         }
         return lstUser;
+    }
+    /**
+     * Lucas 
+     */
+    @RequestMapping(value = "app/user/finduseridbysupplier/{id}", method = RequestMethod.GET)
+    public String getUserIDBySupplier(@PathVariable("id") int id) {
+        String userID = userDAO.getUserIdOfSupplier(id) + "";
+        return "{\"result\":\"" + userID + "\"}";
     }
 
 //    @RequestMapping(value = "app/user/getlistfavorite", method = RequestMethod.GET)

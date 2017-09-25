@@ -23,7 +23,7 @@ private String thread_id;
     private String thd_contents;
     private int board_id;
     private Date write_date;
-    private int review_rank5;
+    private Integer review_rank5;
     private List<AttachFile> attachFile = new ArrayList<AttachFile>();
     private List<Thread> childThreads = new ArrayList<>();
     private String name;
@@ -95,11 +95,11 @@ private String thread_id;
         this.write_date = write_date;
     }
 
-    public int getReview_rank5() {
+    public Integer getReview_rank5() {
         return review_rank5;
     }
 
-    public void setReview_rank5(int review_rank5) {
+    public void setReview_rank5(Integer review_rank5) {
         this.review_rank5 = review_rank5;
     }
     @javax.persistence.Transient
