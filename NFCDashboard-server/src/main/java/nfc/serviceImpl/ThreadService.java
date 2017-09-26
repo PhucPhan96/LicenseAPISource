@@ -18,6 +18,7 @@ import nfc.model.SupplierWork;
 import nfc.model.ThreadImg;
 import nfc.model.ThreadModel;
 import nfc.model.User;
+
 import nfc.model.ViewModel.ThreadSupplierUser;
 import nfc.model.ViewModel.ThreadView;
 import nfc.service.IThreadService;
@@ -366,4 +367,26 @@ public class ThreadService implements IThreadService{
         
         return listSupplier;
     }
+    
+    
+    public List<ThreadModel> getListThreadApp(int suppl_id){
+    Session session = this.sessionFactory.getCurrentSession();
+       Transaction trans = session.beginTransaction();
+       List<ThreadModel> listThreadSupplierUser = new ArrayList<ThreadModel>();
+       try{
+           List<SupplierUser> listSupplierUser = new ArrayList<SupplierUser>();            
+           listSupplierUser = session.createSQLQuery("SELECT s.* FROM fg_supplier_users s WHERE s.suppl_id="+suppl_id+"").addEntity(SupplierUser.class).list();
+           for(SupplierUser supplierUser : listSupplierUser){ 
+               listThreadSupplierUser = session.createSQLQuery("SELECT t.* from fg_threads t inner join  fg_boards b on t.board_id = b.board_id inner join fg_supplier_work sw on sw.board_id = b.board_id inner join fg_suppliers s on sw.suppl_id = s.suppl_id  inner join fg_users u on t.writer_id = u.user_id  where t.parent_thread_id = '0' and  sw.suppl_id="+suppl_id+" and t.writer_id='"+supplierUser.getUser_id()+"' order by t.write_date DESC limit 0,1").setResultTransformer(Transformers.aliasToBean(ThreadModel.class)).list();
+           }                          
+           trans.commit();            
+       }
+       catch(Exception ex){
+           System.out.println("BUG LA LALALA: "+ex.getMessage());
+           trans.rollback();
+       }
+       return listThreadSupplierUser;
+    } 
+
+    
 }

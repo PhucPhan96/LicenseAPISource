@@ -106,5 +106,10 @@ public class ThreadManagementController {
         System.out.print("Vao getListReview"+ threadDAO.getListReview(username));
         return threadDAO.getListReview(username);
     }
+    @RequestMapping(value="app/thread/getListThreadApp/{suppl_id}", method=RequestMethod.GET)
+    public  List<ThreadModel> getListThreadApp(@PathVariable("suppl_id") int suppl_id){ 
+        System.out.print(" Con ca getListThreadApp ahihi la: ");
+        return threadDAO.getListThreadApp(suppl_id);
+    }
     
 }

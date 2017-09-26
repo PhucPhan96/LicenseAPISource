@@ -32,4 +32,5 @@ public interface IThreadService {
     List<ThreadSupplierUser>  getListThreadNoReview(int suppl_id);
     public Object fGetReviewCount(int board_id);
     List<ThreadView> getListReview(String username);
+    List<ThreadModel> getListThreadApp(int suppl_id);
 }

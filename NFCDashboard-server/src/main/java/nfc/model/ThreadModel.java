@@ -15,7 +15,7 @@ public class ThreadModel {
 	private String thread_id;
 	private String app_id;
 	private String writer_id;
-	private int parent_thread_id;
+	private String parent_thread_id;
 	private String thd_subject;
 	private String thd_contents;
 	private int board_id;
@@ -44,10 +44,10 @@ public class ThreadModel {
 		this.writer_id = writer_id;
 	}
 	@Column(name="parent_thread_id",nullable=true)
-	public int getParent_thread_id() {
+	public String getParent_thread_id() {
 		return parent_thread_id;
 	}
-	public void setParent_thread_id(int parent_thread_id) {
+	public void setParent_thread_id(String parent_thread_id) {
 		this.parent_thread_id = parent_thread_id;
 	}
 	@Column(name="thd_subject")
