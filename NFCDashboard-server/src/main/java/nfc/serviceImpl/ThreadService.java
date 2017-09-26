@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import nfc.model.AttachFile;
 import nfc.model.Supplier;
+import nfc.model.SupplierUser;
 import nfc.model.SupplierWork;
 import nfc.model.ThreadImg;
 import nfc.model.ThreadModel;
@@ -156,17 +157,26 @@ public class ThreadService implements IThreadService{
         }
     }
  
-    public List<ThreadSupplierUser> getListThreadStorebyIDNotOwner(int supplID,String write_id){
-         Session session = this.sessionFactory.getCurrentSession();
-            Transaction trans = session.beginTransaction();
-             List<ThreadSupplierUser> listThreadSupplierUser = new ArrayList<ThreadSupplierUser>();
-            try{
-                listThreadSupplierUser = session.createSQLQuery("SELECT s.supplier_name,u.user_name, t.* from fg_threads t inner join  fg_boards b on t.board_id = b.board_id inner join fg_supplier_work sw on sw.board_id = b.board_id inner join fg_suppliers s on sw.suppl_id = s.suppl_id  inner join fg_users u on t.writer_id = u.user_id  where t.parent_thread_id = 0 and  sw.suppl_id="+supplID+" and t.writer_id <> '"+write_id+"'order by t.write_date DESC").setResultTransformer(Transformers.aliasToBean(ThreadSupplierUser.class)).list();
-                trans.commit();            
+    public List<ThreadSupplierUser> getListThreadStorebyIDNotOwner(int supplID){
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();       
+         List<ThreadSupplierUser> listThreadSupplierUser = new ArrayList<ThreadSupplierUser>();
+            //Get List userID of store
+            try{             
+                 
+                List<SupplierUser> listSupplierUser = new ArrayList<SupplierUser>();            
+                listSupplierUser = session.createSQLQuery("SELECT s.* FROM fg_supplier_users s WHERE s.suppl_id="+supplID+"").addEntity(SupplierUser.class).list();               
+                //Get list Thread
+                for(SupplierUser supplierUser : listSupplierUser){                            
+                    listThreadSupplierUser = session.createSQLQuery("SELECT s.supplier_name,u.user_name, t.* from fg_threads t inner join  fg_boards b on t.board_id = b.board_id inner join fg_supplier_work sw on sw.board_id = b.board_id inner join fg_suppliers s on sw.suppl_id = s.suppl_id  inner join fg_users u on t.writer_id = u.user_id  where t.parent_thread_id = 0 and  sw.suppl_id="+supplID+" and t.writer_id <> '"+supplierUser.getUser_id()+"'order by t.write_date DESC").setResultTransformer(Transformers.aliasToBean(ThreadSupplierUser.class)).list();                                     
+                } 
+                trans.commit(); 
             }
-            catch(Exception ex){
+           catch (Exception ex) {
+                System.err.println("error" + ex.getMessage());
                 trans.rollback();
             }
+          
             return listThreadSupplierUser;
     }
     public List<ThreadSupplierUser> getListThreadStorebyID(int supplID){
@@ -174,7 +184,7 @@ public class ThreadService implements IThreadService{
             Transaction trans = session.beginTransaction();
              List<ThreadSupplierUser> listThreadSupplierUser = new ArrayList<ThreadSupplierUser>();
             try{
-                listThreadSupplierUser = session.createSQLQuery("SELECT s.supplier_name,u.user_name, t.* from fg_threads t inner join  fg_boards b on t.board_id = b.board_id inner join fg_supplier_work sw on sw.board_id = b.board_id inner join fg_suppliers s on sw.suppl_id = s.suppl_id  inner join fg_users u on t.writer_id = u.user_id  where t.parent_thread_id = 0 and  sw.suppl_id="+supplID+" order by t.write_date DESC").setResultTransformer(Transformers.aliasToBean(ThreadSupplierUser.class)).list();
+                listThreadSupplierUser = session.createSQLQuery("SELECT s.supplier_name,u.user_name, t.* from fg_threads t inner join  fg_boards b on t.board_id = b.board_id inner join fg_supplier_work sw on sw.board_id = b.board_id inner join fg_suppliers s on sw.suppl_id = s.suppl_id  inner join fg_users u on t.writer_id = u.user_id  where t.parent_thread_id = '0' and  sw.suppl_id="+supplID+" order by t.write_date DESC").setResultTransformer(Transformers.aliasToBean(ThreadSupplierUser.class)).list();
                 trans.commit();            
             }
             catch(Exception ex){
@@ -182,12 +192,18 @@ public class ThreadService implements IThreadService{
             }
             return listThreadSupplierUser;
     }
-      public List<ThreadSupplierUser> getListThreadStorebyWriteID(int supplID,String writer_id){
+      public List<ThreadSupplierUser> getListThreadStorebyWriteID(int supplID){
          Session session = this.sessionFactory.getCurrentSession();
             Transaction trans = session.beginTransaction();
              List<ThreadSupplierUser> listThreadSupplierUser = new ArrayList<ThreadSupplierUser>();
             try{
-                listThreadSupplierUser = session.createSQLQuery("SELECT s.supplier_name,u.user_name, t.* from fg_threads t inner join  fg_boards b on t.board_id = b.board_id inner join fg_supplier_work sw on sw.board_id = b.board_id inner join fg_suppliers s on sw.suppl_id = s.suppl_id  inner join fg_users u on t.writer_id = u.user_id  where t.parent_thread_id = 0 and  sw.suppl_id="+supplID+" and t.writer_id='"+writer_id+"' order by t.write_date DESC").setResultTransformer(Transformers.aliasToBean(ThreadSupplierUser.class)).list();
+                List<SupplierUser> listSupplierUser = new ArrayList<SupplierUser>();            
+                listSupplierUser = session.createSQLQuery("SELECT s.* FROM fg_supplier_users s WHERE s.suppl_id="+supplID+"").addEntity(SupplierUser.class).list(); 
+                for ( SupplierUser supplierUser :listSupplierUser )
+                {
+                 listThreadSupplierUser = session.createSQLQuery("SELECT s.supplier_name,u.user_name, t.* from fg_threads t inner join  fg_boards b on t.board_id = b.board_id inner join fg_supplier_work sw on sw.board_id = b.board_id inner join fg_suppliers s on sw.suppl_id = s.suppl_id  inner join fg_users u on t.writer_id = u.user_id  where t.parent_thread_id = '0' and  sw.suppl_id="+supplID+" and t.writer_id='"+supplierUser.getUser_id()+"' order by t.write_date DESC").setResultTransformer(Transformers.aliasToBean(ThreadSupplierUser.class)).list();
+                }
+                
                 trans.commit();            
             }
             catch(Exception ex){
@@ -279,12 +295,17 @@ public class ThreadService implements IThreadService{
         }
         return thread;
     }
-    public List<ThreadSupplierUser> getListThreadNoReview(int suppl_id, String write_id){
+    public List<ThreadSupplierUser> getListThreadNoReview(int suppl_id){
          Session session = this.sessionFactory.getCurrentSession();
             Transaction trans = session.beginTransaction();
-             List<ThreadSupplierUser> listThreadSupplierUser = new ArrayList<ThreadSupplierUser>();
+            List<ThreadSupplierUser> listThreadSupplierUser = new ArrayList<ThreadSupplierUser>();
             try{
-                listThreadSupplierUser = session.createSQLQuery(" SELECT s.supplier_name,u.user_name, t.* from fg_threads t  inner join  fg_boards b on t.board_id = b.board_id  inner join fg_supplier_work sw on sw.board_id = b.board_id  inner join fg_suppliers s on sw.suppl_id = s.suppl_id   inner join fg_users u on t.writer_id = u.user_id  where sw.suppl_id="+ suppl_id+" and t.writer_id <> '"+write_id+"' and t.thread_id IN  ( select thread_id from fg_threads where parent_thread_id = '0' AND  thread_id NOT IN (select parent_thread_id from fg_threads where parent_thread_id != '0' ) )").setResultTransformer(Transformers.aliasToBean(ThreadSupplierUser.class)).list();
+             
+                List<SupplierUser> listSupplierUser = new ArrayList<SupplierUser>();            
+                listSupplierUser = session.createSQLQuery("SELECT s.* FROM fg_supplier_users s WHERE s.suppl_id="+suppl_id+"").addEntity(SupplierUser.class).list();
+                for(SupplierUser supplierUser : listSupplierUser){ 
+                    listThreadSupplierUser = session.createSQLQuery(" SELECT s.supplier_name,u.user_name, t.* from fg_threads t  inner join  fg_boards b on t.board_id = b.board_id  inner join fg_supplier_work sw on sw.board_id = b.board_id  inner join fg_suppliers s on sw.suppl_id = s.suppl_id   inner join fg_users u on t.writer_id = u.user_id  where sw.suppl_id="+ suppl_id+" and t.writer_id <> '"+supplierUser.getUser_id()+"' and t.thread_id IN  ( select thread_id from fg_threads where parent_thread_id = '0' AND  thread_id NOT IN (select parent_thread_id from fg_threads where parent_thread_id != '0' ) )").setResultTransformer(Transformers.aliasToBean(ThreadSupplierUser.class)).list();
+                }                          
                 trans.commit();            
             }
             catch(Exception ex){
