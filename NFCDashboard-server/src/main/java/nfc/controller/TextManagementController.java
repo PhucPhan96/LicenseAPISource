@@ -102,4 +102,10 @@ public class TextManagementController {
         Text texts = textDAO.getTextbyId(text_id);
         return texts;
     }
+    @RequestMapping(value = "app/texts/getAllLaw/{text_type}", method = RequestMethod.GET)
+    public List<Text> getAllLaw(@PathVariable("text_type") String text_type) {   
+        List<Text> texts = textDAO.getListTextByType(text_type);
+        System.out.println("Vao getAllLaw "+textDAO.getListTextByType(text_type));
+        return texts;
+    }
    }

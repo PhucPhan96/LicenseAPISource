@@ -56,10 +56,19 @@ public class ThreadManagementController {
     public  List<ThreadSupplierUser> getListThreadStorebyID(@PathVariable("suppl_id") int suppl_id){               
         return threadDAO.getListThreadStorebyID(suppl_id);
     }
+    @RequestMapping(value="thread/getListThreadStorebyIDNotOwner/{suppl_id}", method=RequestMethod.GET)
+    public  List<ThreadSupplierUser> getListThreadStorebyIDNotOwner(@PathVariable("suppl_id") int suppl_id){               
+        return threadDAO.getListThreadStorebyIDNotOwner(suppl_id);
+    }
+    @RequestMapping(value="thread/getListThreadStorebyWriteID/{suppl_id}", method=RequestMethod.GET)
+    public  List<ThreadSupplierUser> getListThreadStorebyWriteID(@PathVariable("suppl_id") int suppl_id){
+        System.out.print("ahihi la" + suppl_id);   
+        return threadDAO.getListThreadStorebyWriteID(suppl_id);
+    }
     @RequestMapping(value="thread/getListThreadStoreSmall/{suppl_id}/{thread_id}", method=RequestMethod.GET)
     public  List<ThreadSupplierUser> getListThreadStoreSmall(@PathVariable("suppl_id") int suppl_id,
             @PathVariable("thread_id") String thread_id){
-        System.out.print("list Smallthread" + threadDAO.getListThreadStoreSmall(suppl_id,thread_id));      
+        //System.out.print("list Smallthread" + threadDAO.getListThreadStoreSmall(suppl_id,thread_id));      
         return threadDAO.getListThreadStoreSmall(suppl_id,thread_id);
     }
     @RequestMapping(value="thread/updateThreadSmall", method=RequestMethod.PUT)
@@ -96,6 +105,11 @@ public class ThreadManagementController {
     public  List<ThreadView> getListReview(@PathVariable("username") String username){ 
         System.out.print("Vao getListReview"+ threadDAO.getListReview(username));
         return threadDAO.getListReview(username);
+    }
+    @RequestMapping(value="app/thread/getListThreadApp/{suppl_id}", method=RequestMethod.GET)
+    public  List<ThreadModel> getListThreadApp(@PathVariable("suppl_id") int suppl_id){ 
+        System.out.print(" Con ca getListThreadApp ahihi la: ");
+        return threadDAO.getListThreadApp(suppl_id);
     }
     
 }

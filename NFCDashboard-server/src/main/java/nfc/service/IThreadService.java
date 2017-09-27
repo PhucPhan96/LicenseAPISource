@@ -21,6 +21,8 @@ public interface IThreadService {
     boolean updateThread(nfc.model.Thread thread);
     boolean deleteThread(String threadId);
     List<ThreadSupplierUser> getListThreadStorebyID(int supplID);
+    List<ThreadSupplierUser> getListThreadStorebyIDNotOwner(int supplID);
+    List<ThreadSupplierUser> getListThreadStorebyWriteID(int supplID);
     List<ThreadSupplierUser> getListThreadStoreSmall(int supplID, String thread_id);
     boolean updateThreadStoreSmall(nfc.model.Thread thread ); 
     nfc.model.Thread getThreadByID(String thread_id);
@@ -30,4 +32,5 @@ public interface IThreadService {
     List<ThreadSupplierUser>  getListThreadNoReview(int suppl_id);
     public Object fGetReviewCount(int board_id);
     List<ThreadView> getListReview(String username);
+    List<ThreadModel> getListThreadApp(int suppl_id);
 }

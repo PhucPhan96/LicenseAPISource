@@ -45,7 +45,7 @@ public class User {
 	private String email;
 	private String app_id;
 	private Date password_expired_date;
-        private Date birth_date;    
+        
 	private int role_id;
         
         private String user_reg_num;
@@ -292,15 +292,7 @@ public class User {
 		this.lstRoles = lstRoles;
 	}
 
-        @Column(name="birth_date")
-        public Date getBirth_date() {
-            return birth_date;
-        }
-
-        public void setBirth_date(Date birth_date) {
-            this.birth_date = birth_date;
-        }
-
+      
         @Column(name="user_reg_num")
         public String getUser_reg_num() {
             return user_reg_num;
