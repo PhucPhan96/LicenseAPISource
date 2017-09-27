@@ -8,6 +8,7 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 
 import nfc.service.IMailService;
+import nfc.serviceImpl.common.Utils;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 public class MailService implements IMailService{
@@ -45,6 +46,7 @@ public class MailService implements IMailService{
         
     public boolean sendSimpleMail(Mail mail){
         try{
+          
             Code code = getCodeUserEmail();
             setMailSender(code);
             SimpleMailMessage message = new SimpleMailMessage();
@@ -61,6 +63,7 @@ public class MailService implements IMailService{
             return false;
         }
     }
+    
         
     public String sendSimpleMailStr(String from, String to, String subject, String msg){
         try{
@@ -78,6 +81,27 @@ public class MailService implements IMailService{
         catch(Exception ex)
         {
             return ex.getMessage();
+        }
+    }
+     public boolean sendMailFromAdmin(Mail mail){
+        try{
+          
+            Code code = getCodeUserEmail();
+            setMailSender(code);           
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom("kjncunn@gmail.com");
+            message.setTo(mail.getToAdd());
+            message.setSubject(mail.getTitle());
+            message.setText("From mail: " + mail.getFromAdd()
+                            +"\n\n"+ "New your password: " + mail.getContent());
+            mailSender.send(message);
+             System.out.println("Noi dung mail " + message);
+            return true;
+        }
+        catch(Exception ex)
+        {
+            System.out.println("mail exception " + ex.getMessage());
+            return false;
         }
     }
 }

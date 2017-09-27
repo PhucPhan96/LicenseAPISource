@@ -92,6 +92,7 @@ public class FileService implements IFileService{
             }
             catch(Exception ex)
             {
+                System.err.println("Error attachfile" + ex.getMessage());
                 trans.rollback();
                 return false;
             } 

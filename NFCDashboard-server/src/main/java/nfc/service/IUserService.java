@@ -1,12 +1,16 @@
 package nfc.service;
 
 import java.util.List;
+import nfc.model.Email;
+import nfc.model.Mail;
+
 import nfc.model.SupplierFavorite;
 
 import org.hibernate.Session;
 
 import nfc.model.User;
 import nfc.model.UserAddress;
+
 import nfc.model.UserRegister;
 import nfc.model.UserRole;
 import nfc.model.ViewModel.GridView;
@@ -41,6 +45,9 @@ public interface IUserService {
         List<User> getListUserByLikePhoneAndAddress(String phone, String address);
         List<User> getListUserGrid(GridView gridView);
         long countUserGrid(GridView gridView);
-        public List<SupplierFavorite> fGetListSupplierFavoriteByUserId(String userId);
+        public List<SupplierFavorite> fGetListSupplierFavoriteByUserId(String userId);       
+        UserRegister getUserRegisterByEmail(Email email);
+        boolean insertUserApp(User user);
+        User getUserByEmail(Email email) ;
         
 }

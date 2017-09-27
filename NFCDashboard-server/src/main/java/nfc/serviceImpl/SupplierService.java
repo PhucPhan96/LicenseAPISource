@@ -537,7 +537,7 @@ public class SupplierService implements ISupplierService {
     }
 
     public boolean updateSupplierView(SupplierView supplierView) {
-        deleteSupplierImage(supplierView.getSupplier().getSuppl_id());
+        //deleteSupplierImage(supplierView.getSupplier().getSuppl_id());
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
         try {

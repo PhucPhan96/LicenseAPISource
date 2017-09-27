@@ -36,4 +36,5 @@ public interface IOrderService {
         VATReport getVATReport(BillRequestFilter filter);
         List<VATReportInformation> getListVATReportFromOrder(BillRequestFilter filter);
         DeliveryInformation getDeliveryInformation(String orderId);
+        Order getOrderFromPaymentKey(String paymentKey);
 }

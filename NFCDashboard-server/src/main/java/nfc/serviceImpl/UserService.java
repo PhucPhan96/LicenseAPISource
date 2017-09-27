@@ -22,17 +22,26 @@ import org.springframework.util.StringUtils;
 
 import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.type.PhoneNumber;
+import static nfc.controller.SMSController.ACCOUNT_SID;
+import static nfc.controller.SMSController.AUTH_TOKEN;
 
 import nfc.model.Address;
 import nfc.model.AppUser;
 import nfc.model.Category;
 import nfc.model.Code;
+import nfc.model.Email;
+import nfc.model.Mail;
+
 import nfc.model.Role;
 import nfc.model.SupplierAddress;
 import nfc.model.SupplierFavorite;
 import nfc.model.SupplierUser;
 import nfc.model.User;
 import nfc.model.UserAddress;
+
 import nfc.model.UserLogin;
 import nfc.model.UserRegister;
 import nfc.model.UserRole;
@@ -408,13 +417,19 @@ public class UserService implements IUserService {
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
         try {
+            String code = Utils.generationCode();
+            userRegist.setReq_code(code);
             session.save(userRegist);
+            System.out.println("code la " + code);
+            sendSMS(code);
+            //send code by sms to  mobile
             trans.commit();
             return true;
         } catch (Exception ex) {
             System.out.println("Error " + ex.getMessage());
             trans.rollback();
             return false;
+            
         }
     }
 
@@ -585,7 +600,6 @@ public class UserService implements IUserService {
         try {
             session.update(user);
             trans.commit();
-
             return true;
 
         } catch (Exception ex) {
@@ -610,13 +624,12 @@ public class UserService implements IUserService {
         User userExist = getUserForgotPassword(user.getEmail());
         System.out.println("getUserForgotPassword " + userExist);
         if (userExist != null) {
-            String passwordRandom = Utils.randomPassword(8);
-            System.out.println("Mail User " + user.getEmail());
-            mailDAO.sendSimpleMail("kjncunn@gmail.com", user.getEmail(), "Verify", "New Password for NFC Account: " + passwordRandom);
-            userExist.setPassword(Utils.Sha1(passwordRandom));
-            if (updateUserForgotPassword(userExist)) {
-                System.out.println("passwordRandom " + passwordRandom);
-                return "success";
+//            String passwordRandom = Utils.randomPassword(8);
+//            userExist.setPassword(Utils.Sha1(passwordRandom));
+            System.out.println("Mail User " + user.getEmail());           
+            if (updateUserForgotPassword(userExist)) {                                    
+                    return "success";                         
+                
             } else {
                 return "fail";
             }
@@ -725,5 +738,69 @@ public class UserService implements IUserService {
             lstSupplierView.add(supplierView);
         }
         return lstSupplierView;
+    }  
+    
+    public UserRegister getUserRegisterByEmail(Email email) {
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        List<UserRegister> listUserRegister = new ArrayList<UserRegister>() ;
+        UserRegister userRegister = new UserRegister();
+        try{
+            listUserRegister = session.createSQLQuery("SELECT sw.* FROM 82wafoodgo.fg_user_regist sw  WHERE sw.req_email ='" + email.getEmail() +"'").addEntity(UserRegister.class).list();
+            userRegister = listUserRegister.get(0);
+            trans.commit();
+        }
+        catch(Exception ex){
+            trans.rollback();
+        }     
+        return userRegister;
+    }
+    
+    //Insert User App
+    public static final String ACCOUNT_SID = "ACb4fc4a37e7e7edd2396d1c8bfe766034";
+    public static final String AUTH_TOKEN = "01a94a54d2c1a124b0a73d0dc7715754";
+
+    public void sendSMS(String code){
+            Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+            Message message = Message
+            .creator(new PhoneNumber("+821049923148"), new PhoneNumber("+12512542245"),
+                    "SMS notification from NFC, your verify code is "+ code)
+            .create();
+            System.out.println("vao ham send SMS");
+             System.out.println(message.getSid()); 
+             
+	}
+     public boolean insertUserApp(User user) {
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        try {
+            
+            user.setApp_id(Utils.appId);
+            java.util.Date date = new java.util.Date();
+            user.setCreated_date(date);
+            user.setIs_active(true);            
+            session.save(user);
+            trans.commit();
+        
+            return true;
+        } catch (Exception ex) {
+            trans.rollback();
+            return false;
+        }
+    }
+      public User getUserByEmail(Email email) {
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        List<User> listUser = new ArrayList<User>() ;
+        User user = new User();
+        try{
+            listUser= session.createSQLQuery("SELECT sw.* FROM 82wafoodgo.fg_users sw  WHERE sw.email ='" + email.getEmail() +"'").addEntity(User.class).list();
+            user = listUser.get(0);
+            trans.commit();
+        }
+        catch(Exception ex){
+            trans.rollback();
+        }     
+        return user;
     }
 }

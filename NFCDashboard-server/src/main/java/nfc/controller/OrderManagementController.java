@@ -322,6 +322,5 @@ public class OrderManagementController {
         paymentRequest.put("LGD_PAYKEY", "sdafsdaf3423k2345234");
         return PaymentFactory.getPaymentApi("LGPAYNOW").payment(paymentRequest, "1709200000010") + "";
     }
-   
     
 }

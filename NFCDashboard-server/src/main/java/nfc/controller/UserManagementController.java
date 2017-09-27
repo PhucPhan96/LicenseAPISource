@@ -1,5 +1,6 @@
 package nfc.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,9 +16,13 @@ import nfc.serviceImpl.Security.JwtTokenUtil;
 import nfc.serviceImpl.common.Utils;
 
 import java.util.UUID;
+import nfc.model.Email;
+
 import nfc.model.ViewModel.GridView;
 import org.json.simple.JSONArray;
 import nfc.model.SupplierFavorite;
+
+import nfc.model.UserRegister;
 import nfc.model.ViewModel.SupplierView;
 import nfc.model.ViewModel.UserAddressView;
 
@@ -274,4 +279,43 @@ public class UserManagementController {
 //        }
 //        return lstSupplierView;
 //    }
+    
+    
+    //LanAnh
+    
+    @RequestMapping(value = "app/user/insertUserRegister", method = RequestMethod.POST)
+    public @ResponseBody
+    String insertUserRegister(@RequestBody UserRegister userRegist) {
+      
+        Date date = new Date();
+        userRegist.setReq_time(date);
+        System.out.println("vao insertUserRegister"); 
+        String data = userDAO.insertUserRegister(userRegist) + "";
+        return "{\"result\":\"" + data + "\"}";
+    }
+    
+    @RequestMapping(value = "app/user/getUserRegisterByEmail", method = RequestMethod.POST)
+    public UserRegister getUserRegisterByEmail(@RequestBody Email email) {
+        System.out.println("Email la"+email.getEmail()); 
+        UserRegister userRegist = userDAO.getUserRegisterByEmail(email);
+        System.out.println("vao getUserRegisterByEmail"+userRegist); 
+        return userRegist;
+    }
+    @RequestMapping(value = "app/user/insertUserApp", method = RequestMethod.POST)
+    public @ResponseBody
+    String insertUserApp(@RequestBody User user) {       
+        System.out.println("vao insertUserApp");     
+        String data = userDAO.insertUserApp(user) + "";
+        //String data = "";
+        return "{\"result\":\"" + data + "\"}";
+    }
+    
+    @RequestMapping(value = "app/user/updateUserRegister", method = RequestMethod.PUT)
+    public @ResponseBody
+    String updateUserRegister(@RequestBody UserRegister userRegister) {
+        System.out.println("vao duoc update user");
+        //userRegister.setReq_approved(true);
+        String data = userDAO.updateUserRegister(userRegister) + "";
+        return "{\"result\":\"" + data + "\"}";
+    }
 }

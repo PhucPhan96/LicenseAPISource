@@ -45,8 +45,9 @@ public class User {
 	private String email;
 	private String app_id;
 	private Date password_expired_date;
+        private Date birth_date;    
 	private int role_id;
-        private Date birth_date;
+        
         private String user_reg_num;
         private String user_reg_name;
         
@@ -249,6 +250,7 @@ public class User {
 	public void setApp_id(String app_id) {
 		this.app_id = app_id;
 	}
+      
 	@Column(name="password_expired_date")
 	public Date getPassword_expired_date() {
 		return password_expired_date;

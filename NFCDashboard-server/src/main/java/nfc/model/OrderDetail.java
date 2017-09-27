@@ -23,7 +23,9 @@ public class OrderDetail {
     private BigDecimal prod_amt;
     private String lstOption;
     private String lstQty_Option;
-
+    private String lstAdd;
+    private String lstQty_Add;
+    
     @Id
     @Column(name="order_id")
     public String getOrder_id() {
@@ -100,6 +102,25 @@ public class OrderDetail {
     public void setLstQty_Option(String lstQty_Option) {
         this.lstQty_Option = lstQty_Option;
     }
+
+    @Column(name="lstAdd")
+    public String getLstAdd() {
+        return lstAdd;
+    }  
+
+    public void setLstAdd(String lstAdd) {
+        this.lstAdd = lstAdd;
+    }
+
+    @Column(name="lstQty_Add")
+    public String getLstQty_Add() {
+        return lstQty_Add;
+    }
+
+    public void setLstQty_Add(String lstQty_Add) {
+        this.lstQty_Add = lstQty_Add;
+    }
+    
     
     
     

@@ -30,6 +30,8 @@ public class Category{
     private int cate_seq;
     private String cate_type;
     private Integer suppl_id;
+    private Boolean is_single;
+    
     @Id
     @Column(name="cate_id")
     @GeneratedValue
@@ -98,9 +100,13 @@ public class Category{
         this.suppl_id = suppl_id;
     }
 
-    
-	
-        
-	
+    @Column(name="is_single")
+    public Boolean getIs_single() {
+        return is_single;
+    }
+
+    public void setIs_single(Boolean is_single) {
+        this.is_single = is_single;
+    }
 
 }

@@ -161,7 +161,7 @@ public class ProductService implements IProductService{
 		return product;
 	}
 	public boolean updateProductView(ProductView productView) {
-                deleteProductImage(productView.getProduct().getProd_id());
+                //deleteProductImage(productView.getProduct().getProd_id());
 		Session session = this.sessionFactory.getCurrentSession();
 		Transaction trans = session.beginTransaction();
 		try

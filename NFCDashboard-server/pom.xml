@@ -354,6 +354,16 @@
           <artifactId>xpayclient</artifactId>
           <version>1.0</version>
         </dependency>-->
+    <dependency>
+      <groupId>jsinbi-jvm</groupId>
+      <artifactId>jsinbi-jvm</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>teledit</groupId>
+      <artifactId>teledit</artifactId>
+      <version>1.0</version>
+    </dependency>
   </dependencies>
   <build>
     <finalName>NFCDashboard-server</finalName>

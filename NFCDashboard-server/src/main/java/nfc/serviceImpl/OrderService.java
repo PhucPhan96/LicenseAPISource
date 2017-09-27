@@ -556,4 +556,21 @@ public class OrderService implements IOrderService {
         }
         return deliveryInfor;
     }
+    
+    public Order getOrderFromPaymentKey(String paymentKey){
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();
+        Order order = new Order();
+        try{
+            Query query = session.createSQLQuery("select o.* from fg_orders o join fg_payment_order_history p on o.order_id = p.order_id where p.payment_unique_number = '" + paymentKey + "';")
+                          .addEntity(Order.class);
+            order = (Order) query.uniqueResult();
+            trans.commit();
+        }
+        catch(Exception ex){
+            trans.rollback();
+            System.err.println("Error last order " + ex.getMessage());
+        }
+        return order;
+    }
 }
