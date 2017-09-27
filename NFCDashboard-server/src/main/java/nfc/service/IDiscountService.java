@@ -19,4 +19,5 @@ public interface IDiscountService {
     boolean updateDiscount(Discount discount);
     boolean deleteDiscount(String discountId);
     Discount getDiscountOfStore(int supplierId);
+    public Discount fgetDiscountByDate(String supplierId);
 }

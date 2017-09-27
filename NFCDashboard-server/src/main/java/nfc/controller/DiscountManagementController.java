@@ -48,4 +48,9 @@ public class DiscountManagementController {
         String data = discountDAO.deleteDiscount(discountId) + "";
         return "{\"result\":\"" + data + "\"}";
     }
+    @RequestMapping(value = "app/getdiscount/{id}", method = RequestMethod.GET)
+    public Discount fGetDiscount(@PathVariable("id") String supplierId) {
+        Discount discount = discountDAO.fgetDiscountByDate(supplierId);
+        return discount;
+    }
 }
