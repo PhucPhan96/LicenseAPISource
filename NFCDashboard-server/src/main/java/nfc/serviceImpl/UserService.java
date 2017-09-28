@@ -421,7 +421,7 @@ public class UserService implements IUserService {
             userRegist.setReq_code(code);
             session.save(userRegist);
             System.out.println("code la " + code);
-            //sendSMS(code);
+            sendSMS(code);
             //send code by sms to  mobile
             trans.commit();
             return true;
