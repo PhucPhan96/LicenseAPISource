@@ -421,7 +421,7 @@ public class UserService implements IUserService {
             userRegist.setReq_code(code);
             session.save(userRegist);
             System.out.println("code la " + code);
-            sendSMS(code);
+            //sendSMS(code);
             //send code by sms to  mobile
             trans.commit();
             return true;
@@ -809,7 +809,7 @@ public class UserService implements IUserService {
         List<UserRegister> listUserRegister = new ArrayList<UserRegister>();
         UserRegister userRegister = new UserRegister();
         try{
-            listUserRegister = session.createSQLQuery("SELECT sw.* FROM 82wafoodgo.fg_users sw  WHERE sw.email ='" + email.getEmail() +"'").addEntity(UserRegister.class).list();
+            listUserRegister = session.createSQLQuery("SELECT sw.* FROM 82wafoodgo.fg_user_regist sw  WHERE sw.req_email ='" + email.getEmail() +"'").addEntity(UserRegister.class).list();
             userRegister = listUserRegister.get(0);
             session.delete(userRegister);            
             trans.commit();
