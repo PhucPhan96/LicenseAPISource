@@ -1,6 +1,5 @@
 package nfc.controller;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -316,6 +315,14 @@ public class UserManagementController {
         System.out.println("vao duoc update user");
         //userRegister.setReq_approved(true);
         String data = userDAO.updateUserRegister(userRegister) + "";
+        return "{\"result\":\"" + data + "\"}";
+    }
+    
+    @RequestMapping(value = "app/user/deleteUserResgist", method = RequestMethod.POST)
+    public @ResponseBody
+    String deleteUser(@RequestBody Email email) {
+        System.out.println("OMG");
+        String data = userDAO.deleteUserResgist(email) + "";
         return "{\"result\":\"" + data + "\"}";
     }
 }

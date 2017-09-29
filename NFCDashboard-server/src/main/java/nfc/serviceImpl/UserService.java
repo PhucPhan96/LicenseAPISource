@@ -762,7 +762,6 @@ public class UserService implements IUserService {
     //Insert User App
     public static final String ACCOUNT_SID = "ACb4fc4a37e7e7edd2396d1c8bfe766034";
     public static final String AUTH_TOKEN = "01a94a54d2c1a124b0a73d0dc7715754";
-
     public void sendSMS(String code){
             Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
             Message message = Message
@@ -773,7 +772,7 @@ public class UserService implements IUserService {
              System.out.println(message.getSid()); 
              
 	}
-     public boolean insertUserApp(User user) {
+    public boolean insertUserApp(User user) {
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
         try {
@@ -791,7 +790,7 @@ public class UserService implements IUserService {
             return false;
         }
     }
-      public User getUserByEmail(Email email) {
+    public User getUserByEmail(Email email) {
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
         List<User> listUser = new ArrayList<User>() ;
@@ -805,5 +804,23 @@ public class UserService implements IUserService {
             trans.rollback();
         }     
         return user;
+    }
+    
+    public boolean deleteUserResgist(Email email) {
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();        
+        List<UserRegister> listUserRegister = new ArrayList<UserRegister>();
+        UserRegister userRegister = new UserRegister();
+        try{
+            listUserRegister = session.createSQLQuery("SELECT sw.* FROM 82wafoodgo.fg_user_regist sw  WHERE sw.req_email ='" + email.getEmail() +"'").addEntity(UserRegister.class).list();
+            userRegister = listUserRegister.get(0);
+            session.delete(userRegister);            
+            trans.commit();
+            return true;
+        }
+        catch(Exception ex){
+            trans.rollback();
+             return false;
+        }       
     }
 }

@@ -112,4 +112,17 @@ public class ThreadManagementController {
         return threadDAO.getListThreadApp(suppl_id);
     }
     
+    @RequestMapping(value="thread/deleteReview/{thread_id}", method=RequestMethod.DELETE)
+    public @ResponseBody String deleteReview(@PathVariable("thread_id") String thread_id){
+        System.out.print("Vao Delete Review" +thread_id);
+        String data = threadDAO.deleteReview(thread_id) + "";
+        return "{\"result\":\"" + data + "\"}";
+    }
+    @RequestMapping(value="thread/deleteAllReview/{thread_id}", method=RequestMethod.DELETE)
+    public @ResponseBody String deleteAllReview(@PathVariable("thread_id") String thread_id){
+        System.out.print("Vao Delete All Review" +thread_id);
+        String data = threadDAO.deleteAllReview(thread_id) + "";
+        return "{\"result\":\"" + data + "\"}";
+    }
+    
 }

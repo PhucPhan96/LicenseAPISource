@@ -388,5 +388,37 @@ public class ThreadService implements IThreadService{
        return listThreadSupplierUser;
     } 
 
+    public boolean deleteReview(String thread_id){
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();        
+        try{
+            Query query = session.createSQLQuery(
+				"SELECT t.* FROM fg_threads t  WHERE t.thread_id =" + "'" + thread_id + "'")
+				.addEntity(nfc.model.Thread.class);
+            nfc.model.Thread thread = (nfc.model.Thread) query.uniqueResult();
+            session.delete(thread);
+            trans.commit();
+            return true;
+        }
+        catch(Exception ex){
+            trans.rollback();
+            return false;
+        }
+    }
+    public boolean deleteAllReview(String thread_id){
+        Session session = this.sessionFactory.getCurrentSession();
+        Transaction trans = session.beginTransaction();  
+        try{
+            deleteReferenceOfChildThread(session, thread_id, "fg_threads");
+            deleteReferenceOfThread(session, thread_id, "fg_threads");
+            trans.commit();
+            return true;
+            
+        }catch(Exception ex){
+            trans.rollback();
+            return false;
+        }
+        
+    }
     
 }

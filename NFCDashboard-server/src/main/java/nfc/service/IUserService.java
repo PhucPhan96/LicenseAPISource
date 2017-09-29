@@ -49,5 +49,6 @@ public interface IUserService {
         UserRegister getUserRegisterByEmail(Email email);
         boolean insertUserApp(User user);
         User getUserByEmail(Email email) ;
+        boolean deleteUserResgist(Email email);
         
 }

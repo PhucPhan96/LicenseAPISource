@@ -33,4 +33,6 @@ public interface IThreadService {
     public Object fGetReviewCount(int board_id);
     List<ThreadView> getListReview(String username);
     List<ThreadModel> getListThreadApp(int suppl_id);
+    boolean deleteReview(String thread_id);
+    boolean deleteAllReview(String thread_id);
 }
