@@ -18,9 +18,8 @@ public class CORSFilter extends OncePerRequestFilter{
 		response.addHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
 		response.addHeader("Access-Control-Allow-Credentials", "true");
 		if (request.getHeader("Access-Control-Request-Method") != null && "OPTIONS".equals(request.getMethod())) {
-			//System.out.println("Vao nay ne crosite");
 			response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            response.addHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+                        response.addHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 		}
 		filterChain.doFilter(request, response);
 		

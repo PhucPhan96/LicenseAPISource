@@ -37,6 +37,11 @@ public class Utils {
     public static String ORDER_CANCEL = "CANCEL";
     public static String ORDER_REQUEST_CANCEL = "REQUEST_CANCEL";
     
+    public static String DANAL_RETURN_URL="http://192.168.0.31:1234/NFCDashboard-server/app/danal/return";
+    public static String DANAL_CANCEL_URL="http://192.168.0.31:1234/NFCDashboard-server/app/danal/cancel";
+    public static String DANAL_NOTI_URL="http://192.168.0.31:1234/NFCDashboard-server/app/danal/cancel";
+    
+    
     public static long orderId = -1;
     
     public static String convertObjectToJsonString(Object obj){

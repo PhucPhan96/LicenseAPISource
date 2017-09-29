@@ -76,60 +76,97 @@ public class PaymentController {
 //    }
     @RequestMapping(value="app/danal/auth", method=RequestMethod.POST)
     public @ResponseBody Map danalAuthentication(HttpServletRequest request){
-	Map RES_DATA = null;
-	RES_DATA = DanalFunction.getInstance().CallDanalBank(initDanalRequestData(request), false);
-        return RES_DATA;
+        Map REQ_DATA = new HashMap();
+        return danalAuthentication(REQ_DATA, request);
+    }
+    
+    private Map danalAuthentication(Map REQ_DATA, HttpServletRequest request){
+        String paymentType = request.getParameter("PAYMENTTYPE");
+        if(paymentType.equals("DANALTELE")){
+            return danalTeleAuth(REQ_DATA, request);
+        }
+        else{
+            return authWireTransferAndVirtualAccount(REQ_DATA, request);
+        }
     }
     
     
-    private Map initDanalRequestData(HttpServletRequest request){
-        String CANCELURL = "http://192.168.0.31:1234/NFCDashboard-server/app/danal/cancel";
+    private Map authWireTransferAndVirtualAccount(Map REQ_DATA, HttpServletRequest request){
+        Map RES_DATA = null;
         String paymentType = request.getParameter("PAYMENTTYPE");
-        
-        Map REQ_DATA = new HashMap();
-        //
         REQ_DATA.put("ORDERID", (String) request.getParameter("ORDERID"));
 	REQ_DATA.put("AMOUNT", request.getParameter("AMOUNT"));
         REQ_DATA.put("USERID", (String) request.getParameter("USERID"));
 	REQ_DATA.put("USEREMAIL", (String) request.getParameter("USEREMAIL"));
 	REQ_DATA.put("USERAGENT", (String) request.getParameter("USERAGENT"));
-        REQ_DATA.put("CANCELURL", CANCELURL);
+        REQ_DATA.put("CANCELURL", Utils.DANAL_CANCEL_URL);
         REQ_DATA.put("TXTYPE", "AUTH");
         REQ_DATA.put("ITEMNAME", (String) request.getParameter("ITEMNAME"));
-        
+        REQ_DATA.put("RETURNURL", Utils.DANAL_RETURN_URL);
         if(paymentType.equals("DANALWIRETRANSFER")){
-            REQ_DATA.put("RETURNURL", "http://192.168.0.31:1234/NFCDashboard-server/app/danal/wiretransfer/CPCGI");
             REQ_DATA.put("ISNOTI", "N");
             REQ_DATA.put("SERVICETYPE", "WIRETRANSFER");
             REQ_DATA.put("USERNAME", (String) request.getParameter("USERNAME"));
             REQ_DATA.put("BYPASSVALUE", "a=b;c=d;");
+            RES_DATA = DanalFunction.getInstance().CallDanalBank(REQ_DATA, false);
         }
         else{
-            REQ_DATA.put("RETURNURL", "http://192.168.0.31:1234/NFCDashboard-server/app/danal/virtualaccount");
-            REQ_DATA.put("NOTIURL", "http://192.168.0.31:1234/NFCDashboard-server/app/danal/virtual/log");
+            REQ_DATA.put("NOTIURL", Utils.DANAL_NOTI_URL);
             REQ_DATA.put("ACCOUNTHOLDER", request.getParameter("ACCOUNTHOLDER"));
             REQ_DATA.put("EXPIREDATE", (String)request.getParameter("EXPIREDATE"));
             REQ_DATA.put("SERVICETYPE", "DANALVACCOUNT");
+            RES_DATA = DanalFunction.getInstance().CallVAccount(REQ_DATA, false);
         }
-        return REQ_DATA;
+        return RES_DATA;
     }
-    @RequestMapping(value="app/danal/wiretransfer/CPCGI", method=RequestMethod.POST)
+    
+    private Map danalTeleAuth(Map REQ_DATA, HttpServletRequest request){
+        Map TransR = new HashMap();
+	TransR.put( "Command", "ITEMSEND2" );
+	TransR.put( "SERVICE", "TELEDIT" );
+	TransR.put( "ItemCount", "1" );
+	TransR.put( "OUTPUTOPTION", "DEFAULT" );
+	TransR.put( "ID", DanalFunction.ID );
+	TransR.put( "PWD", DanalFunction.PWD );
+	String CPName = "CP명";
+	String ItemAmt = request.getParameter("AMOUNT");
+	String ItemName = "휴대폰결제";
+	String ItemCode = "1111111111";
+	String ItemInfo = DanalFunction.getInstance().MakeItemInfo( ItemAmt,ItemCode,ItemName );
+	TransR.put( "ItemInfo", ItemInfo );
+	TransR.put( "SUBCP", "" );
+	TransR.put( "USERID", "USERID" );
+	TransR.put( "ORDERID", "ORDERID" );
+	TransR.put( "IsPreOtbill", "N" );
+	TransR.put( "IsSubscript", "N" );
+	Map ByPassValue = new HashMap();
+	ByPassValue.put( "BgColor", "00" );
+	ByPassValue.put( "TargetURL", "http://192.168.0.31:1234/NFCDashboard-server/app/danal/return" );
+	ByPassValue.put( "BackURL", "http://localhost/Danal/Teledit/BackURL.jsp" );
+	ByPassValue.put( "IsUseCI", "N" );
+	ByPassValue.put( "CIURL", "http://localhost/Danal/Teledit/images/ci.gif" );
+	ByPassValue.put( "Email", request.getParameter("Email"));
+	ByPassValue.put( "IsCharSet", "" );
+	ByPassValue.put( "ByBuffer", "This value bypass to CPCGI Page" ) ;
+	ByPassValue.put( "ByAnyName", "AnyValue" );
+        Map Res = DanalFunction.getInstance().CallTeledit(TransR);
+        return Res;
+    }
+    
+    
+    
+    
+    @RequestMapping(value="app/danal/return", method=RequestMethod.POST)
     public @ResponseBody Map authenWireTransferSuccess(HttpServletRequest request){
         return request.getParameterMap();
     }
-    
-    @RequestMapping(value="app/danal/virtualaccount", method=RequestMethod.POST)
-    public @ResponseBody Map authenVirtualAccountSuccess(HttpServletRequest request){
-        return request.getParameterMap();
-    }
-    
     @RequestMapping(value="app/danal/virtual/log", method=RequestMethod.POST)
     public @ResponseBody Map authenVirtualLog(HttpServletRequest request){
         //log virtual account transfer
         return request.getParameterMap();
     }
     
-    @RequestMapping(value="app/danal/wiretransfer/cancel", method=RequestMethod.POST)
+    @RequestMapping(value="app/danal/cancel", method=RequestMethod.POST)
     public @ResponseBody Map authenDanalCancel(HttpServletRequest request){
         return request.getParameterMap();
     }

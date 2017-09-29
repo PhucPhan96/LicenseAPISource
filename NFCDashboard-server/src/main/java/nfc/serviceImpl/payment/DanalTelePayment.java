@@ -17,25 +17,61 @@ import nfc.messages.request.PaymentCancel;
 public class DanalTelePayment extends PaymentAbstract{
     
     public DanalTelePayment(){
-        this.payment_code = "DANALTELEPAY";
+        this.payment_code = "DANALTELE";
     }
     
     
     public boolean payment(LinkedHashMap<String, String> paymentRequest, String orderId) {
-        return true;
+	Map TransR = new HashMap();
+	Map Res = null;
+	Map Res2 = null;
+	String ServerInfo = (String)paymentRequest.get("ServerInfo");
+	int nConfirmOption = 1;
+	TransR.put( "Command", "NCONFIRM" );
+	TransR.put( "OUTPUTOPTION", "DEFAULT" );
+	TransR.put( "ServerInfo", ServerInfo );
+	TransR.put( "IFVERSION", "V1.1.2");
+	TransR.put( "ConfirmOption", Integer.toString(nConfirmOption) );
+
+	if( nConfirmOption == 1 )
+	{
+		TransR.put( "CPID", DanalFunction.ID );
+		TransR.put( "AMOUNT", paymentRequest.get("AMOUNT") );
+	}
+
+	Res = DanalFunction.getInstance().CallTeledit( TransR );
+	if( Res.get("Result").equals("0") )
+	{
+            TransR.clear();
+            int nBillOption = 0;
+            TransR.put( "Command", "NBILL" );
+            TransR.put( "OUTPUTOPTION", "DEFAULT" );
+            TransR.put( "ServerInfo", ServerInfo );
+            TransR.put( "IFVERSION", "V1.1.2");
+            TransR.put( "BillOption", Integer.toString(nBillOption) );
+            Res2 = DanalFunction.getInstance().CallTeledit( TransR );
+            if( Res2 == null || !Res2.get("Result").equals("0") )
+            {
+                return false;
+            }
+	}
+
+	if( Res.get("Result").equals("0") && Res2.get("Result").equals("0") ){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     public boolean cancel(PaymentCancel paymentCancelRequest) {
         Map TransR = new HashMap();
-
-	TransR.put( "ID", "" );
-	TransR.put( "PWD", "" );
-	TransR.put( "TID", "xxxxx" );
-	TransR.put( "Command", "BILL_CANCEL" );
+	TransR.put( "ID", DanalFunction.ID);
+	TransR.put( "PWD", DanalFunction.PWD);
+	TransR.put( "TID", paymentCancelRequest.getId());
+	TransR.put( "Command", "BILL_CANCEL");
 	TransR.put( "OUTPUTOPTION", "3" );
-	
 	Map Res = DanalFunction.getInstance().CallTeledit(TransR);
-        
 	if( Res.get("Result").equals("0") ){
 		return true;
 	}

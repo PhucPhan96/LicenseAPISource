@@ -156,8 +156,8 @@ public class UserManagementController {
         JSONArray response = new JSONArray();
         for(User user: users){
             JSONObject object = new JSONObject();
-            object.put("first_name", user.getFirst_name());
-            object.put("last_name", user.getLast_name());
+            object.put("supplier_name", user.getSupplier_names());
+            object.put("mobile_no", user.getMobile_no());
             object.put("user_name", user.getUser_name());
             object.put("email", user.getEmail());
             object.put("created_date", Utils.convertDateToString(user.getCreated_date()));

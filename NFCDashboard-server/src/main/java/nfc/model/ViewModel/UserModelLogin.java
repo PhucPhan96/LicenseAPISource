@@ -23,6 +23,7 @@ public class UserModelLogin {
     private String birthday;
     private String role_id;
     private List<String> roles;
+    private String store_name;
 
     public String getUser_id() {
         return user_id;
@@ -111,5 +112,14 @@ public class UserModelLogin {
     public void setRoles(List<String> roles) {
         this.roles = roles;
     }
+
+    public String getStore_name() {
+        return store_name;
+    }
+
+    public void setStore_name(String store_name) {
+        this.store_name = store_name;
+    }
+    
     
 }

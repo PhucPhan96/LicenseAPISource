@@ -693,9 +693,12 @@ public class UserService implements IUserService {
         try {
             String filter = Utils.generateGridFilterString(gridView).toString();
             filter = filter.equals("") ? "" : (" and " +  filter); 
-            users = session.createSQLQuery("select u.* from fg_users u join fg_supplier_users su on u.user_id = su.user_id where find_in_set(su.suppl_id, '" + gridView.getData() + "')" + filter + " limit " + gridView.getPageSize() + " offset " + ((gridView.getPageIndex() - 1) * gridView.getPageSize())).addEntity(User.class).list();
+            users = session.createSQLQuery("select u.mobile_no, u.user_name, u.email, u.created_date, u.user_id, (select group_concat(s.supplier_name) from fg_suppliers s join fg_supplier_users su on s.suppl_id = su.suppl_id  where su.user_id = u.user_id) as supplier_names from fg_users u join fg_supplier_users su on u.user_id = su.user_id join fg_suppliers s on su.suppl_id = s.suppl_id where find_in_set(su.suppl_id, '" + gridView.getData() + "')" + filter + " limit " + gridView.getPageSize() + " offset " + ((gridView.getPageIndex() - 1) * gridView.getPageSize()))
+                            //.addEntity(User.class).list();
+                            .setResultTransformer(Transformers.aliasToBean(User.class)).list();
             trans.commit();
         } catch (Exception ex) {
+            System.err.println("error " + ex.getMessage());
             trans.rollback();
         }
         return users;
@@ -709,7 +712,7 @@ public class UserService implements IUserService {
         try {
             String filter = Utils.generateGridFilterString(gridView).toString();
             filter = filter.equals("") ? "" : (" and " +  filter);
-            count = (long) session.createSQLQuery("select count(*) as count from fg_users u join fg_supplier_users su on u.user_id = su.user_id where find_in_set(su.suppl_id, '" + gridView.getData() + "')" + filter)
+            count = (long) session.createSQLQuery("select count(*) as count from fg_users u join fg_supplier_users su on u.user_id = su.user_id join fg_suppliers s on su.suppl_id = s.suppl_id where find_in_set(su.suppl_id, '" + gridView.getData() + "')" + filter)
                     .addScalar("count", LongType.INSTANCE)
                     .uniqueResult();
             trans.commit();

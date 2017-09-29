@@ -57,9 +57,9 @@ public class DanalFunction {
 
     //tele config
     final String Info = "";
-    final String ID  = "A010002002 ";
-    final String PWD = "bbbbb";
-    final String AMOUNT = "301";
+    public final static String ID  = "A010002002 ";
+    public final static String PWD = "bbbbb";
+    public final static String AMOUNT = "301";
         
     //function use from wire transfer
     public Map CallDanalBank(Map REQ_DATA, boolean Debug) {

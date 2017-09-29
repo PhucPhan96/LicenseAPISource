@@ -10,6 +10,7 @@ import nfc.messages.BaseResponse;
 import nfc.messages.ErrorResponse;
 import nfc.model.Email;
 import nfc.model.Mail;
+import nfc.model.Supplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +36,7 @@ import nfc.model.User;
 import nfc.model.UserRegister;
 import nfc.model.ViewModel.UserModelLogin;
 import nfc.service.IMailService;
+import nfc.service.ISupplierService;
 import nfc.service.IUserService;
 import nfc.serviceImpl.Security.JwtAuthenticationRequest;
 import nfc.serviceImpl.Security.JwtAuthenticationResponse;
@@ -65,6 +67,9 @@ public class AccountController {
     
     @Autowired
     private IMailService mailDAO;
+    
+    @Autowired
+    private ISupplierService supplierDAO;
 
     @RequestMapping(value = "/auth", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest){
@@ -118,9 +123,18 @@ public class AccountController {
         user.setLast_name(jwtUser.getLastname());
         user.setMiddle_name(jwtUser.getMiddlename());
         user.setEmail(jwtUser.getEmail());
+        
+        Supplier supplier = supplierDAO.getSupplierFromUser(jwtUser.getUsername());
+        user.setStore_name(supplier != null ? supplier.getSupplier_name(): "");
         List<String> roles = new ArrayList<String>();
         for(GrantedAuthority grantAuth: jwtUser.getAuthorities()){
             roles.add(grantAuth.getAuthority());
+        }
+        if(roles.size() == 0){
+            ErrorResponse error = new ErrorResponse();
+            error.setResultCode(BaseResponse.FAILED);
+            error.setErrorMsg("User do not have permission to login");
+            return ResponseEntity.ok(error);
         }
         user.setRoles(roles);
         // Return the token
@@ -189,6 +203,7 @@ public class AccountController {
     	}
         return ResponseEntity.ok(new JwtAuthenticationResponse(body));
     }
+    
       @RequestMapping(value = "app/mail/send/sendMailForgotPassword", method = RequestMethod.POST)
         public @ResponseBody String sendMailForgotPassword(@RequestBody Mail mail) {
             
@@ -203,6 +218,7 @@ public class AccountController {
         System.out.println("vao getUserByEmail"+user); 
         return user;
         }
+        
         @RequestMapping(value = "app/user/updateUserForgotPassword", method = RequestMethod.PUT)
         public @ResponseBody
         String updateUserForgotPassword(@RequestBody User user) {

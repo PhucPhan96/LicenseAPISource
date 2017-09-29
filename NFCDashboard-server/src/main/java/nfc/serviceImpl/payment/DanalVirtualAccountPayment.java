@@ -15,6 +15,10 @@ import nfc.messages.request.PaymentCancel;
  * @author Admin
  */
 public class DanalVirtualAccountPayment extends PaymentAbstract{
+    
+    public DanalVirtualAccountPayment(){
+        this.payment_code = "DANALVIRTUALACCOUNT";
+    }
 
     public boolean payment(LinkedHashMap<String, String> paymentRequest, String orderId) {
         String RES_STR = DanalFunction.getInstance().toDecrypt((String) paymentRequest.get("RETURNPARAMS"), DanalFunction.IV_VIRTUAL_ACCOUNT, DanalFunction.CRYPTOKEY_VIRTUAL_ACCOUNT);

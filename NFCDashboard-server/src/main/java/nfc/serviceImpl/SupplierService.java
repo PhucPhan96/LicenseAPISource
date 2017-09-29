@@ -102,10 +102,16 @@ public class SupplierService implements ISupplierService {
     public Supplier getSupplier(String supplId) {
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
-        Criteria criteria = session.createCriteria(Supplier.class);
-        criteria.add(Restrictions.eq("suppl_id", Integer.parseInt(supplId)));
-        Supplier supplier = (Supplier) criteria.uniqueResult();
-        trans.commit();
+        Supplier supplier = null;
+        try{
+            Criteria criteria = session.createCriteria(Supplier.class);
+            criteria.add(Restrictions.eq("suppl_id", Integer.parseInt(supplId)));
+            supplier = (Supplier) criteria.uniqueResult();
+            trans.commit();
+        }
+        catch(Exception ex){
+            trans.rollback();
+        }
         return supplier;
     }
 
@@ -647,10 +653,16 @@ public class SupplierService implements ISupplierService {
         User user = userDAO.findUserByUserName(username);
         Session session = this.sessionFactory.getCurrentSession();
         Transaction trans = session.beginTransaction();
-        Criteria criteria = session.createCriteria(SupplierUser.class);
-        criteria.add(Restrictions.eq("user_id", user.getUser_id()));
-        List<SupplierUser> list = (List<SupplierUser>) criteria.list();
-        trans.commit();
+        List<SupplierUser> list = new ArrayList<>();
+        try{
+            Criteria criteria = session.createCriteria(SupplierUser.class);
+            criteria.add(Restrictions.eq("user_id", user.getUser_id()));
+            list = (List<SupplierUser>) criteria.list();
+            trans.commit();
+        }
+        catch(Exception ex){
+            trans.rollback();
+        }
         return list;
     }
 
