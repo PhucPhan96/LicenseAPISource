@@ -175,8 +175,6 @@ public class UserManagementController {
         user.setUser_id(randomUUID);
         Date date = new Date();
         user.setCreated_date(date);
-        System.out.println("vao insert");
-        //System.out.println(user.getLstRoles().size());
 
         boolean data = userDAO.insertUserFb(user);
         System.out.println(data);

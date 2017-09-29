@@ -72,23 +72,7 @@ public class AccountController {
 
     @RequestMapping(value = "/auth", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest){
-        // Perform the security
-//		final Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(
-//                        authenticationRequest.getUsername(),
-//                        authenticationRequest.getPassword()
-//                )
-//        );
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//        // Reload password post-security so we can generate token
-//        final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-//        final String token = jwtTokenUtil.generateToken(userDetails);
-//        //userDAO.insertUserLogin( authenticationRequest.getUsername());
-//        // Return the token
-//        return ResponseEntity.ok(new JwtAuthenticationResponse(token));
-//        
         
-        // Perform the security
         try {
             final Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
