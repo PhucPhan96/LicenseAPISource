@@ -1265,4 +1265,21 @@ public class SupplierService implements ISupplierService {
             } 
         
        }
+       public int caculateAverageStar (int supplier_id){
+           Session session = this.sessionFactory.getCurrentSession();
+           Transaction trans = session.beginTransaction();
+           int result = 0;
+           try {
+               String strQuery = "SELECT AVG (t.review_rank5) FROM 82wafoodgo.fg_threads t WHERE t.board_id IN ( SELECT s.board_id FROM 82wafoodgo.fg_supplier_work s WHERE s.suppl_id = "+supplier_id+")";
+                Query query = session.createSQLQuery(strQuery);
+                result = (int)query.uniqueResult();
+                trans.commit();
+                return result;
+               
+           }catch(Exception ex){
+               System.out.println("Error caculateAverageStar " + ex.getMessage());
+                trans.rollback();
+                return result;
+           }
+       }
 }

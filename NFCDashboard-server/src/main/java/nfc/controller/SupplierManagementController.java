@@ -362,6 +362,12 @@ public class SupplierManagementController {
         String data = supplierDAO.updateStoreInformation(supplierView) + "";
         return "{\"result\":\"" + data + "\"}";
     }
+    //Caculate average stars
+    @RequestMapping(value = "app/caculateAverageStar/{supplId}", method = RequestMethod.POST)
+    public @ResponseBody int caculateAverageStar(@PathVariable("supplId") int supplId) {
+        int data = supplierDAO.caculateAverageStar(supplId);
+        return data;
+    }
     
     
     

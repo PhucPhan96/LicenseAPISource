@@ -74,4 +74,5 @@ public interface ISupplierService {
         Supplier insertUserSupplierView(UserSupplierView userSupplierView, String username);
         
         boolean updateStoreInformation(SupplierView supplierView);
+        int caculateAverageStar (int supplier_id);
 }
