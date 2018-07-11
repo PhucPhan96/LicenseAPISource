@@ -73,4 +73,10 @@
          <bean id="bannerDAO" class="nfc.serviceImpl.BannerService">
 	     <property name="sessionFactory" ref="mySessionFactory" />
 	 </bean>
+         <bean id="keysingleDAO" class="nfc.serviceImpl.KeySingleService">
+            <property name="sessionFactory" ref="mySessionFactory" />
+        </bean>
+        <bean id="keytrialDAO" class="nfc.serviceImpl.KeyTrialService">
+            <property name="sessionFactory" ref="mySessionFactory" />
+        </bean>
 </beans>
